@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -21,8 +22,12 @@ import com.blazeloader.api.ApiGeneral;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
 import com.blazeloader.api.world.ApiWorld;
+
 import com.blazeloader.api.world.gen.IChunkGenerator;
 import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
+
+import com.blazeloader.api.world.WorldPool;
+
 import com.blazeloader.bl.main.BLMain;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
@@ -108,5 +113,9 @@ public class InternalEventHandler {
     	if (EntityTrackerRegistry.instance().addEntityToTracker(event.getSource(), entity)) {
     		event.cancel();
     	}
+    }
+    
+    public static void eventFlush(EventInfo<WorldServer> event) {
+    	WorldPool.flushWorld(event.getSource());
     }
 }
