@@ -4,6 +4,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentTranslation;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
 
@@ -12,6 +14,13 @@ import com.blazeloader.api.chat.ChatColor;
  */
 public abstract class BLCommandBase extends CommandBase {
 
+    /**
+     * Returns a copy of the given string array with the first item removed.
+     */
+    public static String[] dropFirstString(String[] input) {
+    	return ArrayUtils.subarray(input, 1, input.length - 1);
+    }
+	
     /**
      * Creates a new BLCommandBase without automatically registering it.
      */

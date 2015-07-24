@@ -90,6 +90,8 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         
         //FIXME: Disabled because for some reason we can't transform EntityLivingBase. It results in a java.lang.ClassCircularityException on EntityPlayer
         //addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLivingBase.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
+        //Part 2: It seems the same problem extends to EntityPlayerMP as well. So we can't get access to that method at all.
+        //addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayerMP.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
         
         addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClass("net.minecraft.world.World", OBFLevel.MCP) }, beforeReturn);
     }
