@@ -3,10 +3,16 @@ package com.blazeloader.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.google.common.base.Predicate;
+import com.blazeloader.util.data.Result;
+import com.blazeloader.util.data.Tuple;
+import com.blazeloader.util.data.Tuple.Tuple2;
+import com.google.common.collect.Lists;
+
+import javafx.util.Callback;
 
 /**
  * Javascript array methods re-implemented in Java. Any ones not found here are probably already in (@code ArrayUtils}.
@@ -16,24 +22,24 @@ public class JSArrayUtils {
 	/**
 	 * Removes the first element from the end of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple<Result, T[]> pop(T[] array) {
-		if (array.length == 0) return new Tuple(Result.Nothing(), array);
-		return new Tuple(Result.Something(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
+	public static <T> Tuple2<Result, T[]> pop(T... array) {
+		if (array.length == 0) return Tuple.create(Result.Nothing(), array);
+		return Tuple.create(Result.Something(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
 	}
 	
 	/**
 	 * Adds one or more elements to the end of an array and returns the result.
 	 */
-    public static <T> T[] push(T[] array, T ...added) {
+    public static <T> T[] push(T[] array, T... added) {
     	return ArrayUtils.addAll(array, added);
     }
     
     /**
 	 * Removes the first element from the start of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple<Result, T[]> shift(T[] array) {
-		if (array.length == 0) return new Tuple(Result.Nothing(), array);
-		return new Tuple(Result.Something(array[0]), ArrayUtils.subarray(array, 1, array.length));
+	public static <T> Tuple2<Result, T[]> shift(T... array) {
+		if (array.length == 0) return Tuple.create(Result.Nothing(), array);
+		return Tuple.create(Result.Something(array[0]), ArrayUtils.subarray(array, 1, array.length));
 	}
     
 	/**
@@ -122,6 +128,16 @@ public class JSArrayUtils {
     }
     
     /**
+     * Converts the given array to a list.
+     */
+    public static <T> List<T> toList(T... arr) {
+    	if (arr.length > 0) {
+			return Lists.asList(arr[0], ArrayUtils.subarray(arr, 1, arr.length));
+    	}
+    	return new ArrayList<T>();
+    }
+    
+    /**
      * Creates a new array with the same component type as that of the given array and with the given length.
      */
     public static <T> T[] newArray(T[] arr, int length) {
@@ -153,9 +169,9 @@ public class JSArrayUtils {
      * 
      * @return true if all items pass, false otherwise.
      */
-    public static <T> boolean every(T[] arr, Callback<Boolean, Args<T>> callback) {
+    public static <T> boolean every(T[] arr, Callback<Args<T>, Boolean> callback) {
     	boolean result = true;
-    	for (int i = 0; result && i < arr.length; i++) result &= callback.apply(new Args<T>(arr, i));
+    	for (int i = 0; result && i < arr.length; i++) result &= callback.call(new Args<T>(arr, i));
     	return result;
     }
     
@@ -164,9 +180,9 @@ public class JSArrayUtils {
      * 
      * @return true if at least one item passes, false otherwise.
      */
-    public static <T> boolean some(T[] arr, Callback<Boolean, Args<T>> callback) {
+    public static <T> boolean some(T[] arr, Callback<Args<T>, Boolean> callback) {
     	for (int i = 0; i < arr.length; i++) {
-    		if (callback.apply(new Args<T>(arr, i))) return false;
+    		if (callback.call(new Args<T>(arr, i))) return false;
     	}
     	return true;
     }
@@ -176,14 +192,14 @@ public class JSArrayUtils {
      * 
      * @return true if all items pass, false otherwise.
      */
-    public static <T> void forEach(T[] arr, Callback<Boolean, Args<T>> callback) {
-    	for (int i = 0; i < arr.length; i++) callback.apply(new Args<T>(arr, i));
+    public static <T> void forEach(T[] arr, Callback<Args<T>, Boolean> callback) {
+    	for (int i = 0; i < arr.length; i++) callback.call(new Args<T>(arr, i));
     }
     
     /**
      * Applies the given function to each item in the array accumulating a value through each call.
      */
-    public static <T,V> V reduce(T[] arr, Callback<V, Folds<T,V>> callback, V ...initial) {
+    public static <T,V> V reduce(T[] arr, Callback<Folds<T,V>, V> callback, V ...initial) {
     	if (arr.length < 2) {
     		if (initial.length == 0) {
     			throw new RuntimeException("no value to return");
@@ -198,7 +214,7 @@ public class JSArrayUtils {
     		ini = arr[1];
     	}
     	for (int i = 0; i < arr.length; i ++) {
-    		ini = callback.apply(new Folds(arr, i, ini));
+    		ini = callback.call(new Folds(arr, i, ini));
     	}
     	return (V)ini;
     }
@@ -206,7 +222,7 @@ public class JSArrayUtils {
     /**
      * Applies the given function to each item in the array in reverse order accumulating a value through each call.
      */
-    public static <T,V> V reduceRight(T[] arr, Callback<V, Folds<T,V>> callback, V ...initial) {
+    public static <T,V> V reduceRight(T[] arr, Callback<Folds<T,V>, V> callback, V ...initial) {
     	if (arr.length < 2) {
     		if (initial.length == 0) {
     			throw new RuntimeException("no value to return");
@@ -223,7 +239,7 @@ public class JSArrayUtils {
     		ini = arr[arr.length - 1];
     	}
     	for (; i <= 0; i--) {
-    		ini = callback.apply(new Folds(arr, i, ini));
+    		ini = callback.call(new Folds(arr, i, ini));
     	}
     	return (V)ini;
     }
@@ -237,18 +253,17 @@ public class JSArrayUtils {
     	}
     	List<T> result = new ArrayList<T>();
     	for (T i : arr) {
-    		if (test.apply(i)) {
-    			result.add(i);
-    		}
+    		if (test.test(i)) result.add(i);
     	}
     	return result.size() > 0 ? toArray(result) : newArray(arr, 0);
     }
     
-    public static interface Callback<R, P> {
-    	public R apply(P param);
-    }
-    
     public static class Folds<T, V> extends Args<T> {
+    	/**
+    	 * Result of the previous execution.
+    	 * <p>
+    	 * If there was a initialValue provided this will be set to that on the first execution, otherwise will be the previous item in the array for the respective direction.
+    	 */
     	public final V previousValue;
     	
     	protected Folds(T[] arr, int i, V initial) {
@@ -258,8 +273,17 @@ public class JSArrayUtils {
     }
     
     public static class Args<T> {
+    	/**
+    	 * The array being processed.
+    	 */
     	public final T[] array;
+    	/**
+    	 * Current index.
+    	 */
     	public final int index;
+    	/**
+    	 * Value at the current position in the array.
+    	 */
     	public final T currentValue;
     	
     	protected Args(T[] arr, int i) {
