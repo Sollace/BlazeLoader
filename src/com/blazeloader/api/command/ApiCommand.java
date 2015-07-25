@@ -23,7 +23,19 @@ public class ApiCommand {
     public static CommandHandler getCommandManager() {
         return BLMain.instance().getCommandHandler();
     }
-
+    
+    /**
+     * Registers a full batch of commands, overriding any that already exist.
+     * 
+     * @param commands	The commands to register.
+     */
+    public static void registerCommands(ICommand... commands) {
+    	CommandHandler handler = getCommandManager();
+    	for (ICommand i : commands) {
+    		handler.registerCommand(i);
+    	}
+    }
+    
     /**
      * Registers a command, overriding it if it already exists.
      *
