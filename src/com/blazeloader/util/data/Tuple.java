@@ -9,6 +9,8 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public interface Tuple {
 	
+	public boolean contentEquals(Tuple other);
+	
 	/**
 	 * Factory method to create a one item Tuple.
 	 */
@@ -94,6 +96,18 @@ public interface Tuple {
 		public Tuple1(T objectOne) {
 			itemOne = objectOne;
 		}
+		
+		protected String internalToString() {
+			return itemOne.toString();
+		}
+		
+		public String toString() {
+			return "{" + internalToString() + "}";
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return getClass().isAssignableFrom(other.getClass()) && itemOne.equals(((Tuple1)other).itemOne);
+		}
 	}
 	
 	public static class Tuple2<T, U> extends Tuple1<T> {
@@ -107,6 +121,14 @@ public interface Tuple {
 			super(one);
 			itemTwo = two;
 		}
+		
+		protected String internalToString() {
+			return super.internalToString() + "," + itemTwo.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemTwo.equals(((Tuple2)other).itemTwo);
+		}
 	}
 	
 	public static class Tuple3<T, U, V> extends Tuple2<T, U> {
@@ -118,6 +140,14 @@ public interface Tuple {
 		public Tuple3(T one, U two, V three) {
 			super(one, two);
 			itemThree = three;
+		}
+		
+		protected String internalToString() {
+			return super.internalToString() + "," + itemThree.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemThree.equals(((Tuple3)other).itemThree);
 		}
 	}
 	
@@ -131,6 +161,14 @@ public interface Tuple {
 			super(one, two, three);
 			itemFour = four;
 		}
+		
+		protected String internalToString() {
+			return super.internalToString() + "," + itemFour.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemFour.equals(((Tuple4)other).itemFour);
+		}
 	}
 	
 	public static class Tuple5<T, U, V, W, X> extends Tuple4<T, U, V, W> {
@@ -142,6 +180,14 @@ public interface Tuple {
 		public Tuple5(T one, U two, V three, W four, X five) {
 			super(one, two, three, four);
 			itemFive = five;
+		}
+		
+		protected String internalToString() {
+			return super.internalToString() + "," + itemFive.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemFive.equals(((Tuple5)other).itemFive);
 		}
 	}
 	
@@ -155,6 +201,14 @@ public interface Tuple {
 			super(one, two, three, four, five);
 			itemSix = six;
 		}
+		
+		public String internalToString() {
+			return super.internalToString() + "," + itemSix.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemSix.equals(((Tuple6)other).itemSix);
+		}
 	}
 	
 	public static class Tuple7<T, U, V, W, X, Y, Z> extends Tuple6<T, U, V, W, X, Y> {
@@ -167,13 +221,17 @@ public interface Tuple {
 			super(one, two, three, four, five, six);
 			itemSeven = seven;
 		}
+		
+		public String internalToString() {
+			return super.internalToString() + "," + itemSeven.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && itemSix.equals(((Tuple7)other).itemSeven);
+		}
 	}
 	
 	public static class TupleN<T, U, V, W, X, Y, Z, N extends Tuple> extends Tuple7<T, U, V, W, X, Y, Z> {
-		/**
-		 * The seventh item
-		 */
-		public final Z itemSeven;
 		/**
 		 * A Tuple of additional items.
 		 */
@@ -181,8 +239,15 @@ public interface Tuple {
 		
 		public TupleN(T one, U two, V three, W four, X five, Y six, Z seven, N n) {
 			super(one, two, three, four, five, six, seven);
-			itemSeven = seven;
 			extended = n;
+		}
+		
+		public String internalToString() {
+			return super.internalToString() + "," + extended.toString();
+		}
+		
+		public boolean contentEquals(Tuple other) {
+			return super.contentEquals(other) && extended.contentEquals(((TupleN)other).extended);
 		}
 	}
 }

@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.blazeloader.util.data.Result;
+import com.blazeloader.util.data.Option;
 import com.blazeloader.util.data.Tuple;
 import com.blazeloader.util.data.Tuple.Tuple2;
 import com.google.common.collect.Lists;
@@ -22,9 +22,9 @@ public class JSArrayUtils {
 	/**
 	 * Removes the first element from the end of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple2<Result, T[]> pop(T... array) {
-		if (array.length == 0) return Tuple.create(Result.Nothing(), array);
-		return Tuple.create(Result.Something(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
+	public static <T> Tuple2<Option, T[]> pop(T... array) {
+		if (array.length == 0) return Tuple.create(Option.None(), array);
+		return Tuple.create(Option.Some(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
 	}
 	
 	/**
@@ -37,9 +37,9 @@ public class JSArrayUtils {
     /**
 	 * Removes the first element from the start of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple2<Result, T[]> shift(T... array) {
-		if (array.length == 0) return Tuple.create(Result.Nothing(), array);
-		return Tuple.create(Result.Something(array[0]), ArrayUtils.subarray(array, 1, array.length));
+	public static <T> Tuple2<Option, T[]> shift(T... array) {
+		if (array.length == 0) return Tuple.create(Option.None(), array);
+		return Tuple.create(Option.Some(array[0]), ArrayUtils.subarray(array, 1, array.length));
 	}
     
 	/**
@@ -159,9 +159,49 @@ public class JSArrayUtils {
     	String result = "";
     	for (T i : arr) {
     		if (result.length() > 0) result += sep;
-    		result += i.toString();
+    		if (isArray(i)) {
+    			result += join(asArray(i), separator);
+    		} else {
+    			result += i.toString();
+    		}
     	}
     	return result;
+    }
+    
+    public static <T> String toSource(T... arr) {
+    	String result = "";
+    	for (T i : arr) {
+    		if (result.length() > 0) result += ", ";
+    		if (isArray(i)) {
+    			result += toSource(asArray(i));
+    		} else {
+    			result += i.toString();
+    		}
+    	}
+    	return "[" + result + "]";
+    }
+    
+    /**
+     * Check if the given object is an array.
+     */
+    public static boolean isArray(Object o) {
+    	return o != null && o.getClass().isArray();
+    }
+    
+    /**
+     * Converts a given primitive array to an object type array.
+     */
+    public static <T> T[] asArray(Object o) {
+    	if (o instanceof int[]) return (T[])ArrayUtils.toObject((int[])o);
+    	if (o instanceof boolean[]) return (T[])ArrayUtils.toObject((boolean[])o);
+    	if (o instanceof float[]) return (T[])ArrayUtils.toObject((float[])o);
+    	if (o instanceof double[]) return (T[])ArrayUtils.toObject((double[])o);
+    	if (o instanceof byte[]) return (T[])ArrayUtils.toObject((byte[])o);
+    	if (o instanceof char[]) return (T[])ArrayUtils.toObject((char[])o);
+    	if (o instanceof long[]) return (T[])ArrayUtils.toObject((long[])o);
+    	if (o instanceof short[]) return (T[])ArrayUtils.toObject((short[])o);
+    	if (o instanceof Object[]) return (T[])o;
+    	throw new IllegalArgumentException("Given value is not an array");
     }
     
     /**

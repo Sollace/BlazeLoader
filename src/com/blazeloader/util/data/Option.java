@@ -4,22 +4,21 @@ package com.blazeloader.util.data;
  * Used to indicate a return value or the lack thereof.
  * <p>
  * This pattern is based on Functional Programming designs where every function is required to take one value and return another.
- * There is no null value so instead they use Result.Something or Result.Nothing to optionally return a value.
- * 
+ * There is no null value so instead they use Some(x) where x is some value, or None to indicate no value.
  */
-public interface Result<T> {
+public interface Option<T> {
 	/**
 	 * Indicates there is no result.
 	 */
-	public static Nothing Nothing() {
-		return Nothing.instance;
+	public static None None() {
+		return None.instance;
 	}
 	
 	/**
 	 * There was a result and it can be included in the return value.
 	 */
-	public static <T> Something<T> Something(T result) {
-		return new Something(result);
+	public static <T> Some<T> Some(T result) {
+		return new Some(result);
 	}
 	
 	/**
@@ -32,10 +31,10 @@ public interface Result<T> {
 	 */
 	public T getResult();
 	
-	public final class Nothing<T> implements Result<T> {
-		private static final Nothing instance = new Nothing();
+	public final class None<T> implements Option<T> {
+		private static final None instance = new None();
 		
-		private Nothing() {
+		private None() {
 		}
 		
 		public boolean isSomething() {
@@ -49,17 +48,21 @@ public interface Result<T> {
 		public final boolean equals(Object other) {
 			return other == instance;
 		}
+		
+		public String toString() {
+			return "None";
+		}
 	}
 	
-	public final class Something<T> implements Result {
+	public final class Some<T> implements Option {
 		private T result;
 		
-		private Something(T object) {
+		private Some(T object) {
 			if (object == null) throw new IllegalArgumentException("value cannot be null");
 			result = object;
 		}
 		
-		private Something() {
+		private Some() {
 			throw new RuntimeException("Access Denied");
 		}
 		
@@ -72,7 +75,11 @@ public interface Result<T> {
 		}
 		
 		public boolean equals(Object other) {
-			return other instanceof Something && result.equals(((Something)other).result);
+			return other instanceof Some && result.equals(((Some)other).result);
+		}
+		
+		public String toString() {
+			return "Some " + result.toString();
 		}
 	}
 }

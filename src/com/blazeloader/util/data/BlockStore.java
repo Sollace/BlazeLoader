@@ -95,7 +95,7 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 	 * @param w			The world
 	 * @param overwrite	true to replace blocks
 	 */
-	public void RestoreAll(World w, boolean overwrite) {
+	public void restoreAll(World w, boolean overwrite) {
 		for (BlockStore.Entry i : map.values()) {
 			i.restore(w, overwrite);
 		}
