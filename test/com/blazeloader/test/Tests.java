@@ -2,19 +2,20 @@ package com.blazeloader.test;
 
 
 
+import java.util.Optional;
+
 import com.blazeloader.bl.interop.ForgeMLAccess;
 import com.blazeloader.util.JSArrayUtils;
 import com.blazeloader.util.data.Tuple.Tuple2;
 import com.blazeloader.util.reflect.Func;
 import com.blazeloader.util.reflect.Reflect;
 import com.blazeloader.util.reflect.SimpleFunc;
-import com.blazeloader.util.data.Option;
 
 public class Tests {
 	public static boolean PopTest() {
-		Tuple2<Option, Integer[]> popped = JSArrayUtils.pop(1,2,3);
+		Tuple2<Optional<Integer>, Integer[]> popped = JSArrayUtils.pop(1,2,3);
 		System.out.println("[1,2,3] -> {{Some 3},[1,2]}");
-		return popped.itemOne.equals(Option.some(3)) && JSArrayUtils.join(popped.itemTwo).contentEquals("1,2");
+		return popped.itemOne.equals(Optional.of(3)) && JSArrayUtils.join(popped.itemTwo).contentEquals("1,2");
 	}
 	
 	public static boolean interopTest() throws Throwable {

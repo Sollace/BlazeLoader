@@ -4,13 +4,13 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.blazeloader.util.data.Tuple;
 import com.blazeloader.util.data.Tuple.Tuple2;
 import com.google.common.collect.Lists;
-import com.blazeloader.util.data.Option;
 
 import javafx.util.Callback;
 
@@ -22,9 +22,9 @@ public class JSArrayUtils {
 	/**
 	 * Removes the first element from the end of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple2<Option, T[]> pop(T... array) {
-		if (array.length == 0) return Tuple.create(Option.none(), array);
-		return Tuple.create(Option.some(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
+	public static <T> Tuple2<Optional<T>, T[]> pop(T... array) {
+		if (array.length == 0) return Tuple.create(Optional.empty(), array);
+		return Tuple.create(Optional.of(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
 	}
 	
 	/**
@@ -37,9 +37,9 @@ public class JSArrayUtils {
     /**
 	 * Removes the first element from the start of an array and returns both it and the resulting array.
 	 */
-	public static <T> Tuple2<Option, T[]> shift(T... array) {
-		if (array.length == 0) return Tuple.create(Option.none(), array);
-		return Tuple.create(Option.some(array[0]), ArrayUtils.subarray(array, 1, array.length));
+	public static <T> Tuple2<Optional<T>, T[]> shift(T... array) {
+		if (array.length == 0) return Tuple.create(Optional.empty(), array);
+		return Tuple.create(Optional.of(array[0]), ArrayUtils.subarray(array, 1, array.length));
 	}
     
 	/**
