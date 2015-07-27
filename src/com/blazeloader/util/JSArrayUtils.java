@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.blazeloader.util.data.Tuple;
 import com.blazeloader.util.data.Tuple.Tuple2;
 import com.google.common.collect.Lists;
-
-import javafx.util.Callback;
 
 /**
  * Javascript array methods re-implemented in Java. Any ones not found here are probably already in (@code ArrayUtils}.
@@ -217,9 +216,9 @@ public class JSArrayUtils {
      * 
      * @return true if all items pass, false otherwise.
      */
-    public static <T> boolean every(T[] arr, Callback<Args<T>, Boolean> callback) {
+    public static <T> boolean every(T[] arr, Function<Args<T>, Boolean> callback) {
     	boolean result = true;
-    	for (int i = 0; result && i < arr.length; i++) result &= callback.call(new Args<T>(arr, i));
+    	for (int i = 0; result && i < arr.length; i++) result &= callback.apply(new Args<T>(arr, i));
     	return result;
     }
     
@@ -228,9 +227,9 @@ public class JSArrayUtils {
      * 
      * @return true if at least one item passes, false otherwise.
      */
-    public static <T> boolean some(T[] arr, Callback<Args<T>, Boolean> callback) {
+    public static <T> boolean some(T[] arr, Function<Args<T>, Boolean> callback) {
     	for (int i = 0; i < arr.length; i++) {
-    		if (callback.call(new Args<T>(arr, i))) return false;
+    		if (callback.apply(new Args<T>(arr, i))) return false;
     	}
     	return true;
     }
@@ -240,14 +239,14 @@ public class JSArrayUtils {
      * 
      * @return true if all items pass, false otherwise.
      */
-    public static <T> void forEach(T[] arr, Callback<Args<T>, Boolean> callback) {
-    	for (int i = 0; i < arr.length; i++) callback.call(new Args<T>(arr, i));
+    public static <T> void forEach(T[] arr, Function<Args<T>, Boolean> callback) {
+    	for (int i = 0; i < arr.length; i++) callback.apply(new Args<T>(arr, i));
     }
     
     /**
      * Applies the given function to each item in the array accumulating a value through each call.
      */
-    public static <T,V> V reduce(T[] arr, Callback<Folds<T,V>, V> callback, V ...initial) {
+    public static <T,V> V reduce(T[] arr, Function<Folds<T,V>, V> callback, V ...initial) {
     	if (arr.length < 2) {
     		if (initial.length == 0) {
     			throw new RuntimeException("no value to return");
@@ -262,7 +261,7 @@ public class JSArrayUtils {
     		ini = arr[1];
     	}
     	for (int i = 0; i < arr.length; i ++) {
-    		ini = callback.call(new Folds(arr, i, ini));
+    		ini = callback.apply(new Folds(arr, i, ini));
     	}
     	return (V)ini;
     }
@@ -270,7 +269,7 @@ public class JSArrayUtils {
     /**
      * Applies the given function to each item in the array in reverse order accumulating a value through each call.
      */
-    public static <T,V> V reduceRight(T[] arr, Callback<Folds<T,V>, V> callback, V ...initial) {
+    public static <T,V> V reduceRight(T[] arr, Function<Folds<T,V>, V> callback, V ...initial) {
     	if (arr.length < 2) {
     		if (initial.length == 0) {
     			throw new RuntimeException("no value to return");
@@ -287,7 +286,7 @@ public class JSArrayUtils {
     		ini = arr[arr.length - 1];
     	}
     	for (; i <= 0; i--) {
-    		ini = callback.call(new Folds(arr, i, ini));
+    		ini = callback.apply(new Folds(arr, i, ini));
     	}
     	return (V)ini;
     }
