@@ -7,10 +7,10 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.blazeloader.util.data.Option;
 import com.blazeloader.util.data.Tuple;
 import com.blazeloader.util.data.Tuple.Tuple2;
 import com.google.common.collect.Lists;
+import com.blazeloader.util.data.Option;
 
 import javafx.util.Callback;
 
@@ -23,8 +23,8 @@ public class JSArrayUtils {
 	 * Removes the first element from the end of an array and returns both it and the resulting array.
 	 */
 	public static <T> Tuple2<Option, T[]> pop(T... array) {
-		if (array.length == 0) return Tuple.create(Option.None(), array);
-		return Tuple.create(Option.Some(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
+		if (array.length == 0) return Tuple.create(Option.none(), array);
+		return Tuple.create(Option.some(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
 	}
 	
 	/**
@@ -38,8 +38,8 @@ public class JSArrayUtils {
 	 * Removes the first element from the start of an array and returns both it and the resulting array.
 	 */
 	public static <T> Tuple2<Option, T[]> shift(T... array) {
-		if (array.length == 0) return Tuple.create(Option.None(), array);
-		return Tuple.create(Option.Some(array[0]), ArrayUtils.subarray(array, 1, array.length));
+		if (array.length == 0) return Tuple.create(Option.none(), array);
+		return Tuple.create(Option.some(array[0]), ArrayUtils.subarray(array, 1, array.length));
 	}
     
 	/**
@@ -185,7 +185,15 @@ public class JSArrayUtils {
      * Check if the given object is an array.
      */
     public static boolean isArray(Object o) {
-    	return o != null && o.getClass().isArray();
+    	return o instanceof Object[] ||
+    		o instanceof int[] ||
+    		o instanceof boolean[] ||
+    		o instanceof float[] ||
+    		o instanceof double[] ||
+    		o instanceof byte[] ||
+    		o instanceof char[] ||
+    		o instanceof long[] ||
+    		o instanceof short[]; //This is faster.
     }
     
     /**

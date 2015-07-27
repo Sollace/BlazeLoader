@@ -10,14 +10,17 @@ public interface Option<T> {
 	/**
 	 * Indicates there is no result.
 	 */
-	public static None None() {
+	public static None none() {
 		return None.instance;
 	}
 	
 	/**
 	 * There was a result and it can be included in the return value.
+	 * <p>
+	 * If the provided value is null returns None.
 	 */
-	public static <T> Some<T> Some(T result) {
+	public static <T> Option<T> some(T result) {
+		if (result == null) return none();
 		return new Some(result);
 	}
 	
