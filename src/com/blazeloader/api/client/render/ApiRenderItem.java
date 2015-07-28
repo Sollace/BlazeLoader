@@ -1,26 +1,11 @@
 package com.blazeloader.api.client.render;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 
 public class ApiRenderItem {
-	
-	/**
-	 * Registers a block with the render engine to use a specific model for the given data value. 
-	 * <p>
-	 * Same as:
-	 * <br><code>registerBlock(block, 0, identifier);</code>
-	 * 
-	 * @param item			the block to register
-	 * @param subType		metadata value
-	 * @param identifier	String identifier for the model that the game must use
-	 */
-	public static void registerBlock(Block block, String identifier) {
-		registerBlock(block, 0, identifier);
-	}
 	
 	/**
 	 * Registers an item with the render engine to use a specific model. 
@@ -34,18 +19,7 @@ public class ApiRenderItem {
 	public static void registerItem(Item item, String identifier) {
 		registerItem(item, 0, identifier);
 	}
-	
-	/**
-	 * Registers a block with the render engine to use a specific model for the given data value. 
-	 * 
-	 * @param item			the block to register
-	 * @param subType		metadata value
-	 * @param identifier	String identifier for the model that the game must use
-	 */
-	public static void registerBlock(Block block, int subType, String identifier) {
-		registerItem(Item.getItemFromBlock(block), subType, identifier);
-	}
-	
+		
 	/**
 	 * Registers an item with the render engine to use a specific model for the given item data. 
 	 * 
@@ -54,7 +28,7 @@ public class ApiRenderItem {
 	 * @param identifier	String identifier for the model that the game must use
 	 */
 	public static void registerItem(Item item, int subType, String identifier) {
-		Minecraft.getMinecraft().renderItem.getItemModelMesher().register(item, subType, new ModelResourceLocation(identifier, "inventory"));
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, subType, new ModelResourceLocation(identifier, "inventory"));
 	}
 	
 	/**
@@ -68,6 +42,6 @@ public class ApiRenderItem {
 	 * @param mesh	A mesh definition used to render the model for this item
 	 */
 	public static void registerItem(Item item, ItemMeshDefinition mesh) {
-		Minecraft.getMinecraft().renderItem.getItemModelMesher().register(item, mesh);
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
 	}
 }

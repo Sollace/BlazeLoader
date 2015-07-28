@@ -75,6 +75,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.INTERNAL, "net.minecraft.world.chunk.Chunk.populateChunk (Lnet/minecraft/world/chunk/IChunkProvider;Lnet/minecraft/world/chunk/IChunkProvider;II)V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkLoad ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
+        addBLEvent(EventSide.SERVER, "net.minecraft.world.WorldServer.init ()Lnet/minecraft/world/World;", beforeReturn);
 		addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.writeToNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.readFromNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.copyDataFromOld (Lnet/minecraft/entity/Entity;)V", beforeReturn);

@@ -22,4 +22,10 @@ public interface WorldListener extends BLMod {
      * @param world The world being ticked.
      */
     public void onServerTick(WorldServer world);
+    
+    /**
+     * Called when a world is loaded
+     * @param world	The world being loaded
+     */
+    public void onWorldInit(WorldServer world);
 }

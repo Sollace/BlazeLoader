@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
@@ -28,7 +29,18 @@ public class ApiEntity {
     public static void registerEntityType(Class<? extends Entity> entityClass, String entityName, int entityId) {
         EntityList.addMapping(entityClass, entityName, entityId);
     }
-
+    
+    /**
+     * Registers or replaces a TileEntity
+     *
+     * @param clazz Tile entity class
+     * @param name  Entity name. Used as its id.
+     */
+    public static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
+        TileEntity.classToNameMap.put(clazz, name);
+        TileEntity.nameToClassMap.put(name, clazz);
+    }
+    
     /**
      * Registers a spawn egg for a given entity type.
      *
@@ -135,6 +147,16 @@ public class ApiEntity {
      */
     public static int getEntityID(Entity entity) {
         return EntityList.getEntityID(entity);
+    }
+    
+    /**
+     * Gets the string id for the given TileEntity
+     * 
+     * @param entity	The tile entity
+     * @return the String ID for the tile entity
+     */
+    public static String getTileEntityID(TileEntity entity) {
+    	return (String)TileEntity.classToNameMap.get(entity.getClass());
     }
 
     /**

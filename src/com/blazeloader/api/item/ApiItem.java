@@ -13,6 +13,26 @@ import net.minecraft.util.ResourceLocation;
 public class ApiItem {
 	
     /**
+     * Utility method to register an item.
+     * Will assign a name to the item before registering.
+     * <p>
+     * Names will have the following format:
+     * <br>
+     * {mod}.{item name}
+     * <p>
+     * Registers an item in the game registry.
+     *
+     * @param id    The item ID
+     * @param name  The item name
+     * @param item  The item itself
+     *
+     * @return the item for simplicity
+     */
+    public static <T extends Item> T quickRegisterItem(int id, String mod, String name, T item) {
+        return registerItem(id, new ResourceLocation(mod, name), (T)item.setUnlocalizedName(mod + "." + name));
+    }
+	
+    /**
      * Registers an item in the game registry.
      *
      * @param id    The item ID

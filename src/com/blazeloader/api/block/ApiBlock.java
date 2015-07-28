@@ -13,7 +13,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemMultiTexture;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -112,7 +111,9 @@ public class ApiBlock {
     
     /**
      * Utility method to register a block.
-     * Will register the block together with an item and setup unlocalized names for both.
+     * Will register the block together with an item and assign unlocalized names for both with the following format:
+     * <p>
+     * {mod}.{block name}
      *
      * @param id        The ID of the block.
      * @param mod        The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
@@ -122,7 +123,7 @@ public class ApiBlock {
      * @return the block for simplicity
      */
     public static <T extends Block> T quickRegisterBlock(int id, String mod, String name, T block) {
-        return registerBlock(id, new ResourceLocation(mod, name), (T) block.setUnlocalizedName(name), (new ItemBlock(block)).setUnlocalizedName(name));
+        return registerBlock(id, new ResourceLocation(mod, name), (T) block.setUnlocalizedName(mod + "." + name), (new ItemBlock(block)).setUnlocalizedName(mod + "." + name));
     }
 
     /**
@@ -291,16 +292,5 @@ public class ApiBlock {
     		Blocks.air = air;
     	}
     	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
-    }
-    
-    /**
-     * Registers or replaces a TileEntity
-     *
-     * @param clazz Tile entity class
-     * @param name  Entity name. Used as its id.
-     */
-    public static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
-        TileEntity.classToNameMap.put(clazz, name);
-        TileEntity.nameToClassMap.put(name, clazz);
     }
 }

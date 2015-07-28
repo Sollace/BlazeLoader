@@ -41,12 +41,12 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onPostInitComplete(LiteLoaderMods mods) {
-
+    	EventHandlerClient.eventStart();
     }
     
     @Override
     public void onStartupComplete() {
-        EventHandlerClient.eventStart();
+        
     }
     
     @Override

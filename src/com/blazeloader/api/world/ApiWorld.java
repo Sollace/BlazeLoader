@@ -16,7 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.WeightedRandom;
+import net.minecraft.village.VillageCollection;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -35,6 +37,37 @@ public class ApiWorld {
     public static List<IChunkGenerator> getGenerators() {
         return unmodifiable_generators;
     }
+    
+    /**
+     * Loads custom data alongside the given world.
+     * <p>
+     * How references to resulting instances are stored and managed is left up to the modder.
+     * 
+     * @param world			World being loaded
+     * @param dataClass		Class for the container
+     * @param identifier	String filename
+     * 
+     * @return	The resulting {@code T} object associated with this world.
+     */
+	public static <T extends WorldSavedData> T registerWorldData(WorldServer world, Class<T> dataClass, String identifier) {
+		T loaded = (T)world.getMapStorage().loadData(dataClass, identifier);
+
+        if (loaded == null) {
+            try {
+				loaded = dataClass.getConstructor(World.class).newInstance(world);
+			} catch (Throwable e) {
+				BLMain.LOGGER_MAIN.logError(dataClass + " does not implement a basic constructor with param World.class", e);
+			}
+            world.getMapStorage().setData(identifier, loaded);
+        } else {
+        	if (loaded instanceof WorldSavedDataCollection) {
+        		((WorldSavedDataCollection)loaded).setWorldsForAll(world);
+        	} else if (loaded instanceof VillageCollection) {
+        		((VillageCollection)loaded).setWorldsForAll(world);
+        	}
+        }
+        return loaded;
+	}
     
     /**
      * Registers a chunk generator
