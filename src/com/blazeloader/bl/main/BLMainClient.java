@@ -17,6 +17,7 @@ import com.mumfrey.liteloader.launch.LoaderProperties;
  * Client BLMain.
  */
 public class BLMainClient extends BLMain {
+	
     BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
         super(environment, properties);
     }

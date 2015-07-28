@@ -128,7 +128,7 @@ public class BLMain {
     public void init() {
         isClient = supportsClient();
     }
-
+    
     public boolean supportsClient() {
         return false;
     }

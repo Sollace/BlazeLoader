@@ -64,6 +64,10 @@ public class EventHandler {
     }
     //
     
+    public static void eventInit(ReturnEventInfo<WorldServer, World> event) {
+    	worldEventHandlers.all().onWorldInit(event.getSource());
+    }
+    
     public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
         playerEventHandlers.all().onPlayerLoginMP(event.getSource(), player);
     }
