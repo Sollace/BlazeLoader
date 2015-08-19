@@ -18,6 +18,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 
+import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.network.BLPacketParticles;
 
@@ -36,7 +37,9 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	}
 	
 	public void initialiseIds() {
-		syncroniseParticlesRegistry(getVanillaParticleRegistry());
+		if (isRendererReady()) {
+			syncroniseParticlesRegistry(getVanillaParticleRegistry());
+		}
 	}
 	
 	/**
@@ -71,15 +74,12 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 		return vanillaRegistry;
 	}
 	
-	public ParticleTypeClient registerParticle(String name, boolean ignoreDistance, int argumentCount) {
-		ParticleTypeClient result = new ParticleTypeClient(name, ignoreDistance, argumentCount);
-		particlesRegistry.add(result);
-		if (!particleNames.contains(name) && !name.endsWith("_")) {
-			particleNames.add(name);
-		}
-		return result;
+	@Override
+	protected IParticle createParticleType(String name, boolean ignoreDistance, int argumentCount) {
+		return new ParticleTypeClient(name, ignoreDistance, argumentCount);
 	}
 	
+	@Override
 	public IParticle setFactory(IParticle particle, Object factory) {
 		return ((ParticleTypeClient)particle).setFactory((IParticleFactory)factory);
 	}
@@ -89,10 +89,12 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 		return setFactory((new ParticleTypeClient(vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID()), getVanillaParticleRegistry().get(vanillaType.getParticleID()));
 	}
 	
+	@Override
 	public void spawnParticleEmitter(Entity e, ParticleData particle) {
 		addEffectToRenderer(new ParticleEmitter(e.worldObj, e, particle));
 	}
 	
+	@Override
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;
     	
@@ -141,16 +143,22 @@ public class ParticlesRegisterClient extends ParticlesRegister {
         throw new ReportedException(report);
     }
     
+    @Override
     public void addEffectToRenderer(Entity fx) {
     	if (fx != null && fx instanceof EntityFX) {
     		Minecraft.getMinecraft().effectRenderer.addEffect((EntityFX)fx);
     	}
     }
     
+    private boolean isRendererReady() {
+    	return ApiClient.getEffectRenderer() != null;
+    }
+    
     private Map<Integer, IParticleFactory> getVanillaParticleRegistry() {
-		return Minecraft.getMinecraft().effectRenderer.particleTypes;
+		return ApiClient.getEffectRenderer().particleTypes;
 	}
-
+    
+    @Override
 	protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {
     	addEffectToRenderer(buildDiggingEffect(w, x, y, z, vX, vY, vZ, blockState).func_174846_a(new BlockPos((int)x, (int)y, (int)z)).multiplyVelocity(multScale).multipleParticleScaleBy(multVel));
     }
@@ -159,7 +167,8 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     	return (EntityDiggingFX)(new EntityDiggingFX.Factory()).getEntityFX(EnumParticleTypes.BLOCK_CRACK.getParticleID(), w, x, y, z, vX, vY, vZ, Block.getStateId(blockState));
     }
     
-    public void handleParticleSpawn(World w, BLPacketParticles p) {
+    @Override
+    public void handleParticleSpawn(World w, BLPacketParticles.Message p) {
     	ParticleData particle = ParticleData.get(p.getType(), p.isLongDistance(), p.getArguments());
     	
     	if (p.getCount() == 0) {

@@ -40,14 +40,14 @@ public class ApiParticles {
 	}
 	
 	/**
-	 * Retrieves a ParticleType by it's id.
+	 * Retrieves a ParticleType by it's name.
 	 * 
-	 * @param id	Particle ID
+	 * @param name	Particle name
 	 * 
 	 * @return Associated particle type
 	 */
-	public static IParticle getParticleFromId(int id) {
-		return ParticlesRegister.getParticleFromId(id);
+	public static IParticle getParticleFromName(String name) {
+		return ParticlesRegister.getParticleFromName(name);
 	}
 	
 	/**

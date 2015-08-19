@@ -18,6 +18,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import com.blazeloader.bl.main.BLPacketChannels;
+import com.blazeloader.bl.network.BLPacketParticles;
 import com.blazeloader.util.shape.IShape;
 import com.blazeloader.util.version.Versions;
 
@@ -33,13 +35,13 @@ import com.blazeloader.util.version.Versions;
 public class ParticlesRegister {
 	private static ParticlesRegister instance;
 	
-	protected static final ArrayList<String> particleNames = new ArrayList<String>();
+	protected static final HashMap<String, IParticle> particleNames = new HashMap<String, IParticle>();
 	protected static final HashMap<Integer, IParticle> particleIds = new HashMap<Integer, IParticle>();
 	protected static final ArrayList<IParticle> particlesRegistry = new ArrayList<IParticle>();
 	
 	static {
-		for (String i : EnumParticleTypes.getParticleNames()) {
-			if (!particleNames.contains(i)) particleNames.add(i);
+		for (EnumParticleTypes i : EnumParticleTypes.values()) {
+			if (!particleNames.containsKey(i.getParticleName())) particleNames.put(i.getParticleName(), instance().getParticle(i));
 		}
 	}
 	
@@ -61,16 +63,12 @@ public class ParticlesRegister {
 	}
 	
 	public static String[] getParticleNames() {
-		return particleNames.toArray(new String[particleNames.size()]);
+		return particleNames.keySet().toArray(new String[particleNames.size()]);
 	}
 	
-	public static IParticle getParticleFromId(int id) {
-		if (particleIds.containsKey(id)) {
-			return particleIds.get(id);
-		}
-		
-		if (EnumParticleTypes.PARTICLES.containsKey(id)) {
-			return getParticleFromEnum(EnumParticleTypes.getParticleFromId(id));
+	public static IParticle getParticleFromName(String name) {
+		if (particleNames.containsKey(name)) {
+			return particleNames.get(name);
 		}
 		return ParticleType.NONE;
 	}
@@ -85,11 +83,10 @@ public class ParticlesRegister {
 		return result;
 	}
 	
-	public static void initialiseParticleIds() {
+	public static final void initialiseParticleIds() {
 		instance().initialiseIds();
 	}
 	
-	//TODO: Have the loader call this after mod initialisation to set IDs for custom particles.
 	public void initialiseIds() {
 		Set<Integer> registeredIds = EnumParticleTypes.PARTICLES.keySet();
 		int injected = 0;
@@ -108,12 +105,16 @@ public class ParticlesRegister {
 	}
 	
 	public IParticle registerParticle(String name, boolean ignoreDistance, int argumentCount) {
-		ParticleType result = new ParticleType(name, ignoreDistance, argumentCount);
+		IParticle result = createParticleType(name, ignoreDistance, argumentCount);
 		particlesRegistry.add(result);
-		if (!particleNames.contains(name) && !name.endsWith("_")) {
-			particleNames.add(name);
+		if (!particleNames.containsKey(name) && !name.endsWith("_")) {
+			particleNames.put(name, result);
 		}
 		return result;
+	}
+	
+	protected IParticle createParticleType(String name, boolean ignoreDistance, int argumentCount) {
+		return new ParticleType(name, ignoreDistance, argumentCount);
 	}
 	
 	public IParticle setFactory(IParticle particle, Object factory) {
@@ -188,26 +189,32 @@ public class ParticlesRegister {
 	
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;
-    	
-    	//TODO: Setup a channel for Blazeloader to send/receive custom particles. For now this will only send particles recognized by vanilla minecraft.
     	if (EnumParticleTypes.PARTICLES.containsKey(particle.getType().getId())) {
     		Packet packet = new S2APacketParticles(EnumParticleTypes.getParticleFromId(particle.getType().getId()), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
 	        for (EntityPlayerMP player : (ArrayList<EntityPlayerMP>)(((WorldServer)world).playerEntities)) {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
 	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
-	            	//BLPacketChannels.sendPacket(player, packet, Channel.PARTICLES);
 	                player.playerNetServerHandler.sendPacket(packet);
+	            }
+	        }
+    	} else {
+    		BLPacketParticles.Message message = new BLPacketParticles.Message(particle.getType(), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
+    		for (EntityPlayerMP player : (ArrayList<EntityPlayerMP>)(((WorldServer)world).playerEntities)) {
+	            BlockPos pos = player.getPosition();
+	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
+	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
+	            	BLPacketChannels.instance().sendToClient(message, player);
 	            }
 	        }
     	}
     }
     
-    public void handleParticleSpawn(World w, Packet p) {
-    	//Do nothing. Since we're on the server.
-    }
+    //Do nothing. Since we're on the server.
+    public void handleParticleSpawn(World w, BLPacketParticles.Message p) { }
     
-    public void addEffectToRenderer(Entity fx) {}
+    public void addEffectToRenderer(Entity fx) { }
+    //
     
     protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {
     	((WorldServer)w).spawnParticle(EnumParticleTypes.BLOCK_CRACK, false, x, y, z, 1, 0, 0, 0, Math.sqrt(vX * vX + vY * vY + vZ * vZ) * multVel, Block.getStateId(blockState));

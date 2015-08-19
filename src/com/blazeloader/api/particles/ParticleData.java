@@ -5,7 +5,6 @@ import net.minecraft.util.Vec3;
 
 /**
  * Used to store information about a particle.
- * 
  */
 public final class ParticleData {
 	private IParticle type;
@@ -44,7 +43,7 @@ public final class ParticleData {
 	 * @return ParticleData containing all the given information
 	 */
 	public static ParticleData get(EnumParticleTypes type, boolean fulcrum, int ...arguments) {
-		return new ParticleData(ApiParticles.getParticleFromId(type.getParticleID()), fulcrum, arguments);
+		return new ParticleData(ApiParticles.getParticleFromName(type.getParticleName()), fulcrum, arguments);
 	}
 	
 	private ParticleData(IParticle particle, boolean fulcrum, int[] data) {

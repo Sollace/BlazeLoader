@@ -1,18 +1,26 @@
 package com.blazeloader.bl.network;
 
-import java.io.IOException;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 
+import com.blazeloader.api.client.ApiClient;
+import com.blazeloader.api.network.IMessage;
+import com.blazeloader.api.network.IMessageHandler;
 import com.blazeloader.api.particles.IParticle;
 import com.blazeloader.api.particles.ParticleType;
 import com.blazeloader.api.particles.ParticlesRegister;
 
-public class BLPacketParticles implements Packet {
-	    private IParticle particleType;
+import io.netty.buffer.ByteBuf;
+
+public class BLPacketParticles implements IMessageHandler<BLPacketParticles.Message, IMessage, INetHandler> {
+	
+	public IMessage onMessage(Message message, INetHandler net) {
+		ParticlesRegister.instance().handleParticleSpawn(ApiClient.getPlayer().worldObj, message);
+		return null;
+	}
+	
+	public static class Message implements IMessage {
+		private IParticle particleType;
 	    private float xCoord;
 	    private float yCoord;
 	    private float zCoord;
@@ -24,9 +32,9 @@ public class BLPacketParticles implements Packet {
 	    private boolean ignoreDistance;
 	    private int[] arguments;
 
-	    public BLPacketParticles() {}
+	    public Message() {}
 
-	    public BLPacketParticles(IParticle type, boolean longDist, float x, float y, float z, float xOffsetIn, float yOffsetIn, float zOffsetIn, float speed, int count, int ... args) {
+	    public Message(IParticle type, boolean longDist, float x, float y, float z, float xOffsetIn, float yOffsetIn, float zOffsetIn, float speed, int count, int ... args) {
 	        particleType = type;
 	        ignoreDistance = longDist;
 	        xCoord = x;
@@ -39,12 +47,11 @@ public class BLPacketParticles implements Packet {
 	        particleCount = count;
 	        arguments = args;
 	    }
-
-	    /**
-	     * Reads the raw packet data from the data stream.
-	     */
-	    public void readPacketData(PacketBuffer buf) throws IOException {
-	        particleType = ParticlesRegister.getParticleFromId(buf.readInt());
+	    
+	    public void fromBytes(ByteBuf bytes) {
+	    	PacketBuffer buf = new PacketBuffer(bytes);
+	    	
+	        particleType = ParticlesRegister.getParticleFromName(buf.readStringFromBuffer(32767));
 	        
 	        if (particleType == null) particleType = ParticleType.NONE;
 	        
@@ -63,8 +70,11 @@ public class BLPacketParticles implements Packet {
 	        }
 	    }
 	    
-	    public void writePacketData(PacketBuffer buf) throws IOException {
-	        buf.writeInt(particleType.getId());
+		@Override
+		public void toBytes(ByteBuf bytes) {
+			PacketBuffer buf = new PacketBuffer(bytes);
+			
+	        buf.writeString(particleType.getName());
 	        buf.writeBoolean(ignoreDistance);
 	        buf.writeFloat(xCoord);
 	        buf.writeFloat(yCoord);
@@ -122,8 +132,5 @@ public class BLPacketParticles implements Packet {
 	    public int[] getArguments() {
 	        return arguments;
 	    }
-	    
-	    public void processPacket(INetHandler handler) {
-	        ParticlesRegister.instance().handleParticleSpawn(Minecraft.getMinecraft().theWorld, this);
-	    }
+	}
 }

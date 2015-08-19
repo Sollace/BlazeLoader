@@ -1,5 +1,6 @@
 package com.blazeloader.bl.main;
 
+import com.blazeloader.api.particles.ParticlesRegister;
 import com.blazeloader.event.handlers.client.EventHandlerClient;
 import com.blazeloader.event.handlers.client.ResourcesEventHandler;
 import com.mumfrey.liteloader.api.CoreProvider;
@@ -46,7 +47,8 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onStartupComplete() {
-        
+    	ParticlesRegister.initialiseParticleIds();
+    	(new BLPacketChannels()).register();
     }
     
     @Override
