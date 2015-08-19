@@ -6,13 +6,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 /**
- * Interface for entity extension classes (NYI)
+ * Interface for entity extension classes
  */
 public interface IEntityProperties {
+	
+	/**
+	 * Notifies this properties of who its owner is.
+	 * <p>
+	 * The entity a property instance is attached to can change under some circumstances.
+	 */
+	public void setOwningEntity(Entity owner);
+	
 	/**
 	 * Occurs whilst the entity is being constructed.
 	 */
 	public void entityInit(Entity e, World w);
+	
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	public void onEntityUpdate(Entity e);
 	
 	/**
 	 * @param tagCompound

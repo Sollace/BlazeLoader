@@ -1,8 +1,11 @@
 package com.blazeloader.event.handlers;
 
+import java.net.SocketAddress;
+
 import com.blazeloader.api.entity.EntityPropertyManager;
 import com.blazeloader.api.world.UnpopulatedChunksQ;
 import com.blazeloader.event.listeners.*;
+import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
@@ -18,7 +21,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -76,17 +78,35 @@ public class EventHandler {
         playerEventHandlers.all().onPlayerLogoutMP(event.getSource(), player);
     }
 
-    public static <ReturnType> void eventRecreatePlayerEntity(ReturnEventInfo<IntegratedPlayerList, ReturnType> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
+    public static <ReturnType> void eventRecreatePlayerEntity(ReturnEventInfo<ServerConfigurationManager, ReturnType> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
         playerEventHandlers.all().onPlayerRespawnMP(event.getSource(), oldPlayer, dimension, !didWin);
+        EntityPropertyManager.entityDestroyed(oldPlayer);
     }
-
+    
+    public static void eventAllowUserToConnect(ReturnEventInfo<ServerConfigurationManager, String> event, SocketAddress address, GameProfile profile) {
+    	if (playerEventHandlers.size() > 0) {
+    		String errorMessage = event.getReturnValue();
+    		if (errorMessage == null) {
+    			PlayerListener.LoginEventArgs args = new PlayerListener.LoginEventArgs(profile);
+    			for (PlayerListener i : playerEventHandlers) {
+    				i.onPlayerTryLoginMP(args);
+    				if (args.isBlocked()) {
+        				event.setReturnValue(args.getMessage());
+        				return;
+        			}
+    			}
+    		}
+    	}
+    }
+    
+    /*
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
         boolean allow = isAllowed;
         for (PlayerListener mod : playerEventHandlers) {
             allow = mod.onPlayerTryLoginMP(username, isAllowed);
         }
         return allow;
-    }
+    }*/
 
     public static void eventOnChunkLoad(EventInfo<Chunk> event) {
         Chunk chunk = event.getSource();
@@ -103,6 +123,13 @@ public class EventHandler {
     }
     
     public static void initEntity(EventInfo<Entity> event, World w) {
+    	if (!(event.getSource() instanceof EntityPlayer)) {
+	    	entityEventHandlers.all().onEntityConstructed(event.getSource());
+	    	EntityPropertyManager.entityinit(event.getSource());
+    	}
+    }
+    
+    public static void initEntityPlayer(EventInfo<EntityPlayer> event, World w, GameProfile profile) {
     	entityEventHandlers.all().onEntityConstructed(event.getSource());
     	EntityPropertyManager.entityinit(event.getSource());
     }
@@ -241,6 +268,23 @@ public class EventHandler {
 		    		event.cancel();
 		    	}
 	    	}
+    	}
+    }
+    
+    public static void eventFall(EventInfo<EntityPlayer> event, float distance, float multiplier) {
+    	if (playerEventHandlers.size() > 0) {
+    		if (!isInEvent) {
+    			PlayerListener.FallEventArgs args = new PlayerListener.FallEventArgs(distance, multiplier);
+    			playerEventHandlers.all().onPlayerFall(event.getSource(), args);
+    			if (!args.isCancelled()) {
+					distance = args.getFallDistance();
+					multiplier = args.getDamageMultiplier();
+					isInEvent = true;
+					event.getSource().fall(distance, multiplier);
+					isInEvent = false;
+    			}
+    			event.cancel();
+        	}
     	}
     }
 }

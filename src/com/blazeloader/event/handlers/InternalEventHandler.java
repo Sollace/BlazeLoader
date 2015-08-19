@@ -8,9 +8,11 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ReportedException;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -67,12 +69,29 @@ public class InternalEventHandler {
 		}
 	}
 	
+	public static void eventOnEntityRemoved(EventInfo<World> event, Entity entity) {
+		if (entity.isDead) {
+			if (!(entity instanceof EntityPlayer)) {
+				EntityPropertyManager.entityDestroyed(entity);
+			}
+		}
+	}
+	
+	public static void eventOnUpdate(EventInfo<Entity> event) {
+		EntityPropertyManager.onEntityUpdate(event.getSource());
+	}
+	
     public static void eventWriteToNBT(EventInfo<Entity> event, NBTTagCompound tag) {
-    	EntityPropertyManager.readFromNBT(event.getSource(), tag);
+    	EntityPropertyManager.writeToNBT(event.getSource(), tag);
     }
     
     public static void eventReadFromNBT(EventInfo<Entity> event, NBTTagCompound tag) {
     	EntityPropertyManager.readFromNBT(event.getSource(), tag);
+    }
+    
+    public static void eventClonePlayer(EventInfo<EntityPlayer> event, EntityPlayer old, boolean respawnedFromEnd) {
+    	EntityPropertyManager.copyToEntity(old, event.getSource());
+    	EntityPropertyManager.entityDestroyed(old);
     }
     
     public static void eventCopyDataFromOld(EventInfo<Entity> event, Entity old) {
