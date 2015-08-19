@@ -51,7 +51,7 @@ public class SimpleFunc<I, R> extends Function {
 	 * @return	The returned result of the method
 	 * @throws Throwable if there is any error.
 	 */
-	public R apply(Object instance, Object... args) throws Throwable {
+	public R apply(I instance, Object... args) throws Throwable {
 		if (handle.staticMethod) {
 			return call(args);
 		}
