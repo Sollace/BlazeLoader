@@ -1,7 +1,8 @@
 package com.blazeloader.api.client.render;
 
+import com.blazeloader.api.client.ApiClient;
+
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.item.Item;
@@ -13,8 +14,6 @@ public class ApiRenderBlock {
 	 * <p>
 	 * Useful for blocks like chests that are not rendered with .json models.
 	 * 
-	 * 
-	 * 
 	 * @param block			The block to register
 	 * @param texturePath	Texture to use. eg. "minecraft:blocks/planks_oak" is used for chests and signs.
 	 */
@@ -23,7 +22,7 @@ public class ApiRenderBlock {
 	}
 	
 	/**
-	 * Registers a block with the render engine to use a specific model for the given data value. 
+	 * Registers a block with the render engine to use a specific model. 
 	 * <p>
 	 * Same as:
 	 * <br><code>registerBlock(block, 0, identifier);</code>
@@ -54,7 +53,7 @@ public class ApiRenderBlock {
      * @param mapper	IStateMapper to provide the models
      */
     public static void registerBlockModelMapper(Block block, IStateMapper mapper) {
-    	Minecraft.getMinecraft().modelManager.getBlockModelShapes().registerBlockWithStateMapper(block, mapper);
+    	ApiClient.getClient().modelManager.getBlockModelShapes().registerBlockWithStateMapper(block, mapper);
     }
     
     /**
@@ -65,7 +64,7 @@ public class ApiRenderBlock {
      * @param blocks The blocks to register.
      */
     public static void registerBuiltInBlocks(Block... blocks) {
-    	Minecraft.getMinecraft().modelManager.getBlockModelShapes().registerBuiltInBlocks(blocks);
+    	ApiClient.getClient().modelManager.getBlockModelShapes().registerBuiltInBlocks(blocks);
     }
     
     /**
@@ -75,7 +74,7 @@ public class ApiRenderBlock {
      * @param block		Block to assign the models to
      */
     public static void swapoutBlockModels(Block original, Block block) {
-    	BlockModelShapes mapper = Minecraft.getMinecraft().modelManager.getBlockModelShapes();
+    	BlockModelShapes mapper = ApiClient.getClient().modelManager.getBlockModelShapes();
     	mapper.getBlockStateMapper().registerBlockStateMapper(block, (IStateMapper)mapper.getBlockStateMapper().blockStateMap.get(original));
     	mapper.reloadModels();
     }
