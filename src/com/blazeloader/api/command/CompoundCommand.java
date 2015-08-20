@@ -16,7 +16,7 @@ import net.minecraft.util.BlockPos;
  */
 public abstract class CompoundCommand extends BLCommandBase {
 
-	private CommandHandler handler = new CommandHandler();
+	private final CommandHandler handler = new CommandHandler();
 	private final String name;
 	
 	public CompoundCommand(String nm, boolean includeHelp, boolean autoRegister) {
@@ -32,7 +32,7 @@ public abstract class CompoundCommand extends BLCommandBase {
 	}
 	
 	public String getCommandUsage(ICommandSender sender) {
-		return "/" + this.getCommandName() + " /{command} {argumants}";
+		return "/" + getCommandName() + " /{command} {argumants}";
 	}
 
 	public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {

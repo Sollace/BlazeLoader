@@ -56,7 +56,7 @@ public class BLPacketChannels extends PacketChannel implements PacketChannelList
 	public void onCustomPayload(EntityPlayerMP sender, String channel, PacketBuffer data) {
 		onPacketRecievedServer(channel, sender, data);
 	}
-
+	
 	@Override
 	public void onCustomPayload(String channel, PacketBuffer data) {
 		if (Versions.isClient()) {
@@ -64,14 +64,17 @@ public class BLPacketChannels extends PacketChannel implements PacketChannelList
 		}
 	}
 	
+	/**
+	 * Hack to get Blazeloader PluginChannels registered without having to make a Litemod.
+	 */
 	protected void register() {
 		BLMain.LOGGER_MAIN.logInfo("Registering Blazeloader packet channel...");
-		SimpleFunc<PluginChannels, Void> addPluginChannelsFor = Reflect.lookupMethod(PluginChannels.class, Void.class, "addPluginChannelsFor", CommonPluginChannelListener.class);
-		if (addPluginChannelsFor.valid()) {
+		SimpleFunc<PluginChannels, Void> addPluginChannelListener = Reflect.lookupMethod(PluginChannels.class, Void.class, "addPluginChannelListener", CommonPluginChannelListener.class);
+		if (addPluginChannelListener.valid()) {
 			try {
-				addPluginChannelsFor.apply(LiteLoader.getServerPluginChannels(), this);
+				addPluginChannelListener.apply(LiteLoader.getServerPluginChannels(), this);
 				if (Versions.isClient()) {
-					addPluginChannelsFor.apply(LiteLoader.getClientPluginChannels(), this);
+					addPluginChannelListener.apply(LiteLoader.getClientPluginChannels(), this);
 				}
 				BLMain.LOGGER_MAIN.logInfo("Packet channel registration complete.");
 			} catch (Throwable e) {

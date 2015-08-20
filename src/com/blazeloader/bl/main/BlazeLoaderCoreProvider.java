@@ -1,8 +1,10 @@
 package com.blazeloader.bl.main;
 
 import com.blazeloader.api.particles.ParticlesRegister;
+import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.handlers.client.EventHandlerClient;
 import com.blazeloader.event.handlers.client.ResourcesEventHandler;
+import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.common.GameEngine;
 import com.mumfrey.liteloader.common.Resources;
@@ -17,7 +19,11 @@ import net.minecraft.world.World;
  * BlazeLoader CoreProvider
  */
 public class BlazeLoaderCoreProvider implements CoreProvider {
-    public static final BlazeLoaderCoreProvider instance = new BlazeLoaderCoreProvider();
+    private static final BlazeLoaderCoreProvider instance = new BlazeLoaderCoreProvider();
+    
+    public static BlazeLoaderCoreProvider instance() {
+    	return instance;
+    }
     
     private GameEngine gameEngine;
     
@@ -42,7 +48,7 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onPostInitComplete(LiteLoaderMods mods) {
-    	EventHandlerClient.eventStart();
+    	EventHandler.eventStart();
     }
     
     @Override
@@ -53,7 +59,9 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
-        EventHandlerClient.overrideClientJoinGame(netHandler, loginPacket);
+    	if (Versions.isClient()) {
+    		EventHandlerClient.overrideClientJoinGame(netHandler, loginPacket);
+    	}
     }
     
     @Override
@@ -63,16 +71,19 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onShutDown() {
-        EventHandlerClient.eventEnd();
+        EventHandler.eventEnd();
     }
     
     @Override
     public void onTick(boolean clock, float partialTicks, boolean inGame) {
-        EventHandlerClient.eventTick();
+    	BLMain.instance().tick(clock, partialTicks, inGame);
+        EventHandler.eventTick();
     }
     
     @Override
     public void onWorldChanged(World world) {
-        EventHandlerClient.overrideWorldChanged(world);
+    	if (Versions.isClient()) {
+    		EventHandlerClient.overrideWorldChanged(world);
+    	}
     }
 }

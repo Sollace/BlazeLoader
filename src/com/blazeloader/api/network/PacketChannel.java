@@ -104,7 +104,7 @@ public class PacketChannel {
 		if (Versions.isClient()) {
 			Integer id = server_packetClasses.get(message.getClass());
 			if (id == null) {
-				throw new IllegalArgumentException("Message of type " + message.getClass() + " is not registered to this channel for the client!");
+				throw new UnrecognisedMessageException(channelName, message, "SERVER");
 			}
 			PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 			buf.writeInt(id);
@@ -122,7 +122,7 @@ public class PacketChannel {
 	public void sendToClient(IMessage message, EntityPlayerMP recipient) {
 		Integer id = client_packetClasses.get(message.getClass());
 		if (id == null) {
-			throw new IllegalArgumentException("Message of type " + message.getClass() + " is not registered to this channel for the client!");
+			throw new UnrecognisedMessageException(channelName, message, "SERVER");
 		}
 		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 		buf.writeInt(id);

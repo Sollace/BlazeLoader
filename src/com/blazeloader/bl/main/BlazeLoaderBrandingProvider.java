@@ -54,7 +54,7 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public String getDisplayName() {
-        return Versions.BL_VERSION.getFriendlyName();
+        return Versions.getBLMainVersion().getFriendlyName();
     }
     
     @Override

@@ -125,13 +125,13 @@ public class ApiGeneral {
      * @return true if the game is in singleplayer
      */
     public static boolean isSinglePlayer() {
-    	return BlazeLoaderCoreProvider.instance.getGameEngine().isSinglePlayer();
+    	return BlazeLoaderCoreProvider.instance().getGameEngine().isSinglePlayer();
     }
 
     /**
      * Returns true if a game is currently running. Will always be true on the server.
      */
     public static boolean isInGame() {
-        return BlazeLoaderCoreProvider.instance.getGameEngine().isInGame();
+        return BlazeLoaderCoreProvider.instance().getGameEngine().isInGame();
     }
 }
