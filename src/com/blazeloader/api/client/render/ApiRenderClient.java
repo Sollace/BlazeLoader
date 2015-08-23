@@ -1,5 +1,7 @@
 package com.blazeloader.api.client.render;
 
+import com.blazeloader.api.client.ApiClient;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -13,7 +15,7 @@ public class ApiRenderClient {
     private static int lastHeight = -1;
     private static int lastScale = -1;
     private static ScaledResolution scale = null;
-
+    
     /**
      * Generates a FontRenderer-compatible ARGB color int.
      *
@@ -43,7 +45,7 @@ public class ApiRenderClient {
      * @param centered Center the text around the coordinates specified.
      */
     public static void drawString(String string, int x, int y, int color, boolean shadow, boolean centered) {
-        FontRenderer render = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer render = ApiClient.getClient().fontRendererObj;
         if (centered) {
             x -= render.getStringWidth(string) / 2;
         }
@@ -159,7 +161,7 @@ public class ApiRenderClient {
      * @return Return a scaled, correct instance of ScaledResolution
      */
     public static ScaledResolution getScaledResolution() {
-        Minecraft minecraft = Minecraft.getMinecraft();
+        Minecraft minecraft = ApiClient.getClient();
         if (scale == null || minecraft.displayWidth != lastWidth || minecraft.displayHeight != lastHeight || minecraft.gameSettings.guiScale != lastScale) {
             lastWidth = minecraft.displayWidth;
             lastHeight = minecraft.displayHeight;

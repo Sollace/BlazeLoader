@@ -1,7 +1,6 @@
 package com.blazeloader.bl.main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
+import com.blazeloader.api.client.ApiClient;
+import com.google.common.collect.Lists;
 import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -21,35 +22,27 @@ public class BLMainClient extends BLMain {
     BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
         super(environment, properties);
     }
-
+    
     @Override
     public String[] getRequiredTransformers() {
         String[] superRequiredArr = super.getRequiredTransformers();
-        List<String> superRequired = new ArrayList<String>();
+        ArrayList<String> list = null;
         if (superRequiredArr != null) {
-            superRequired.addAll(Arrays.asList(superRequiredArr));
+        	list = Lists.newArrayList(superRequiredArr);
+        } else {
+        	list = new ArrayList(1);
         }
-        superRequired.add("com.blazeloader.event.transformers.BLEventInjectionTransformerClient");
-        return superRequired.toArray(new String[superRequired.size()]);
+        list.add("com.blazeloader.event.transformers.BLEventInjectionTransformerClient");
+        return list.toArray(new String[list.size()]);
     }
-
+    
     @Override
-    public void shutdown(String message, int code) {
-        try {
-            LOGGER_FULL.logFatal("Unexpected shutdown requested!");
-            LOGGER_FULL.logFatal("Message: " + message);
-            Minecraft minecraft = Minecraft.getMinecraft();
-            if (minecraft != null) {
-                LOGGER_FULL.logFatal("Calling client shutdown.");
-                minecraft.shutdown();
-            } else {
-                LOGGER_FULL.logFatal("Client is not running, closing immediately with code " + code + "!");
-                System.exit(code);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            System.exit(code);
-        }
+    protected boolean initiateShutdown() {
+    	Minecraft minecraft = Minecraft.getMinecraft();
+    	if (minecraft == null) return false;
+    	LOGGER_FULL.logFatal("Shutting down client...");
+    	minecraft.shutdown();
+    	return true;
     }
     
     public List<InterfaceProvider> getInterfaceProviders() {
@@ -57,13 +50,19 @@ public class BLMainClient extends BLMain {
     }
     
     @Override
-    public boolean supportsClient() {
-        return true;
+    public void tick(boolean clock, float partialTicks, boolean isInGame) {
+    	Minecraft client = ApiClient.getClient();
+    	if (client != null) {
+    		partialTicks = client.timer.elapsedPartialTicks;
+    		numTicks = client.timer.elapsedTicks;
+    	} else {
+    		partialTicks = numTicks = 0;
+    	}
     }
     
     @Override
-    public BLMainClient getClient() {
-        return this;
+    public boolean supportsClient() {
+        return true;
     }
     
     @Override

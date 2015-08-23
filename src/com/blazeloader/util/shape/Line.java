@@ -72,4 +72,9 @@ public class Line implements IShape {
 		pitch = v;
 		return this;
 	}
+	
+	public boolean isPointInside(Vec3 point) {
+		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
+		return point.xCoord/dX == point.yCoord/dY && point.xCoord/dX == point.zCoord/dZ;
+	}
 }

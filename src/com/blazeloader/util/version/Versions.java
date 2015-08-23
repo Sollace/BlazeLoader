@@ -1,8 +1,7 @@
 package com.blazeloader.util.version;
 
 import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.type.Version;
-import com.blazeloader.util.version.type.values.QuadrupleVersion;
+import com.blazeloader.util.version.type.QuadrupleVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +13,7 @@ public class Versions {
     private static final boolean isOBF = VersionUtils.isGameOBF();
     private static final boolean isForgeInstalled = VersionUtils.hasForge();
     private static final Map<String, Version> versionMap = new HashMap<String, Version>();
-    public static final QuadrupleVersion BL_VERSION = new QuadrupleVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 0, 0);
+    private static final QuadrupleVersion BL_VERSION = new QuadrupleVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 0, 0);
 
     /**
      * Detects if the game is obfuscated.
@@ -26,7 +25,7 @@ public class Versions {
     }
 
     /**
-     * Returns true if running on the client, false for server.  Only works AFTER BlazeLoader is initialized.
+     * Returns true if running on the client, false for server.
      *
      * @return Return true if running on client, false for server.
      */
@@ -35,7 +34,7 @@ public class Versions {
     }
 
     /**
-     * Returns true if running on the server, false for client.  Only works AFTER BlazeLoader is initialized.
+     * Returns true if running on the server, false for client.
      *
      * @return Return true if running on server, false for client.
      */
@@ -51,19 +50,41 @@ public class Versions {
     public static boolean isForgeInstalled() {
         return isForgeInstalled;
     }
-
+    
+    /**
+     * Gets the version of blazeloader running on the current game
+     */
     public static QuadrupleVersion getBLMainVersion() {
         return BL_VERSION;
     }
-
+    
+    /**
+     * Attempts to get the version associated with the given id
+     * 
+     * @param id	Name of version to get
+     * 
+     * @return The associated version or null
+     */
     public static Version getVersionOf(String id) {
         return versionMap.get(id);
     }
 
+    /**
+     * Adds a version.
+     * 
+     * @param version	The version to add.
+     */
     public static void addVersion(Version version) {
         versionMap.put(version.getID(), version);
     }
-
+    
+    /**
+     * Checks if there is a version registered for the given key
+     * 
+     * @param id	Id of version to check for
+     * 
+     * @return true if one exists, false otherwise
+     */
     public static boolean isVersionRegistered(String id) {
         return versionMap.containsKey(id);
     }

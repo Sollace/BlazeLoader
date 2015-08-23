@@ -73,4 +73,13 @@ public class Rect implements IShape {
 		pitch = v;
 		return this;
 	}
+	
+	public boolean isPointInside(Vec3 point) {
+		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
+		double x = Math.abs(point.xCoord);
+		double y = Math.abs(point.yCoord);
+		double z = Math.abs(point.zCoord);
+		if (hollow) return x == width/2 && y == height/2 && z == depth/2;
+		return x <= width/2 && y <= height/2 && z <= depth/2;
+	}
 }

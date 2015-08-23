@@ -2,6 +2,7 @@ package com.blazeloader.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.Optional;
@@ -110,9 +111,9 @@ public class JSArrayUtils {
     }
     
     /**
-     * Converts the given list to an array using the given component type class.
+     * Converts the given collection to an array using the given component type class.
      */
-	public static <T> T[] toArray(List<T> source, Class<T> componentType) {
+	public static <T> T[] toArray(Collection<T> source, Class<T> componentType) {
 		return source.toArray((T[])Array.newInstance(componentType, source.size()));
 	}
     

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ApiEntity {
 
-    private static int currFreeEntityId = 0;
+    private static int currFreeEntityId = 1;
 
     /**
      * Registers a custom entity type.
@@ -124,19 +124,21 @@ public class ApiEntity {
             }
         }
     }
-
+    
+    public static boolean isIdFree(int id) {
+    	return getEntityClassFromID(id) == null;
+    }
+    
     /**
      * Gets a free entity ID.
      *
      * @return return a free entity ID.
      */
     public static int getFreeEntityId() {
-        while (EntityList.getClassFromID(currFreeEntityId) != null) {
+        while (!isIdFree(currFreeEntityId)) {
             currFreeEntityId++;
         }
-        int currId = currFreeEntityId;
-        currFreeEntityId++;
-        return currId;
+        return currFreeEntityId++;
     }
 
     /**

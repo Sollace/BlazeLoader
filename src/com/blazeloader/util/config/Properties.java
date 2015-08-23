@@ -8,6 +8,17 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import com.blazeloader.api.block.ApiBlock;
+import com.blazeloader.api.entity.ApiEntity;
+import com.blazeloader.api.item.ApiItem;
+
+/**
+ * 
+ * Overly complicated implementation of a properties file.
+ * <p>
+ * Supports grouping property entries in groups, comments, type coercion.
+ *
+ */
 public class Properties implements IConfig {
 	private final HashMap<String, Section> sections = new HashMap<String, Section>();
 	
@@ -58,6 +69,76 @@ public class Properties implements IConfig {
 	public <T> Prop<T> getProperty(String section, String name, T defaultValue) {
 		return getSection(section).get(name, defaultValue);
 	}
+	
+	/**
+	 * Gets an entity ID property from this property file.
+	 * <p>
+	 * Contains additional checks to ensure the id is available.
+	 * 
+	 * @param section		Name of the section
+	 * @param name			Name of the property
+	 * @param defaultValue	The default value of the property
+	 * 
+	 * @return	A property object for the given keys.
+	 */
+	public Prop<Integer> getEntityId(String section, String name) {
+		Section sec = getSection(section);
+		if (!sec.has(name)) {
+			return sec.get(name, ApiEntity.getFreeEntityId());
+		}
+		Prop<Integer> result = sec.get(name, 0);
+		if (!ApiEntity.isIdFree(result.get())) {
+			result.set(ApiEntity.getFreeEntityId());
+		}
+		return result;
+	}
+	
+	/**
+	 * Gets a block ID property from this property file.
+	 * <p>
+	 * Contains additional checks to ensure the id is available.
+	 * 
+	 * @param section		Name of the section
+	 * @param name			Name of the property
+	 * @param defaultValue	The default value of the property
+	 * 
+	 * @return	A property object for the given keys.
+	 */
+	public Prop<Integer> getBlockId(String section, String name) {
+		Section sec = getSection(section);
+		if (!sec.has(name)) {
+			return sec.get(name, ApiBlock.getFreeBlockId());
+		}
+		Prop<Integer> result = sec.get(name, 0);
+		if (!ApiBlock.isIdFree(result.get())) {
+			result.set(ApiBlock.getFreeBlockId());
+		}
+		return result;
+	}
+	
+	/**
+	 * Gets an item ID property from this property file.
+	 * <p>
+	 * Contains additional checks to ensure the id is available.
+	 * 
+	 * @param section		Name of the section
+	 * @param name			Name of the property
+	 * @param defaultValue	The default value of the property
+	 * 
+	 * @return	A property object for the given keys.
+	 */
+	public Prop<Integer> getItemId(String section, String name) {
+		Section sec = getSection(section);
+		if (!sec.has(name)) {
+			return sec.get(name, ApiItem.getFreeItemId());
+		}
+		Prop<Integer> result = sec.get(name, 0);
+		if (!ApiItem.isIdFree(result.get())) {
+			result.set(ApiItem.getFreeItemId());
+		}
+		return result;
+	}
+	
 	
 	public Section getSection(String section) {
 		if (hasSection(section)) {

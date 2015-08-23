@@ -1,6 +1,7 @@
 package com.blazeloader.api.client.gui;
 
-import net.minecraft.client.Minecraft;
+import com.blazeloader.api.client.ApiClient;
+
 import net.minecraft.client.gui.GuiScreen;
 
 /**
@@ -14,7 +15,7 @@ public class ApiGuiClient {
      * @param gui The GUI to display.
      */
     public static void openGUI(GuiScreen gui) {
-        Minecraft.getMinecraft().displayGuiScreen(gui);
+    	ApiClient.getClient().displayGuiScreen(gui);
     }
 
     /**
@@ -22,7 +23,7 @@ public class ApiGuiClient {
      * <p>Usually either the main menu or the main game interface.
      */
     public static void closeCurrentGUI() {
-        Minecraft.getMinecraft().displayGuiScreen(null);
+    	ApiClient.getClient().displayGuiScreen(null);
     }
 
     /**
@@ -31,6 +32,6 @@ public class ApiGuiClient {
      * @return Returns the currently open GUI.
      */
     public static GuiScreen getOpenGUI() {
-        return Minecraft.getMinecraft().currentScreen;
+        return ApiClient.getClient().currentScreen;
     }
 }

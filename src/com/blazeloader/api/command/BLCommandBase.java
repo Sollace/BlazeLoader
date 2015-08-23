@@ -6,6 +6,7 @@ import net.minecraft.util.ChatComponentTranslation;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.blazeloader.api.ApiServer;
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
 
@@ -78,6 +79,13 @@ public abstract class BLCommandBase extends CommandBase {
      */
     protected void sendChatTranslation(ICommandSender target, String translate, Object params) {
     	ApiChat.sendChat(target, new ChatComponentTranslation(translate, params));
+    }
+    
+    /**
+     * Utility method to get usernames for players on the server.
+     */
+    protected static String[] getListOfPlayerUsernames() {
+        return ApiServer.getServer().getAllUsernames();
     }
     
     /**

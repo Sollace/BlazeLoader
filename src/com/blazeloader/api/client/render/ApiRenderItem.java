@@ -1,6 +1,7 @@
 package com.blazeloader.api.client.render;
 
-import net.minecraft.client.Minecraft;
+import com.blazeloader.api.client.ApiClient;
+
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -28,7 +29,7 @@ public class ApiRenderItem {
 	 * @param identifier	String identifier for the model that the game must use
 	 */
 	public static void registerItem(Item item, int subType, String identifier) {
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, subType, new ModelResourceLocation(identifier, "inventory"));
+		ApiClient.getRenderItem().getItemModelMesher().register(item, subType, new ModelResourceLocation(identifier, "inventory"));
 	}
 	
 	/**
@@ -42,6 +43,6 @@ public class ApiRenderItem {
 	 * @param mesh	A mesh definition used to render the model for this item
 	 */
 	public static void registerItem(Item item, ItemMeshDefinition mesh) {
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
+		ApiClient.getRenderItem().getItemModelMesher().register(item, mesh);
 	}
 }

@@ -1,6 +1,4 @@
-package com.blazeloader.util.version.type;
-
-import com.blazeloader.util.version.BuildType;
+package com.blazeloader.util.version;
 
 /**
  * Interface for anything with a version.
@@ -19,7 +17,7 @@ public interface Version {
      * @param num The depth of the version, must be less than getVersionDepth()
      * @return Return the version value for this depth.
      */
-    public int getVersionNum(int num);
+    public int getNthComponent(int num);
 
     /**
      * Gets the ID that will be used internally to identify this version.

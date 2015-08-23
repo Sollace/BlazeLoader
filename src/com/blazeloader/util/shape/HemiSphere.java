@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * Half of a sphere.
+ * <br>
  * Or some smaller division if you wish. The smallest it can go is 1/8th of a sphere.
  *
  */
@@ -43,13 +44,11 @@ public class HemiSphere extends Sphere {
 	 */
 	public HemiSphere(boolean hollow, double radius, float stretchX, float stretchY, float stretchZ, Boolean... cuts) {
 		super(hollow, radius, stretchX, stretchY, stretchZ);
-		
 		quadrants = cuts;
 	}
 	
 	public double getVolumeOfSpawnableSpace() {
 		double result = super.getVolumeOfSpawnableSpace();
-		
 		for (int i = 0; i < 3 && i < quadrants.length; i++) {
 			if (quadrants[i] != null) {
 				result /= 2;
@@ -82,5 +81,26 @@ public class HemiSphere extends Sphere {
 		yaw = u;
 		pitch = v;
 		return this;
+	}
+	
+	public boolean isPointInside(Vec3 point) {
+		Vec3 untransformed = point.rotateYaw(-yaw).rotatePitch(-pitch);
+		untransformed = new Vec3(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
+		if (quadrants.length > 0 && quadrants[0] != null) {
+			if ((quadrants[0] && untransformed.xCoord < 0) || (!quadrants[0] && untransformed.xCoord > 0)) {
+				return false;
+			}
+		}
+		if (quadrants.length > 1 && quadrants[1] != null) {
+			if ((quadrants[1] && untransformed.yCoord < 0) || (!quadrants[1] && untransformed.yCoord > 0)) {
+				return false;
+			}
+		}
+		if (quadrants.length > 2 && quadrants[2] != null) {
+			if ((quadrants[2] && untransformed.zCoord < 0) || (!quadrants[2] && untransformed.zCoord > 0)) {
+				return false;
+			}
+		}
+		return super.isPointInside(point);
 	}
 }

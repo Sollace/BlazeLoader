@@ -11,12 +11,14 @@ import java.util.Random;
  */
 public class Sphere implements IShape {
 	
-	private final Vec3 stretch; 
+	protected final Vec3 stretch; 
 	private final boolean hollow;
 	private final double rad;
 	
 	private float yaw = 0;
 	private float pitch = 0;
+	
+	private final double volume;
 	
 	/**
 	 * Creates a uniform sphere.
@@ -30,8 +32,8 @@ public class Sphere implements IShape {
 	
 	/**
 	 * Creates a sphere of arbitrary dimensions.
-	 * 
-	 * Can be used to create a flat circle by setting one of the stretch paramaters to 0.
+	 * <p>
+	 * Can be used to create a flat circle by setting one of the stretch parameters to 0.
 	 * If you set two of them to 0 it will probably produce a line.
 	 * 
 	 * @param hollow	True if this shape must be hollow.
@@ -44,11 +46,40 @@ public class Sphere implements IShape {
 	public Sphere(boolean hollow, double radius, float stretchX, float stretchY, float stretchZ) {
 		this.hollow = hollow;
 		stretch = new Vec3(stretchX, stretchY, stretchZ);
-		rad = radius; 
+		rad = radius;
+		volume = computeSpawnableSpace();
 	}
 	
 	public double getVolumeOfSpawnableSpace() {
-		return hollow ? 4 * Math.PI * rad * rad : (4/3) * Math.PI * rad * rad *rad;
+		return volume;
+	}
+	
+	private double computeSpawnableSpace() {
+		if (hollow) {
+			if (stretch.xCoord == stretch.xCoord && stretch.yCoord == stretch.zCoord) {
+				double radius = rad * stretch.xCoord;
+				return 4 * Math.PI * radius * radius;
+			}
+			return computeEllipsoidArea(rad, stretch);
+		}
+		return computeEllipsoidVolume(rad, stretch);
+	}
+	
+	public static double computeEllipsoidArea(double rad, Vec3 stretch) {
+		double p = 1.6075;
+		double result = Math.pow(rad * stretch.xCoord, p) * Math.pow(rad * stretch.yCoord, p);
+		result += Math.pow(rad * stretch.xCoord, p) * Math.pow(rad * stretch.zCoord, p);
+		result += Math.pow(rad * stretch.yCoord, p) * Math.pow(rad * stretch.yCoord, p);
+		result /= 3;
+		return 2 * Math.PI * Math.pow(result, 1/p);
+	}
+	
+	public static double computeEllipsoidVolume(double rad, Vec3 stretch) {
+		double result = (4/3) * Math.PI;
+		result *= (rad * stretch.xCoord);
+		result *= (rad * stretch.yCoord);
+		result *= (rad * stretch.zCoord);
+		return result;
 	}
 	
 	public double getXOffset() {
@@ -65,7 +96,6 @@ public class Sphere implements IShape {
 	
 	public Vec3 computePoint(Random rand) {
 		double rho = hollow ? rad : MathHelper.getRandomDoubleInRange(rand, 0, rad);
-		
 		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
 		double phi = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
 		
@@ -76,5 +106,12 @@ public class Sphere implements IShape {
 		yaw = u;
 		pitch = v;
 		return this;
+	}
+	
+	public boolean isPointInside(Vec3 point) {
+		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
+		point = new Vec3(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
+		double dist = point.lengthVector();
+		return hollow ? dist == rad : dist <= rad;
 	}
 }

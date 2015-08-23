@@ -182,14 +182,26 @@ public final class Reflect {
 		return new SimpleFunc(true, descriptor);
 	}
 	
+	/**
+	 * Finds a hook into a class contructor by its declaring class and parameter types
+	 * 
+	 * @param declarer	Class owner
+	 * @param pars		Parameters
+	 */
 	public static <I> Constr<I> lookupConstructor(Class<I> declarer, Class... pars) {
 		return new Constr(declarer, pars);
 	}
 	
+	/**
+	 * Finds a hook into a constructor by the BLOBF class description
+	 */
 	public static <I> Constr<I> lookupConstructor(BLOBF obf) {
 		return new Constr(obf);
 	}
 	
+	/**
+	 * Finds a hook into a constructor by its string descriptor
+	 */
 	public static <I> Constr<I> lookupConstructor(String descriptor) {
 		return new Constr(descriptor);
 	}

@@ -23,77 +23,8 @@ import java.util.Map;
  * Api for block-specific functions
  */
 public class ApiBlock {
-    /**
-     * Gets a block by it's name or ID
-     *
-     * @param identifier A string representing the name or ID of the block.
-     * @return The block defined by parameter identifier
-     */
-    public static Block getBlockByNameOrId(String identifier) {
-        return MathUtils.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
-    }
-    
-    /**
-     * Gets the name of a block.
-     *
-     * @param block The block to get the name for
-     * @return Return a string of the name belonging to param block
-     */
-    public static ResourceLocation getBlockName(Block block) {
-        return (ResourceLocation)Block.blockRegistry.getNameForObject(block);
-    }
-    
-    /**
-     * Gets the name of a block.
-     *
-     * @param block The block to get the name for
-     * @return Return a string of the name belonging to param block
-     */
-    public static String getStringBlockName(Block block) {
-        return getBlockName(block).toString();
-    }
-    
-    /**
-     * Gets a block by it's name
-     *
-     * @param name The name of the block
-     * @return Gets the block defined by param name.
-     */
-    public static Block getBlockByName(String name) {
-        return Block.getBlockFromName(name);
-    }
-
-    /**
-     * Gets a block by it's BlockId.
-     *
-     * @param id The ID of the block.
-     * @return Return the block defined by param id.
-     */
-    public static Block getBlockById(int id) {
-        return Block.getBlockById(id);
-    }
-
-    /**
-     * Gets a block by it's item version.
-     *
-     * @param item The item to get the block from.
-     * @return Return the block associated with param item.
-     */
-    public static Block getBlockByItem(Item item) {
-        return Block.getBlockFromItem(item);
-    }
-    
-    /**
-     * Gets the id associated with the given block.
-     * 
-     * @param block The block
-     * 
-     * @return the block's id
-     */
-    public static int getBlockId(Block block) {
-    	return Block.getIdFromBlock(block);
-    }
-    
+	private static int currFreeBlockId = 1;
+	
     /**
      * 
      * Registers the given block as 'flammable' by fire.
@@ -286,11 +217,125 @@ public class ApiBlock {
      */
     public static void injectBlock(int id, ResourceLocation name, Block block) {
     	boolean exists = Block.blockRegistry.containsKey(name);
-    	Block air = Blocks.air;
     	ModUtilities.addBlock(id, name, block, true);
     	if (!exists) {
-    		Blocks.air = air;
+    		Blocks.air = getBlockByName("air");
     	}
     	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
     }
+    
+    /**
+     * Checks if the given id is safe to use.
+     * <p>
+     * An id is determined as 'free' only when neither the Blocks registry nor
+     * the Items registry contain mappings for the given id.
+     * <p>
+     * If you wish to only check for the existance of a block use isHasBlock.
+     * 
+     * @param id	Id to check
+     * 
+     * @return true if it is free, false otherwise
+     */
+    public static boolean isIdFree(int id) {
+    	return !isIdRegistered(id) && ApiItem.isIdFree(id);
+    }
+    
+    /**
+     * Checks if the block registry contains a mapping for the given id.
+     * 
+     * @param id	Id to check
+     * @return
+     */
+    public static boolean isIdRegistered(int id) {
+    	if (id == 0) return true;
+    	return !getBlockById(id).equals(getBlockByName("air"));
+    }
+    
+    /**
+     * Gets a free block ID.
+     * <p>
+     * An id is determined as 'free' only when neither the Blocks registry nor
+     * the Items registry contain mappings for the given id.
+     * 
+     * @return return a free block ID.
+     */
+    public static int getFreeBlockId() {
+    	Block air = getBlockByName("air");
+        while (!getBlockById(currFreeBlockId).equals(air) || !ApiItem.isIdFree(currFreeBlockId)) {
+            currFreeBlockId++;
+        }
+        return currFreeBlockId++;
+    }
+    
+    /**
+     * Gets a block by it's name or ID
+     *
+     * @param identifier A string representing the name or ID of the block.
+     * @return The block defined by parameter identifier
+     */
+    public static Block getBlockByNameOrId(String identifier) {
+        return MathUtils.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
+    }
+    
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+    public static ResourceLocation getBlockName(Block block) {
+        return (ResourceLocation)Block.blockRegistry.getNameForObject(block);
+    }
+    
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+    public static String getStringBlockName(Block block) {
+        return getBlockName(block).toString();
+    }
+    
+    /**
+     * Gets a block by it's name
+     *
+     * @param name The name of the block
+     * @return Gets the block defined by param name.
+     */
+    public static Block getBlockByName(String name) {
+        return Block.getBlockFromName(name);
+    }
+
+    /**
+     * Gets a block by it's BlockId.
+     *
+     * @param id The ID of the block.
+     * @return Return the block defined by param id.
+     */
+    public static Block getBlockById(int id) {
+        return Block.getBlockById(id);
+    }
+
+    /**
+     * Gets a block by it's item version.
+     *
+     * @param item The item to get the block from.
+     * @return Return the block associated with param item.
+     */
+    public static Block getBlockByItem(Item item) {
+        return Block.getBlockFromItem(item);
+    }
+    
+    /**
+     * Gets the id associated with the given block.
+     * 
+     * @param block The block
+     * 
+     * @return the block's id
+     */
+    public static int getBlockId(Block block) {
+    	return Block.getIdFromBlock(block);
+    }
+    
 }

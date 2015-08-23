@@ -3,6 +3,10 @@ package com.blazeloader.util.config;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * A group of properties in a config file.
+ * 
+ */
 public class Section implements IPropertyGroup {
 	private final HashMap<String, Prop> properties = new HashMap<String, Prop>();
 	

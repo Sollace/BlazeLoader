@@ -9,6 +9,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
+import com.blazeloader.api.ApiServer;
 import com.blazeloader.bl.interop.ForgeModloader;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.api.CustomisationProvider;
@@ -42,19 +43,32 @@ public class BLMain {
     public static boolean isClient;
     
     /**
-     * true if a game tick is in progress
+     * the partial render tick for the client
      */
-    public static boolean isInTick = false;
+    protected static float partialTicks = 0;
+    
     /**
      * number of ticks that the game has been running
      */
-    public static int numTicks = 0;
+    protected static int numTicks = 0;
 
     public final LoaderEnvironment environment;
     public final LoaderProperties properties;
 
     private CommandHandler commandHandler;
-
+    
+    public static BLMain instance() {
+        return instance;
+    }
+    
+    public static float getPartialTicks() {
+    	return partialTicks;
+    }
+    
+    public static int getTicks() {
+    	return numTicks;
+    }
+    
     BLMain(LoaderEnvironment environment, LoaderProperties properties) {
         if (instance != null) {
             throw new IllegalStateException("BLMain cannot be created twice!");
@@ -78,17 +92,13 @@ public class BLMain {
     public String[] getRequiredDownstreamTransformers() {
         return null;
     }
-
-    public String[] getPacketTransformers() {
-        return null;
-    }
-
+    
     public List<EnumeratorModule> getEnumeratorModules() {
         return null;
     }
 
     public List<CoreProvider> getCoreProviders() {
-        return Collections.singletonList((CoreProvider)BlazeLoaderCoreProvider.instance);
+        return Collections.singletonList((CoreProvider)BlazeLoaderCoreProvider.instance());
     }
     
     public List<InterfaceProvider> getInterfaceProviders() {
@@ -107,16 +117,12 @@ public class BLMain {
         return null;
     }
 
-    public void shutdown(String message, int code) {
+    public final void shutdown(String message, int code) {
         try {
             LOGGER_FULL.logFatal("Unexpected shutdown detected!");
             LOGGER_FULL.logFatal("Message: " + message);
-            MinecraftServer server = MinecraftServer.getServer();
-            if (server != null) {
-                LOGGER_FULL.logFatal("Shutting down server...");
-                server.initiateShutdown();
-            } else {
-                LOGGER_FULL.logFatal("Server is not running, closing immediately with code " + code + "!");
+            if (!initiateShutdown()) {
+                LOGGER_FULL.logFatal("Game is not running, closing immediately with code " + code + "!");
                 ForgeModloader.exitJVM(code);
             }
         } catch (Throwable t) {
@@ -124,21 +130,30 @@ public class BLMain {
             ForgeModloader.exitJVM(code);
         }
     }
-
+    
+    protected boolean initiateShutdown() {
+    	MinecraftServer server = MinecraftServer.getServer();
+    	if (server == null) return false;
+    	LOGGER_FULL.logFatal("Shutting down server...");
+    	server.initiateShutdown();
+    	return true;
+    }
+    
+    public void tick(boolean clock, float partialTicks, boolean isInGame) {
+    	MinecraftServer server = ApiServer.getServer();
+    	if (server != null) {
+    		numTicks = server.getTickCounter();
+    	} else {
+    		numTicks = 0;
+    	}
+    }
+    
     public void init() {
         isClient = supportsClient();
     }
     
     public boolean supportsClient() {
         return false;
-    }
-
-    public BLMainClient getClient() {
-        throw new UnsupportedOperationException("This BLMain does not support BLMainClient!");
-    }
-
-    public static BLMain instance() {
-        return instance;
     }
 
     public CommandHandler getCommandHandler() {

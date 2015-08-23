@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ItemRegistry {
-	private static ItemRegistry instance = new ItemRegistry();
+	private static final ItemRegistry instance = new ItemRegistry();
 	
 	private static Map<Item, ArrayList<String>> variantNames = new HashMap<Item, ArrayList<String>>();
 	
