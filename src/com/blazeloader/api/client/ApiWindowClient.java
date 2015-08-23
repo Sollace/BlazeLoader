@@ -2,6 +2,8 @@ package com.blazeloader.api.client;
 
 import org.lwjgl.opengl.Display;
 
+import net.minecraft.client.Minecraft;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -55,7 +57,7 @@ public class ApiWindowClient {
     public static String getTitle() {
     	return Display.getTitle();
     }
-
+    
     private static ByteBuffer getIcon(File par1File) throws IOException {
         BufferedImage var2 = ImageIO.read(par1File);
         int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
@@ -68,5 +70,17 @@ public class ApiWindowClient {
         var4.flip();
         return var4;
     }
-
+    
+    /**
+     * Sets the game's fullscreen mode
+     * 
+     */
+    public static void setFullscreen(boolean fullscreen) {
+    	Minecraft client = ApiClient.getClient();
+    	if (client != null) {
+    		if (client.isFullScreen() != fullscreen) {
+    			client.toggleFullscreen();
+    		}
+    	}
+    }
 }

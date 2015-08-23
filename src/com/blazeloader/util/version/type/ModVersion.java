@@ -15,7 +15,7 @@ public class ModVersion extends BasicVersion {
     }
 
     public String getVersionNum() {
-        StringBuilder builder = new StringBuilder((this.getVersionDepth() * 2) - 1);
+        StringBuilder builder = new StringBuilder((getVersionDepth() * 2) - 1);
         for (int index = 0; index < this.getVersionDepth(); index++) {
             if (index != 0) {
                 builder.append('.');

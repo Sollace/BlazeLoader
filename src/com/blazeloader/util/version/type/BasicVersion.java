@@ -9,7 +9,7 @@ public class BasicVersion extends AbstractVersion {
     private final int[] versionParts;
     private final String versionString;
 
-    public BasicVersion(String id, String name, BuildType buildType, int[] versionParts) {
+    public BasicVersion(String id, String name, BuildType buildType, int... versionParts) {
         super(id, name, buildType);
         if (versionParts == null || versionParts.length == 0) {
             throw new IllegalArgumentException("versionParts cannot be null and must have at least one element!");

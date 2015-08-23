@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.WorldSettings;
@@ -18,7 +19,7 @@ import net.minecraft.world.WorldSettings;
 public class ApiClient {
 	
 	/**
-	 * Enabled or disables client profiling
+	 * Enables or disables client profiling
 	 * 
 	 * @param enabled
 	 */
@@ -73,14 +74,23 @@ public class ApiClient {
     
     /**
      * Gets the render manager currently used.
-     * @return
      */
     public static RenderManager getRenderManager() {
     	return getClient().getRenderManager();
     }
     
+    /**
+     * Gets the client effect renderer
+     */
     public static EffectRenderer getEffectRenderer() {
     	return getClient().effectRenderer;
+    }
+    
+    /**
+     * Gets the resourcepack manager for the client
+     */
+    public static ResourcePackRepository getResourcePackRepository() {
+    	return getClient().getResourcePackRepository();
     }
     
     /**

@@ -44,33 +44,51 @@ public class ModStateMap extends StateMapperBase {
 
         return new ModelResourceLocation(modelLocation, getPropertyString(stateProperties));
     }
-
+    
+    /**
+     * Builder class for creating a state mapper for block models.
+     */
     public static class Builder {
         private IProperty property;
         private String suffix;
-        private String modId;
+        private String modId = "minecraft";
         private final List excludedProperties = Lists.newArrayList();
         
+        /**
+         * Sets the property used when mapping states to resource locations.
+         */
         public Builder setProperty(IProperty mappedProperty) {
             property = mappedProperty;
             return this;
         }
-
+        
+        /**
+         * Set a suffex to be appended at the end of any resource location names generated.
+         */
         public Builder setSuffix(String suffex) {
             suffix = suffex;
             return this;
         }
         
+        /**
+         * Sets the modid/domain for resource locations generated.
+         */
         public Builder setModId(String mod) {
         	modId = mod;
         	return this;
         }
         
+        /**
+         * Adds properties that must be ignored when generating a resource location
+         */
         public Builder addPropertiesToIgnore(IProperty ... ignored) {
             Collections.addAll(excludedProperties, ignored);
             return this;
         }
         
+        /**
+         * Builds a mapper to be registered for the block.
+         */
         public ModStateMap build() {
             return new ModStateMap(modId, property, suffix, excludedProperties);
         }

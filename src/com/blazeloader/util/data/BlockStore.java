@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 
 /**
  * 
- * Collection of block data. Can also be read/written to nbt.
+ * Collection of block data. Can also be read from or written to nbt.
  *
  */
 public class BlockStore extends ArrayList<BlockStore.Entry> {

@@ -52,4 +52,10 @@ public interface IShape {
 	 * Computes a random coordinate that falls within this shape's designated area.
 	 */
 	public Vec3 computePoint(Random rand);
+	
+	/**
+	 * Checks if the given point on the edge, or if not hollow the inside, of this shape.
+	 * @return
+	 */
+	public boolean isPointInside(Vec3 point);
 }
