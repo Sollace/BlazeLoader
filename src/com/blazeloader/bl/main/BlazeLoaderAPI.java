@@ -58,7 +58,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public int getRevision() {
-        return Versions.getBLMainVersion().getVersion2();
+        return Versions.getBLMainVersion().getSecond();
     }
 
     /**
