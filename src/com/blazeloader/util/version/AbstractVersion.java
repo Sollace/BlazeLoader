@@ -1,7 +1,4 @@
-package com.blazeloader.util.version.type;
-
-import com.blazeloader.util.version.BuildType;
-import com.blazeloader.util.version.Versions;
+package com.blazeloader.util.version;
 
 /**
  * Basic, abstract implementation of non-version parts of Version.
@@ -51,5 +48,10 @@ public abstract class AbstractVersion implements Version {
     @Override
     public BuildType getBuildType() {
         return buildType;
+    }
+    
+    @Override
+    public String toString() {
+    	return "{" + getVersionString() + ", " + getFriendlyName() + ", " + getBuildType().name() + "}";
     }
 }

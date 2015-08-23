@@ -124,14 +124,18 @@ public class ApiEntity {
             }
         }
     }
-
+    
+    public static boolean isIdFree(int id) {
+    	return getEntityClassFromID(id) == null;
+    }
+    
     /**
      * Gets a free entity ID.
      *
      * @return return a free entity ID.
      */
     public static int getFreeEntityId() {
-        while (getEntityClassFromID(currFreeEntityId) != null) {
+        while (!isIdFree(currFreeEntityId)) {
             currFreeEntityId++;
         }
         return currFreeEntityId++;

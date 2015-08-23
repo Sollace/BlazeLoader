@@ -1,8 +1,7 @@
 package com.blazeloader.util.version;
 
 import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.type.Version;
-import com.blazeloader.util.version.type.values.QuadrupleVersion;
+import com.blazeloader.util.version.type.QuadrupleVersion;
 
 import java.util.HashMap;
 import java.util.Map;

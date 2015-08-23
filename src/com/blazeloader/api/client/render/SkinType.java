@@ -3,8 +3,9 @@ package com.blazeloader.api.client.render;
 import java.util.HashMap;
 
 import com.blazeloader.util.JSArrayUtils;
+import com.blazeloader.util.config.IStringable;
 
-public final class SkinType {
+public final class SkinType implements IStringable<SkinType> {
 	private static final HashMap<String, SkinType> skinTypes = new HashMap<String, SkinType>();
 	
 	public static final SkinType STEVE = new SkinType("STEVE", "default");
@@ -25,6 +26,10 @@ public final class SkinType {
 	
 	public String toString() {
 		return name;
+	}
+	
+	public SkinType fromString(String string) {
+		return valueOf(string);
 	}
 	
 	public int ordinal() {
