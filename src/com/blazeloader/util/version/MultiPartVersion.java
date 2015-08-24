@@ -1,19 +1,42 @@
 package com.blazeloader.util.version;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.blazeloader.util.JSArrayUtils;
+import com.google.common.collect.Lists;
+
 /**
  * Class that implements basic functionality of IVersioned. Automatically adds the version to Version.class
  */
 public abstract class MultiPartVersion extends AbstractVersion {
+	
+	private final int versionDepth;
     private final int[] versionParts;
     private final String versionString;
 
     public MultiPartVersion(String id, String name, BuildType buildType, int... versionParts) {
-        super(id, name, buildType);
+        super(id.replace(".", "-"), name, buildType);
         if (versionParts == null || versionParts.length == 0) {
             throw new IllegalArgumentException("versionParts cannot be null and must have at least one element!");
         }
-        this.versionParts = versionParts;
-        this.versionString = createVersionString(id, versionParts);
+        versionDepth = versionParts.length;
+        boolean started = false;
+        List<Integer> trimmedVersionParts = new ArrayList<Integer>();
+        for (int i = versionParts.length - 1; i >= 0; i--) {
+        	if (versionParts[i] < 0) {
+        		versionParts[i] = 0;
+        	}
+        	if (versionParts[i] != 0) started = true;
+        	if (started) {
+        		trimmedVersionParts.add(versionParts[i]);
+        	}
+        }
+        
+        this.versionParts = ArrayUtils.toPrimitive(JSArrayUtils.toArray(Lists.reverse(trimmedVersionParts), Integer.class));
+        this.versionString = createVersionString(id.replace(".", "-"), this.versionParts);
     }
 
     /**
@@ -23,7 +46,7 @@ public abstract class MultiPartVersion extends AbstractVersion {
      */
     @Override
     public int getVersionDepth() {
-        return versionParts.length;
+        return versionDepth;
     }
 
     /**
@@ -34,29 +57,29 @@ public abstract class MultiPartVersion extends AbstractVersion {
      */
     @Override
     public int getNthComponent(int num) {
-        if (num < versionParts.length) {
+        if (num < getVersionDepth()) {
+        	if (num < 0) num = 0;
+        	if (num > versionParts.length) return 0;
             return versionParts[num];
         }
         throw new IllegalArgumentException("num must be less than getVersionDepth!");
     }
-
-    /**
-     * Gets this version as a String, for example "1.2", "1:2:3", or "1.2.3_4"
-     *
-     * @return Gets this version as a String.
-     */
+    
     @Override
     public String getVersionString() {
-        return versionString;
+        return (getBuildType().humanReadable() + " " + versionString).trim();
     }
-
-    private static String createVersionString(String id, int[] versionParts) {
+    
+    @Override
+    public String getComponentsString() {
+    	return versionString;
+    }
+    
+    private static String createVersionString(String id, int... versionParts) {
         StringBuilder builder = new StringBuilder();
-        builder.append(id);
-        builder.append(".");
         if (versionParts != null && versionParts.length > 0) {
             for (int index = 0; index < versionParts.length; index++) {
-                builder.append(index);
+                builder.append(versionParts[index]);
                 if (index < versionParts.length - 1) {
                     builder.append(".");
                 }

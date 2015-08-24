@@ -1,7 +1,7 @@
 package com.blazeloader.util.version;
 
 import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.type.QuadrupleVersion;
+import com.blazeloader.util.version.type.BasicVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class Versions {
     private static final boolean isOBF = VersionUtils.isGameOBF();
     private static final boolean isForgeInstalled = VersionUtils.hasForge();
     private static final Map<String, Version> versionMap = new HashMap<String, Version>();
-    private static final QuadrupleVersion BL_VERSION = new QuadrupleVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 0, 0);
+    private static final Version BL_VERSION = new BasicVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 1);
 
     /**
      * Detects if the game is obfuscated.
@@ -54,7 +54,7 @@ public class Versions {
     /**
      * Gets the version of blazeloader running on the current game
      */
-    public static QuadrupleVersion getBLMainVersion() {
+    public static Version getBLMainVersion() {
         return BL_VERSION;
     }
     

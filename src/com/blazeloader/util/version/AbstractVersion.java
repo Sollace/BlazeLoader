@@ -52,6 +52,6 @@ public abstract class AbstractVersion implements Version {
     
     @Override
     public String toString() {
-    	return "{" + getVersionString() + ", " + getFriendlyName() + ", " + getBuildType().name() + "}";
+    	return "{" + getID() + ", " + getComponentsString() + ", " + getFriendlyName() + ", " + getBuildType().name() + "}";
     }
 }

@@ -34,11 +34,18 @@ public interface Version {
     public String getFriendlyName();
 
     /**
-     * Gets this version as a String, for example "1.2", "1:2:3", or "1.2.3_4"
+     * Gets this version as a String, for example "beta 1.2", "alpha 1.2.3", or "1.2.3_4"
      *
      * @return Gets this version as a String.
      */
     public String getVersionString();
+    
+    /**
+     * Gets this version's numbers as a String, for example "1.2", "1:2:3", or "1.2.3_4"
+     *
+     * @return Gets this version as a String.
+     */
+    public String getComponentsString();
 
     /**
      * Gets the build type of this version.
