@@ -19,7 +19,7 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     public static final ResourceLocation ABOUT_TEXTURE = new ResourceLocation("blazeloader", "textures/gui/about.png");
 	public static final IconAbsolute LOGO_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "logo", 128, 40, 0, 0, 256, 80);
-	public static final IconAbsolute ICON_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "blaze", 32, 45, 0, 80, 64, 170);
+	//public static final IconAbsolute ICON_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "blaze", 32, 45, 0, 80, 64, 170);
 	public static final IconAbsolute TWITTER_AVATAR_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "twitter_avatar", 32, 32, 192, 80, 256, 144);
 	
     private BlazeLoaderBrandingProvider() {
@@ -47,12 +47,12 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public ResourceLocation getIconResource() {
-        return ABOUT_TEXTURE;
+        return null;
     }
     
     @Override
     public Icon getIconCoords() {
-        return ICON_COORDS;
+        return null;
     }
     
     @Override
