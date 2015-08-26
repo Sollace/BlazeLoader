@@ -52,6 +52,12 @@ public class ApiGui {
 			public int getIconItemDamage() {
 				return iconMetadata;
 			}
+			public int getTabColumn() {
+		        return (getTabIndex() - 12) % 5;
+		    }
+			public boolean isTabInFirstRow() {
+				return (getTabIndex() - 12) % 10 < 5;
+			}
     	};
     }
 }

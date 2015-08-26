@@ -64,10 +64,12 @@ public final class CreativeTabGui extends GuiContainerCreative {
 	public boolean checkTabBounds(CreativeTabs tab) {
 		if (tab != CreativeTabs.tabAllSearch && tab != CreativeTabs.tabInventory) {
 			int index = tab.getTabIndex();
-			if (index < pageIndex * 11) {
-				return false;
+			int page = 0;
+			if (index > 11) {
+				page = 1 + (index - 12) / 10;
 			}
-			if (index > (pageIndex + 1) * 11) {
+			
+			if (page != pageIndex) {
 				return false;
 			}
 		}
