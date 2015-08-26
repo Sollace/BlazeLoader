@@ -42,7 +42,7 @@ public class Wall implements Iterable<Wall.Entry> {
      * @param name		The name of the item to get.
      * @param value The value to set the item to.
      */
-    public static <I> void setItem(String name, I value) {
+    public static <T> void setItem(String name, T value) {
     	if (value == null) throw new IllegalArgumentException("value cannot be null");
     	if (isDefined(name)) {
     		wallMap.get(name).setValue(value);
@@ -96,7 +96,7 @@ public class Wall implements Iterable<Wall.Entry> {
      * 
      * @return WallItem for the subscribed item
      */
-    public static <I> WallItem<I> subscripteTo(String name, I defaultValue, ISubscription<I> subscriptionObject) {
+    public static <T> WallItem<T> subscripteTo(String name, T defaultValue, ISubscription<T> subscriptionObject) {
     	WallItem result = watchItem(name, defaultValue);
     	wallMap.get(name).subscribe(subscriptionObject);
     	return result;
@@ -124,11 +124,11 @@ public class Wall implements Iterable<Wall.Entry> {
      * 
      * @return	WallItem for the requested item
      */
-    public static <I> WallItem<I> watchItem(String name, I defaultValue) {
+    public static <T> WallItem<T> watchItem(String name, T defaultValue) {
     	if (!isDefined(name)) {
     		setItem(name, defaultValue);
     	}
-    	return new WallItem<I>(wallMap.get(name));
+    	return new WallItem<T>(wallMap.get(name));
     }
     
     
@@ -186,19 +186,19 @@ public class Wall implements Iterable<Wall.Entry> {
 		return wallMap.keySet().iterator();
 	}
     
-    public static class Entry<I> implements Map.Entry<String, I> {
-    	private List<ISubscription<I>> watchers = new ArrayList<ISubscription<I>>(); 
-    	private I value;
+    public static class Entry<T> implements Map.Entry<String, T> {
+    	private List<ISubscription<T>> watchers = new ArrayList<ISubscription<T>>(); 
+    	private T value;
     	private final Class clazz;
     	private final String key;
     	
-    	public Entry(String name, I val) {
+    	public Entry(String name, T val) {
     		value = val;
 			clazz = val.getClass();
     		key = name;
     	}
     	
-    	public I setValue(I val) {
+    	public T setValue(T val) {
     		if (!valueEquals(val)) {
 	    		if (!acceptsType(val)) {
 					throw new TypeConstraintException("New value must be of the same type as the field \"" + key + "\". " + val.getClass().toString() + " cannot be cast to " + clazz.toString());
@@ -212,7 +212,7 @@ public class Wall implements Iterable<Wall.Entry> {
     		return value;
     	}
     	
-    	private boolean valueEquals(I other) {
+    	private boolean valueEquals(T other) {
     		return other == value || (value != null && value.equals(other));
     	}
     	
@@ -222,7 +222,7 @@ public class Wall implements Iterable<Wall.Entry> {
 		}
     	
 		@Override
-    	public I getValue() {
+    	public T getValue() {
     		return value;
     	}
     	
@@ -234,17 +234,17 @@ public class Wall implements Iterable<Wall.Entry> {
 			return val == null || clazz.isAssignableFrom(val.getClass());
 		}
     	
-    	private boolean isSubscribed(ISubscription<I> subscriptionObject) {
+    	private boolean isSubscribed(ISubscription<T> subscriptionObject) {
     		return watchers.contains(subscriptionObject);
     	}
     	
-    	protected void subscribe(ISubscription<I> subscriptionObject) {
+    	protected void subscribe(ISubscription<T> subscriptionObject) {
     		if (!isSubscribed(subscriptionObject)) {
     			watchers.add(subscriptionObject);
     		}
     	}
     	
-    	protected void unsubscribe(ISubscription<I> subscriptionObject) {
+    	protected void unsubscribe(ISubscription<T> subscriptionObject) {
     		if (isSubscribed(subscriptionObject)) {
     			watchers.remove(subscriptionObject);
     		}

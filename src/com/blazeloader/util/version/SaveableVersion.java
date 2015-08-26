@@ -2,9 +2,18 @@ package com.blazeloader.util.version;
 
 import com.blazeloader.util.config.IStringable;
 
-public abstract class SaveableVersion<T extends SaveableVersion<T>> extends MultiPartVersion implements IStringable<T> {
+/**
+ * Abstract Specialisation of MultiPartVersion with an IStringable implementation.  
+ * 
+ * @param <T> This version to be returned from/given to factory functions.
+ */
+public abstract class SaveableVersion<T extends SaveableVersion<T>> extends AbstractVersion<T> implements IStringable<T> {
 	public SaveableVersion(String id, String name, BuildType buildType, int... versionParts) {
 		super(id, name, buildType, versionParts);
+	}
+	
+	protected SaveableVersion(AbstractVersion other) {
+		super(other);
 	}
 	
     @Override

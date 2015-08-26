@@ -74,7 +74,7 @@ public class Versions {
      * 
      * @param version	The version to add.
      */
-    public static void addVersion(Version version) {
+    protected static void addVersion(Version version) {
         versionMap.put(version.getID(), version);
     }
     
@@ -87,6 +87,14 @@ public class Versions {
      */
     public static boolean isVersionRegistered(String id) {
         return versionMap.containsKey(id);
+    }
+    
+    /**
+     * Checks if the given version is registered
+     * 
+     */
+    public static boolean isVersionRegistered(Version version) {
+        return isVersionRegistered(version.getID());
     }
 
 }

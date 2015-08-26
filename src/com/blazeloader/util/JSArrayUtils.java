@@ -197,7 +197,7 @@ public class JSArrayUtils {
     }
     
     /**
-     * Converts a given primitive array to an object type array.
+     * Converts a given primitive array or string to an object type array.
      */
     public static <T> T[] asArray(Object o) {
     	if (o instanceof int[]) return (T[])ArrayUtils.toObject((int[])o);
@@ -209,6 +209,7 @@ public class JSArrayUtils {
     	if (o instanceof long[]) return (T[])ArrayUtils.toObject((long[])o);
     	if (o instanceof short[]) return (T[])ArrayUtils.toObject((short[])o);
     	if (o instanceof Object[]) return (T[])o;
+    	if (o instanceof String) return (T[])ArrayUtils.toObject(((String)o).toCharArray());
     	throw new IllegalArgumentException("Given value is not an array");
     }
     

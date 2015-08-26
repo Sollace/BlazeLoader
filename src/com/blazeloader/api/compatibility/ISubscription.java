@@ -3,9 +3,9 @@ package com.blazeloader.api.compatibility;
 /**
  * Subscription interface for listening to values on the wall.
  *
- * @param <I>	The type of the value you are subscribed to
+ * @param <T>	The type of the value you are subscribed to
  */
-public interface ISubscription<I> {
+public interface ISubscription<T> {
 	
 	/**
 	 * Event triggered when the values subscribed to on the wall is about to be changed.
@@ -15,5 +15,5 @@ public interface ISubscription<I> {
 	 * 
 	 * @return true to accept the value, false to reject it.
 	 */
-	public boolean valueChanged(String key, I originalValue, I newValue);
+	public boolean valueChanged(String key, T originalValue, T newValue);
 }

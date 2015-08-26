@@ -4,7 +4,7 @@ import com.blazeloader.util.version.BuildType;
 import com.blazeloader.util.version.SaveableVersion;
 
 /**
- * Basic implementation of a version. Supports saving and loading from a config file and can have only three components.
+ * Specialised implementation of a version. Supports saving and loading from a config file and can have only three components.
  */
 public class TripleVersion extends SaveableVersion<TripleVersion> {
 	
