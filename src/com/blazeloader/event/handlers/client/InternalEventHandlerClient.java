@@ -3,14 +3,18 @@ package com.blazeloader.event.handlers.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.creativetab.CreativeTabs;
 
 import com.blazeloader.api.client.render.BlockRenderRegistry;
+import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.api.item.ItemRegistry;
 import com.blazeloader.event.handlers.EventHandler;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
@@ -55,5 +59,16 @@ public class InternalEventHandlerClient {
         		event.cancel();
         	}
         }
+    }
+    
+    //Set custom creative gui. Have to use this method because events on displayGuiScreen don't work.
+    public static void eventSetIngameNotInFocus(EventInfo<Minecraft> event) {
+    	Minecraft mc = event.getSource();
+    	if (mc.currentScreen instanceof GuiContainerCreative && CreativeTabs.creativeTabArray.length > 12) {
+    		CreativeTabGui gui = new CreativeTabGui(event.getSource().thePlayer);
+    		mc.currentScreen = gui;
+    		ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+    		gui.setWorldAndResolution(mc, res.getScaledWidth(), res.getScaledHeight());
+    	}
     }
 }

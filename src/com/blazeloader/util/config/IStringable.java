@@ -16,6 +16,8 @@ public interface IStringable<T extends IStringable<T>> {
 	
 	/**
 	 * Opposite of toString, converts a string back into an object of this type.
+	 * <p>
+	 * The default value is used as the instance for calling this method. Make sure that you <b>do not</b> modify it. Return a new instance instead.
 	 * 
 	 * @param string String representation of an instance of this class
 	 */

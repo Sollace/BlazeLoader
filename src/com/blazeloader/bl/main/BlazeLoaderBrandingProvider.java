@@ -3,6 +3,7 @@ package com.blazeloader.bl.main;
 import com.blazeloader.api.client.render.ApiRenderClient;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.api.BrandingProvider;
+import com.mumfrey.liteloader.client.api.LiteLoaderBrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
 import com.mumfrey.liteloader.util.render.Icon;
 import net.minecraft.util.ResourceLocation;
@@ -16,9 +17,11 @@ import java.net.URL;
 public class BlazeLoaderBrandingProvider implements BrandingProvider {
     public static final BlazeLoaderBrandingProvider instance = new BlazeLoaderBrandingProvider();
     
-    private static final ResourceLocation twitterLoc = new ResourceLocation("blazeloader", "tex/twitter_logo.png");
-    private static final Icon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
-    
+    public static final ResourceLocation ABOUT_TEXTURE = new ResourceLocation("blazeloader", "textures/gui/about.png");
+	public static final IconAbsolute LOGO_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "logo", 128, 40, 0, 0, 256, 80);
+	//public static final IconAbsolute ICON_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "blaze", 32, 45, 0, 80, 64, 170);
+	public static final IconAbsolute TWITTER_AVATAR_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "twitter_avatar", 32, 32, 192, 80, 256, 144);
+	
     private BlazeLoaderBrandingProvider() {
     }
     
@@ -34,12 +37,12 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public ResourceLocation getLogoResource() {
-        return null;
+        return ABOUT_TEXTURE;
     }
     
     @Override
     public Icon getLogoCoords() {
-        return null;
+        return LOGO_COORDS;
     }
     
     @Override
@@ -54,7 +57,7 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public String getDisplayName() {
-        return Versions.getBLMainVersion().getFriendlyName();
+        return Versions.getBLMainVersion().getName();
     }
     
     @Override
@@ -78,11 +81,11 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public ResourceLocation getTwitterAvatarResource() {
-        return twitterLoc;
+        return ABOUT_TEXTURE;
     }
     
     @Override
     public Icon getTwitterAvatarCoords() {
-        return twitterIcon;
+        return TWITTER_AVATAR_COORDS;
     }
 }

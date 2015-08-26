@@ -1,57 +1,98 @@
 package com.blazeloader.util.version;
 
+import java.util.function.Function;
+
 /**
- * Basic, abstract implementation of non-version parts of Version.
+ * Basic, abstract implementation of Version.
  * Automatically registers itself with Versions.
+ * 
+ * @param <T> This version to be returned from/given to factory functions.
  */
-public abstract class AbstractVersion implements Version {
+public abstract class AbstractVersion<T extends AbstractVersion<T>> implements Version<T> {
     private final String id;
     private final String name;
     private final BuildType buildType;
-
-    public AbstractVersion(String id, String name, BuildType buildType) {
+        
+    protected final VersionNumber<T> versionNumber;
+    
+    public AbstractVersion(String id, String name, BuildType buildType, int ... parts) {
         this.id = id;
         this.name = name;
         this.buildType = buildType;
         Versions.addVersion(this);
+        versionNumber = new VersionNumber(this, parts);
+    }
+    
+    protected AbstractVersion(AbstractVersion other) {
+    	this.id = other.getID();
+    	this.name = other.getName();
+    	this.buildType = other.getBuildType();
+    	this.versionNumber = other.versionNumber;
     }
 
     public AbstractVersion(String id, BuildType buildType) {
         this(id, id, buildType);
     }
-
-    /**
-     * Gets the ID that will be used internally to identify this version.
-     *
-     * @return The ID that will be used internally to identify this version
-     */
+    
     @Override
     public String getID() {
         return id;
     }
-
-    /**
-     * Gets the user-friendly name of this version.
-     *
-     * @return The user-friendly name of this version.
-     */
+    
     @Override
-    public String getFriendlyName() {
+    public String getName() {
         return name;
     }
-
-    /**
-     * Gets the build type of this version.
-     *
-     * @return The build type of this version.
-     */
+    
     @Override
     public BuildType getBuildType() {
         return buildType;
     }
     
     @Override
+    public T setFormat(Function<VersionNumber<T>, String> func) {
+    	versionNumber.setFormat(func);
+    	return (T)this;
+    }
+    
+    @Override
+    public T setComponentFormat(Function<VersionNumber<T>, String> func) {
+    	versionNumber.setComponentFormat(func);
+    	return (T)this;
+    }
+    
+    @Override
+    public int getVersionDepth() {
+        return versionNumber.getDepth();
+    }
+    
+    @Override
+    public int getNthComponent(int num) {
+        return versionNumber.get(num);
+    }
+    
+    @Override
+    public String getVersionString() {
+    	return versionNumber.getVersionString();
+    }
+    
+    @Override
+    public String getComponentsString() {
+    	return versionNumber.toString();
+    }
+    
+    @Override
+    public int hashCode() {
+    	return id.hashCode() + versionNumber.hashCode() ^ id.length() + 1; 
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+    	return other == this || ((other instanceof AbstractVersion) && ((AbstractVersion)other).versionNumber.equals(versionNumber));
+    }
+    
+    @Override
     public String toString() {
-    	return "{" + getVersionString() + ", " + getFriendlyName() + ", " + getBuildType().name() + "}";
+    	return "{" + getID() + ", " + versionNumber.toString() + ", " + getName() + ", " + getBuildType().name() + "}";
     }
 }
