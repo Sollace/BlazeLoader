@@ -2,8 +2,12 @@ package com.blazeloader.api.gui;
 
 import com.blazeloader.api.client.gui.IModInventory;
 import com.blazeloader.api.client.gui.IModLockableInventory;
+import com.blazeloader.util.JSArrayUtils;
+
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
@@ -37,5 +41,17 @@ public class ApiGui {
         player.openContainer = container;
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.onCraftGuiOpened(player);
+    }
+    
+    public static CreativeTabs registerCreativeTab(String mod, String name, Item iconItem, int iconMetadata) {
+    	CreativeTabs.creativeTabArray = JSArrayUtils.push(CreativeTabs.creativeTabArray, (CreativeTabs)null);
+    	return new CreativeTabs(CreativeTabs.creativeTabArray.length-1, mod + "." + name) {
+			public Item getTabIconItem() {
+				return iconItem;
+			}
+			public int getIconItemDamage() {
+				return iconMetadata;
+			}
+    	};
     }
 }
