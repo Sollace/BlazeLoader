@@ -76,7 +76,6 @@ public class ApiCrafting {
 	 * Custom implementation of the CraftingManager.
 	 * Supports additional functionality such as reverse crafting,
 	 * crafting areas greater than 3x3 and methods for removing recipes.
-	 *
 	 */
 	public static final class BLCraftingManager implements Comparable<BLCraftingManager> {
 		private final int id;

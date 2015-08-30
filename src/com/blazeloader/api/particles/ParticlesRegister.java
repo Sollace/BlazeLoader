@@ -83,10 +83,6 @@ public class ParticlesRegister {
 		return result;
 	}
 	
-	public static final void initialiseParticleIds() {
-		instance().initialiseIds();
-	}
-	
 	public void initialiseIds() {
 		Set<Integer> registeredIds = EnumParticleTypes.PARTICLES.keySet();
 		int injected = 0;
