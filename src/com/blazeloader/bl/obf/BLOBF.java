@@ -18,7 +18,9 @@ public class BLOBF extends Obf {
     /**
      * The simple (mcp, no package) name of this BLOBF
      */
-    public final String simpleName;
+    public final String simpleMcp;
+    public final String simpleObf;
+    public final String simpleSrg;
 
     /**
      * Creates a new BLOBF.
@@ -29,10 +31,16 @@ public class BLOBF extends Obf {
      */
     public BLOBF(String obfName, String seargeName, String mcpName) {
         super(seargeName, obfName, mcpName);
-        String[] nameParts = mcpName.split(Patterns.PERIOD);
-        this.simpleName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : mcpName;
+        simpleMcp = splitPackageOff(mcpName);
+        simpleObf = splitPackageOff(obfName);
+        simpleSrg = splitPackageOff(seargeName);
     }
-
+    
+    protected static String splitPackageOff(String string) {
+    	String[] nameParts = string.split(Patterns.PERIOD);
+    	return nameParts.length > 0 ? nameParts[nameParts.length - 1] : string;
+    }
+    
     /**
      * Gets the obf/srg/mcp name of this class based on the current obfuscation mode.
      *
@@ -46,6 +54,13 @@ public class BLOBF extends Obf {
             return super.srg;
         }
         return super.obf;
+    }
+    
+    /**
+     * Fix for BLOBF not matching against method names.
+     */
+    public boolean matches(String name) {
+    	return super.matches(name) || simpleObf.equals(name) || simpleSrg.equals(name) || simpleMcp.equals(name);
     }
 
     //-----------------------------[Static Stuff]------------------------------------

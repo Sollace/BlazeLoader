@@ -86,7 +86,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	
 	@Override
 	protected IParticle getParticle(EnumParticleTypes vanillaType) {
-		return setFactory((new ParticleTypeClient(vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID()), getVanillaParticleRegistry().get(vanillaType.getParticleID()));
+		return setFactory((new ParticleTypeClient(vanillaType.getParticleName(), vanillaType.getShouldIgnoreRange(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID()), getVanillaParticleRegistry().get(vanillaType.getParticleID()));
 	}
 	
 	@Override
@@ -98,29 +98,32 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;
     	
-    	Minecraft mc = Minecraft.getMinecraft();
-		if (mc != null && mc.getRenderViewEntity() != null && mc.effectRenderer != null) {
-            int particleSetting = mc.gameSettings.particleSetting;
-
-            if (particleSetting == 1 && mc.theWorld.rand.nextInt(3) == 0) {
-            	particleSetting = 2;
-            }
-            
-            IParticleFactory factory = ((ParticleTypeClient)particle.getType()).getFactory();
-            try {
-	            if (particle.getIgnoreDistance()) {
-	            	spawnCustomParticle(particle, factory, world);
-	            } else {
-    	            double disX = mc.getRenderViewEntity().posX - particle.posX;
-    	            double disY = mc.getRenderViewEntity().posY - particle.posY;
-    	            double disZ = mc.getRenderViewEntity().posZ - particle.posZ;
-	                if (disX * disX + disY * disY + disZ * disZ <= particle.getMaxRenderDistance() && particleSetting <= 1) {
-	                	spawnCustomParticle(particle, factory, world);
-	                }
+    	Minecraft mc = ApiClient.getClient();
+		if (mc != null && mc.effectRenderer != null) {
+			Entity view = mc.getRenderViewEntity();
+			if (view != null) {
+	            int particleSetting = mc.gameSettings.particleSetting;
+	
+	            if (particleSetting == 1 && mc.theWorld.rand.nextInt(3) == 0) {
+	            	particleSetting = 2;
 	            }
-            } catch (Throwable e) {
-            	reportParticleError(e, factory, particle.getType(), particle.posX, particle.posY, particle.posZ, particle.getArgs());
-            }
+	            
+	            IParticleFactory factory = ((ParticleTypeClient)particle.getType()).getFactory();
+	            try {
+		            if (particle.getIgnoreDistance()) {
+		            	spawnCustomParticle(particle, factory, world);
+		            } else {
+	    	            double disX = view.posX - particle.posX;
+	    	            double disY = view.posY - particle.posY;
+	    	            double disZ = view.posZ - particle.posZ;
+		                if (disX * disX + disY * disY + disZ * disZ <= particle.getMaxRenderDistance() && particleSetting <= 1) {
+		                	spawnCustomParticle(particle, factory, world);
+		                }
+		            }
+	            } catch (Throwable e) {
+	            	reportParticleError(e, factory, particle.getType(), particle.posX, particle.posY, particle.posZ, particle.getArgs());
+	            }
+			}
         }
     }
     
@@ -146,7 +149,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     @Override
     public void addEffectToRenderer(Entity fx) {
     	if (fx != null && fx instanceof EntityFX) {
-    		Minecraft.getMinecraft().effectRenderer.addEffect((EntityFX)fx);
+    		ApiClient.getEffectRenderer().addEffect((EntityFX)fx);
     	}
     }
     

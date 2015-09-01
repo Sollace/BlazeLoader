@@ -118,7 +118,7 @@ public class ParticlesRegister {
 	}
 	
 	protected IParticle getParticle(EnumParticleTypes vanillaType) {
-		return (new ParticleType(vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID());
+		return (new ParticleType(vanillaType.getParticleName(), vanillaType.getShouldIgnoreRange(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID());
 	}
 	
     public void addBlockHitEffectsToEntity(Entity e, IBlockState blockState) {

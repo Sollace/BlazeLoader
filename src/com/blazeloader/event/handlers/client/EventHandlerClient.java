@@ -141,19 +141,16 @@ public class EventHandlerClient extends EventHandler {
     }
     
     public static void eventHandleHeldItemChange(EventInfo<NetHandlerPlayClient> event, S09PacketHeldItemChange packet) {
-    	try {
-	    	if (inventoryEventHandlers.size() > 0) {
-		    	if (packet.func_149385_c() >= 0 && packet.func_149385_c() < InventoryPlayer.getHotbarSize()) {
-		    		Minecraft mc = Minecraft.getMinecraft();
-		    		if (mc != null && mc.thePlayer != null) {
-						if (!inventoryEventHandlers.all().onSlotSelectionChanged(mc.thePlayer, mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.currentItem)) {
-							event.cancel();
-						}
-		    		}
-		    	}
+    	if (inventoryEventHandlers.size() > 0) {
+    		int index = packet.getHeldItemHotbarIndex();
+	    	if (index >= 0 && index < InventoryPlayer.getHotbarSize()) {
+	    		Minecraft mc = Minecraft.getMinecraft();
+	    		if (mc != null && mc.thePlayer != null) {
+					if (!inventoryEventHandlers.all().onSlotSelectionChanged(mc.thePlayer, mc.thePlayer.inventory.getStackInSlot(index), index)) {
+						event.cancel();
+					}
+	    		}
 	    	}
-    	} catch (Throwable e) {
-    		e.printStackTrace();
     	}
     }
 }
