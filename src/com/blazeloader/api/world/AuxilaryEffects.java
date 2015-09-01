@@ -1,7 +1,7 @@
 package com.blazeloader.api.world;
 
 /**
- * All of the Auxilary effects used in minecraft for World.spawnAuxEffects
+ * All of the Auxiliary effects used in minecraft for World.spawnAuxEffects
  */
 public enum AuxilaryEffects {
 	BLOCK_BREAK(2001),

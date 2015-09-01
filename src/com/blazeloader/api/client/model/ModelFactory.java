@@ -1,4 +1,4 @@
-package com.blazeloader.api.client;
+package com.blazeloader.api.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,10 @@ import net.minecraft.client.model.ModelRenderer;
 public class ModelFactory {
 	
 	private List<ModelFactory> children = null;
-	private List<Box> boxes = null;
+	private List<ModelComponent> boxes = null;
 	
 	private boolean isInBuild = false;
+	private ModelRenderer buildResult = null;
 	
 	private ModelBase modelBase;
 	
@@ -39,41 +40,41 @@ public class ModelFactory {
 	 */
 	public ModelRenderer build() {
 		if (isInBuild) throw new RuntimeException("Circular parent-child relationship detected! Can only perform one build at a time.");
-		isInBuild = true;
-		ModelRenderer result = new ModelRenderer(modelBase, texOffset[0], texOffset[1]);
-		result.mirror = mirror;
+		if (buildResult != null) return buildResult;
+		
+		buildResult = new ModelRenderer(modelBase, texOffset[0], texOffset[1]);
+		buildResult.mirror = mirror;
 		if (rotation != null) {
-			result.rotateAngleX = rotation[0];
-			result.rotateAngleY = rotation[1];
-			result.rotateAngleZ = rotation[2];
+			buildResult.rotateAngleX = rotation[0];
+			buildResult.rotateAngleY = rotation[1];
+			buildResult.rotateAngleZ = rotation[2];
 		}
 		if (offset != null) {
-			result.offsetX = offset[0];
-			result.offsetY = offset[1];
-			result.offsetZ = offset[2];
+			buildResult.offsetX = offset[0];
+			buildResult.offsetY = offset[1];
+			buildResult.offsetZ = offset[2];
 		}
 		if (rotationPoint != null) {
-			result.setRotationPoint(rotationPoint[0], rotationPoint[1], rotationPoint[2]);
+			buildResult.setRotationPoint(rotationPoint[0], rotationPoint[1], rotationPoint[2]);
 		}
 		if (texSize != null) {
-			result.setTextureSize(texSize[0], texSize[1]);
+			buildResult.setTextureSize(texSize[0], texSize[1]);
 		}
-		if (texOffset != null) {
-			result.setTextureOffset(texOffset[0], texOffset[1]);
-		}
-		result.isHidden = hidden;
+		buildResult.setTextureOffset(texOffset[0], texOffset[1]);
+		buildResult.isHidden = hidden;
+		isInBuild = true;
 		if (boxes != null) {
-			for (Box i : boxes) {
-				i.build(result);
+			for (ModelComponent i : boxes) {
+				i.build(buildResult, texOffset[0], texOffset[1]);
 			}
 		}
 		if (children != null) {
 			for (ModelFactory i : children) {
-				result.addChild(i.build());
+				buildResult.addChild(i.build());
 			}
 		}
 		isInBuild = false;
-		return result;
+		return buildResult;
 	}
 	
 	/**
@@ -118,9 +119,51 @@ public class ModelFactory {
 	 * @return	This ModelFactory
 	 */
 	public ModelFactory addBox(float oriX, float oriY, float oriZ, int width, int height, int depth, float scaleFactor) {
-		if (boxes == null) boxes = new ArrayList<Box>();
+		if (boxes == null) boxes = new ArrayList<ModelComponent>();
 		boxes.add(new Box(oriX, oriY, oriZ, width, height, depth, scaleFactor));
 		return this;
+	}
+	
+	/**
+	 * Adds a box with side independent uv mapping to this ModelRactory.
+	 * 
+	 * @param oriX			Box origin X
+	 * @param oriY			Box origin Y
+	 * @param oriZ			Box origin Z
+	 * @param width			Box width (z)
+	 * @param height		Box height (y)
+	 * @param depth			Box depth (x)
+	 * @param scaleFactor	An addition scale factor to offset the size of the box. Used when scaling a model.
+	 * 
+	 * @return	the box so modders may adjust uv mappings
+	 */
+	public BoxUV addBoxUV(float oriX, float oriY, float oriZ, int width, int height, int depth, float scaleFactor) {
+		if (boxes == null) boxes = new ArrayList<ModelComponent>();
+		BoxUV box = new BoxUV(oriX, oriY, oriZ, width, height, depth, scaleFactor);
+		boxes.add(box);
+		return box;
+	}
+	
+	/**
+	 * Adds a plane to this ModelRactory.
+	 * <p>
+	 * A plane in this definition is essentially a box that can have any (or all) of its sides disabled.
+	 * 
+	 * @param oriX			Box origin X
+	 * @param oriY			Box origin Y
+	 * @param oriZ			Box origin Z
+	 * @param width			Box width (z)
+	 * @param height		Box height (y)
+	 * @param depth			Box depth (x)
+	 * @param scaleFactor	An addition scale factor to offset the size of the box. Used when scaling a model.
+	 * 
+	 * @return	the plane to modders may toggle visibility of sides
+	 */
+	public Plane addPlane(float oriX, float oriY, float oriZ, int width, int height, int depth, float scaleFactor) {
+		if (boxes == null) boxes = new ArrayList<ModelComponent>();
+		Plane box = new Plane(oriX, oriY, oriZ, width, height, depth, scaleFactor);
+		boxes.add(box);
+		return box;
 	}
 	
 	/**
@@ -246,7 +289,11 @@ public class ModelFactory {
 		return new ModelFactory(modelBase).setTextureOffset(texOffsetX, texOffsetY).setRotationPoint(rotX, rotY, rotZ);
 	}
 	
-	private class Box {
+	private interface ModelComponent {
+		public void build(ModelRenderer renderer, int texX, int texY);
+	}
+	
+	public static class Box implements ModelComponent {
 		float[] origin = new float[3];
 		int[] size = new int[3];
 		float scaleFactor = 0;
@@ -261,8 +308,56 @@ public class ModelFactory {
 			scaleFactor = scale;
 		}
 		
-		void build(ModelRenderer renderer) {
+		public void build(ModelRenderer renderer, int texX, int texY) {
 			renderer.addBox(origin[0], origin[1], origin[2], size[0], size[1], size[2], scaleFactor);
+		}
+	}
+	
+	public static class BoxUV implements ModelComponent {
+		float[] origin = new float[3];
+		int[] size = new int[3];
+		float scaleFactor = 0;
+		
+		Integer[][] uvmappings;
+		
+		BoxUV(float oriX, float oriY, float oriZ, int width, int height, int depth, float scale) {
+			origin[0] = oriX;
+			origin[1] = oriY;
+			origin[2] = oriZ;
+			size[0] = width;
+			size[1] = height;
+			size[2] = depth;
+			scaleFactor = scale;
+			uvmappings = new Integer[2][6];
+		}
+		
+		public BoxUV setSideUV(int side, int u, int v) {
+			uvmappings[side] = new Integer[] {u,v};
+			return this;
+		}
+		
+		public void build(ModelRenderer renderer, int texX, int texY) {
+			ModelUVMappedBox box = new ModelUVMappedBox(renderer, texX, texY, origin[0], origin[1], origin[2], size[0], size[1], size[2], scaleFactor);
+			for (int i = 0; i < uvmappings.length; i++) {
+				if (uvmappings[i] != null) box.setFaceUV(i, uvmappings[i][0], uvmappings[i][1]);
+			}
+			renderer.cubeList.add(box);
+		}
+	}
+	
+	public static class Plane extends Box {
+		boolean[] hiddenSides = new boolean[6];
+		
+		Plane(float oriX, float oriY, float oriZ, int width, int height, int depth, float scale) {
+			super(oriX, oriY, oriZ, width, height, depth, scale);
+		}
+		
+		public void setSideVisibility(int side, boolean visible) {
+			hiddenSides[side] = !visible;
+		}
+		
+		public void build(ModelRenderer renderer, int texX, int texY) {
+			renderer.cubeList.add((new ModelPlane(renderer, texX, texY, origin[0], origin[1], origin[2], size[0], size[1], size[2], scaleFactor)).setHiddenSides(hiddenSides));
 		}
 	}
 }

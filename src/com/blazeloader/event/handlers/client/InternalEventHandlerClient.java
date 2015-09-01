@@ -56,7 +56,6 @@ public class InternalEventHandlerClient {
         	String texture = BlockRenderRegistry.lookupTexture(block);
         	if (texture != null) {
         		event.setReturnValue(manager.getTextureMap().getAtlasSprite(texture));
-        		event.cancel();
         	}
         }
     }

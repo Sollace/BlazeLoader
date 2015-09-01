@@ -19,12 +19,11 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.core.PluginChannels;
 
 public class BLPacketChannels extends PacketChannel implements PacketChannelListener {
-	private static BLPacketChannels instance;
+	private static final BLPacketChannels instance = new BLPacketChannels();
 	
 	public BLPacketChannels() {
 		super(BLMain.instance().getPluginChannelName());
 		registerMessageHandler(Side.CLIENT, new BLPacketParticles(), BLPacketParticles.Message.class, 0);
-		instance = this;
 	}
 	
 	public static BLPacketChannels instance() {

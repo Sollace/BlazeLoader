@@ -5,7 +5,7 @@ import java.util.Arrays;
 import net.minecraft.world.WorldType;
 
 /**
- * Inbetween class for mod added World Types.
+ * In-between class for mod added World Types.
  */
 public class ModWorldType extends WorldType {
 	private final String plainName;

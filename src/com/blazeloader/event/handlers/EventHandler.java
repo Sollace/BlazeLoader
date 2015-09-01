@@ -195,13 +195,11 @@ public class EventHandler {
 	    		inventoryEventHandlers.all().onDropItem(entity, false, false, args);
 		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
-		    		event.cancel();
 		    	} else {
 		    		if (args.isDirty()) {
 		    			isInEvent = true;
 		    			event.setReturnValue(entity.entityDropItem(args.getItemStack(), yOffset));
 		    			isInEvent = false;
-		    			event.cancel();
 		    		}
 		    	}
 	    	}
@@ -227,13 +225,11 @@ public class EventHandler {
 			    			savedHeldItemStack = held;
 			    		}
 		    		}
-		    		event.cancel();
 		    	} else {
 		    		if (args.isDirty()) {
 		    			isInEvent = true;
 		    			event.setReturnValue(player.dropItem(args.getItemStack(), dropAround, traceItem));
 		    			isInEvent = false;
-		    			event.cancel();
 		    		}
 		    	}
     		}
@@ -260,12 +256,10 @@ public class EventHandler {
 		    	inventoryEventHandlers.all().onDropOneItem(player, dropAll, args);
 		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
-		    		event.cancel();
 		    	}
 		    	if (args.isDirty()) {
 		    		event.setReturnValue(player.dropItem(args.getItemStack(), false, true));
 		    		player.inventory.decrStackSize(player.inventory.currentItem, droppedItem.stackSize);
-		    		event.cancel();
 		    	}
 	    	}
     	}
