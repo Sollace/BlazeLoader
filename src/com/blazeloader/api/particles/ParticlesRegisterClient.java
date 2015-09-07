@@ -48,7 +48,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	 *
 	 * @return A new, or previously cached, mapping with all custom particles added.
 	 */
-	//FIXME: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
+	//FIXME: This has to be linked up at the bottom of EffectRenderer.registerVanillaParticles(). There might be a better place for this method though.
 	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;

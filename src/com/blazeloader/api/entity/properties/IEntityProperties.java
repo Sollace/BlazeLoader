@@ -1,4 +1,4 @@
-package com.blazeloader.api.entity;
+package com.blazeloader.api.entity.properties;
 
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;

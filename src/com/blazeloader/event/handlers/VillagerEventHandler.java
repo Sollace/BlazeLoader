@@ -1,6 +1,6 @@
 package com.blazeloader.event.handlers;
 
-import com.blazeloader.api.entity.Professions;
+import com.blazeloader.api.entity.profession.Professions;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 

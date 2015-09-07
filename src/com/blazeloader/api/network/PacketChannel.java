@@ -12,7 +12,9 @@ import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 
 /**
  * An interface for sending/recieving mod packets.
@@ -128,6 +130,25 @@ public class PacketChannel {
 		buf.writeInt(id);
 		message.toBytes(buf);
 		ServerPluginChannels.sendMessage(recipient, channelName, buf, ChannelPolicy.DISPATCH_ALWAYS);
+	}
+	
+	public PacketBuffer getRawData(IMessage message) {
+		Integer id = client_packetClasses.get(message.getClass());
+		if (id == null) {
+			id = server_packetClasses.get(message.getClass());
+		}
+		if (id == null) {
+			throw new UnrecognisedMessageException(channelName, message, "ANY");
+		}
+		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+		buf.writeInt(id);
+		message.toBytes(buf);
+		return buf;
+	}
+	
+	public Packet getRawPacket(IMessage message) {
+		PacketBuffer data = getRawData(message);
+        return new S3FPacketCustomPayload(channelName, data);
 	}
 	
 	private class PacketEntry<P extends IMessage> {

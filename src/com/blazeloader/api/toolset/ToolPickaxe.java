@@ -7,18 +7,23 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 
-public class ToolPickaxe extends ItemPickaxe {
-    private final ToolSetAttributes attributes;
+public class ToolPickaxe extends ItemPickaxe implements Tool {
+    private final ToolsetAttributes attributes;
 
     private float damageValue = 4;
 
-    public ToolPickaxe(ToolSetAttributes material) {
+    public ToolPickaxe(ToolsetAttributes material) {
         super(ToolMaterial.WOOD);
         attributes = material;
         super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         damageValue = material.getDamageVsEntity(2);
     }
+    
+	@Override
+	public ToolsetAttributes getToolAttributes() {
+		return attributes;
+	}
 
     @Override
     public int getItemEnchantability() {
@@ -31,8 +36,8 @@ public class ToolPickaxe extends ItemPickaxe {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return attributes.getIsRepairable(par2ItemStack);
+    public boolean getIsRepairable(ItemStack repairedItem, ItemStack repairMaterial) {
+        return attributes.getIsRepairable(repairMaterial);
     }
 
     @Override
@@ -41,7 +46,7 @@ public class ToolPickaxe extends ItemPickaxe {
     }
 
     @Override
-    public boolean canHarvestBlock(Block p_150897_1_) {
-        return p_150897_1_ == Blocks.obsidian ? attributes.getHarvestLevel() == 3 : (p_150897_1_ != Blocks.diamond_block && p_150897_1_ != Blocks.diamond_ore ? (p_150897_1_ != Blocks.emerald_ore && p_150897_1_ != Blocks.emerald_block ? (p_150897_1_ != Blocks.gold_block && p_150897_1_ != Blocks.gold_ore ? (p_150897_1_ != Blocks.iron_block && p_150897_1_ != Blocks.iron_ore ? (p_150897_1_ != Blocks.lapis_block && p_150897_1_ != Blocks.lapis_ore ? (p_150897_1_ != Blocks.redstone_ore && p_150897_1_ != Blocks.lit_redstone_ore ? (p_150897_1_.getMaterial() == Material.rock || (p_150897_1_.getMaterial() == Material.iron || p_150897_1_.getMaterial() == Material.anvil)) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2);
+    public boolean canHarvestBlock(Block block) {
+        return block == Blocks.obsidian ? attributes.getHarvestLevel() == 3 : (block != Blocks.diamond_block && block != Blocks.diamond_ore ? (block != Blocks.emerald_ore && block != Blocks.emerald_block ? (block != Blocks.gold_block && block != Blocks.gold_ore ? (block != Blocks.iron_block && block != Blocks.iron_ore ? (block != Blocks.lapis_block && block != Blocks.lapis_ore ? (block != Blocks.redstone_ore && block != Blocks.lit_redstone_ore ? (block.getMaterial() == Material.rock || (block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil)) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2);
     }
 }

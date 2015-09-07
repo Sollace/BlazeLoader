@@ -9,7 +9,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-public final class CreativeTabGui extends GuiContainerCreative {
+/**
+ * Override for the vanilla Creative menu to add support for additional pages of tabs.
+ */
+public class CreativeTabGui extends GuiContainerCreative {
 	
 	private static final ResourceLocation CREATIVE_INVENTORY_TEXTURE = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 	private static final ResourceLocation RESOURCE_PACKS_TEXTURE = new ResourceLocation("textures/gui/resource_packs.png");

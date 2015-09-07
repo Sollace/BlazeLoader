@@ -85,7 +85,7 @@ public class ModWorldType extends WorldType {
     }
 
     /**
-     * enables the display of generator.[worldtype].info message on the customize world menu
+     * enables the display of generator.[worldtype].info message on the customise world menu
      */
     public WorldType setNotificationData() {
     	hasNotificationData = true;

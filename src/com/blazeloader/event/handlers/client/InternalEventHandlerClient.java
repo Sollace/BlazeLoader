@@ -63,11 +63,12 @@ public class InternalEventHandlerClient {
     //Set custom creative gui. Have to use this method because events on displayGuiScreen don't work.
     public static void eventSetIngameNotInFocus(EventInfo<Minecraft> event) {
     	Minecraft mc = event.getSource();
-    	if (mc.currentScreen instanceof GuiContainerCreative && CreativeTabs.creativeTabArray.length > 12) {
+    	if (CreativeTabs.creativeTabArray.length > 12 && mc.currentScreen instanceof GuiContainerCreative && !(mc.currentScreen instanceof CreativeTabGui)) {
     		CreativeTabGui gui = new CreativeTabGui(event.getSource().thePlayer);
     		mc.currentScreen = gui;
     		ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
     		gui.setWorldAndResolution(mc, res.getScaledWidth(), res.getScaledHeight());
     	}
     }
+
 }

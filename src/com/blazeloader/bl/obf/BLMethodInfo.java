@@ -12,13 +12,9 @@ import net.acomputerdog.core.java.Patterns;
 public class BLMethodInfo extends MethodInfo {
     private final String simpleName;
 
-    private BLMethodInfo(Obf owner, String method, String desc, String simpleName) {
+    private BLMethodInfo(Obf owner, String method, String desc, String name) {
         super(owner, method, desc);
-        this.simpleName = simpleName;
-    }
-
-    private BLMethodInfo(Obf owner, String method, String desc) {
-        this(owner, method, desc, getMethodName(method));
+        this.simpleName = getMethodName(name);
     }
 
     public String getSimpleName() {
@@ -28,17 +24,11 @@ public class BLMethodInfo extends MethodInfo {
     //---------------------[Static stuff]----------------------------
 
     public static BLMethodInfo create(BLOBF method) {
-        if (method == null) {
+        if (method == null || method.getValue() == null) {
             return null;
         }
-        return create(method.getValue());
-    }
-
-    public static BLMethodInfo create(String method) {
-        if (method == null) {
-            return null;
-        }
-        String[] methAndDesc = method.split(Patterns.SPACE);
+        
+        String[] methAndDesc = method.getValue().split(Patterns.SPACE);
         if (methAndDesc.length < 2) {
             throw new IllegalArgumentException("Method ID must contain method name and descriptor separated by a space!");
         }
@@ -50,7 +40,7 @@ public class BLMethodInfo extends MethodInfo {
         String name = nameParts[nameParts.length - 1];
 
         Obf owner = getObfType(getClassName(nameParts));
-        return new BLMethodInfo(owner, name, desc);
+        return new BLMethodInfo(owner, name, desc, method.name);
     }
 
     private static Obf getObfType(String name) {
@@ -87,7 +77,7 @@ public class BLMethodInfo extends MethodInfo {
         if ("".equals(method)) {
             return "";
         }
-        String[] parts = method.split(Patterns.PERIOD);
+        String[] parts = method.split(" ")[0].split(Patterns.PERIOD);
         return parts[parts.length - 1];
     }
 }

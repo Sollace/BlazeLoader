@@ -108,7 +108,7 @@ public class BLOBFTable extends DirectOBFTableSRG {
     public String getMCPFromType(String name, TargetType type, OBFLevel level) {
     	switch (level) {
 			case SRG: return getDeObfFromSRGType(name, type);
-			case OBF: return getObfFromSRGType(getSRGFromDeObfType(name, type), type);
+			case OBF: return getDeObfFromSRGType(getSRGFromObfType(name, type), type);
 			default: return name;
 		}
     }

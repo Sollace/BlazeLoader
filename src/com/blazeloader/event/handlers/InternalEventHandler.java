@@ -8,6 +8,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -17,10 +18,11 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
 import com.blazeloader.api.ApiGeneral;
-import com.blazeloader.api.entity.EntityPropertyManager;
+import com.blazeloader.api.entity.properties.EntityPropertyManager;
+import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
 import com.blazeloader.api.world.ApiWorld;
-import com.blazeloader.api.world.IChunkGenerator;
-import com.blazeloader.api.world.UnpopulatedChunksQ;
+import com.blazeloader.api.world.gen.IChunkGenerator;
+import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
 import com.blazeloader.bl.main.BLMain;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
@@ -100,5 +102,11 @@ public class InternalEventHandler {
     
     public static void eventAddEntityCrashInfo(EventInfo<Entity> event, CrashReportCategory section) {
     	EntityPropertyManager.addEntityCrashInfo(event.getSource(), section);
+    }
+    
+    public static void eventTrackEntity(EventInfo<EntityTracker> event, Entity entity) {
+    	if (EntityTrackerRegistry.instance().addEntityToTracker(event.getSource(), entity)) {
+    		event.cancel();
+    	}
     }
 }

@@ -12,6 +12,9 @@ import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import java.util.Iterator;
 import java.util.List;
 
+import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
+import com.blazeloader.api.entity.tracker.ITrack;
+
 /**
  * Api for entity-related functions
  */
@@ -50,7 +53,29 @@ public class ApiEntity {
     public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo) {
         EntityList.entityEggs.put(entityId, eggInfo);
     }
-
+    
+    /**
+     * Registers an entity to be tracked by minecraft's EntityTracker.
+     * 
+     * @param entityClass		Type of entity to track
+     * @param range				Maximum range to which the entity will be tracked
+     * @param updateFrequency	How often position/velocity updates are sent
+     * @param includeVelocity	True to send velocity
+     */
+    public static <T extends Entity> void registerEntityTracker(Class<T> entityClass, int range, int updateFrequency, boolean includeVelocity) {
+    	EntityTrackerRegistry.instance().addTracker(entityClass, range, updateFrequency, includeVelocity);
+	}
+    
+    /**
+     * Registers an entity type with a custom tracker for handling when the entity must be added to the vanilla EntityTracker.
+     * 
+     * @param entityClass	Type of entity to track
+     * @param entityTracker	The tracker to handle the entity
+     */
+    public static <T extends Entity> void registerEntityTracker(Class<T> entityClass, ITrack<T> entityTracker) {
+    	EntityTrackerRegistry.instance().addTracker(entityClass, entityTracker);
+    }
+    
     /**
      * Changes the class used by an entity universally.
      *
