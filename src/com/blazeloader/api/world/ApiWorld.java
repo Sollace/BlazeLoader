@@ -23,6 +23,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
 import com.blazeloader.api.block.UpdateType;
+import com.blazeloader.api.world.gen.IChunkGenerator;
+import com.blazeloader.api.world.gen.WorldSavedDataCollection;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.util.version.Versions;
 
@@ -407,14 +409,14 @@ public class ApiWorld {
      * @return True if the side is solid or the default
      */
     public static boolean isSideSolid(World w, BlockPos pos, EnumFacing side, boolean def) {
-    	if (Versions.isForgeInstalled()) {
-    		return ForgeWorld.isSideSolid(w, pos, side, def);
-		}
-    	
     	if (w.isValid(pos)) {
 			IBlockState state = w.getBlockState(pos);
 	        Block block = state.getBlock();
 	    	
+	        if (Versions.isForgeInstalled()) {
+	    		return ForgeWorld.isSideSolid(w, pos, side, def);
+			}
+	        
 	        if (block.getMaterial().isOpaque() && block.isFullCube()) {
 	        	return true;
 	        }
@@ -423,24 +425,9 @@ public class ApiWorld {
 				return w.doesBlockHaveSolidTopSurface(w, pos);
 			}
 			if (side == EnumFacing.DOWN) {
-				return doesBlockHaveSolidBottomSurface(w, pos);
+				return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
 			}
     	}
     	return def;
-    }
-    
-    /**
-     * Checks if a block has a solid bottom surface.
-     * 
-     * @param pos	The location
-     * @return true if the bottom side of the block is solid.
-     */
-    protected static boolean doesBlockHaveSolidBottomSurface(World w, BlockPos pos) {
-    	IBlockState state = w.getBlockState(pos);
-        Block block = state.getBlock();
-        if (block.getMaterial().isOpaque() && block.isFullCube()) {
-        	return true;
-        }
-        return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
     }
 }

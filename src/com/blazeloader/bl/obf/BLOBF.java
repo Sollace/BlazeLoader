@@ -1,6 +1,5 @@
 package com.blazeloader.bl.obf;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import com.blazeloader.util.version.Versions;
@@ -53,6 +52,7 @@ public class BLOBF extends Obf {
         if (Versions.isForgeInstalled()) {
             return super.srg;
         }
+        
         return super.obf;
     }
     
@@ -90,11 +90,11 @@ public class BLOBF extends Obf {
     		InputStream stream = BLOBF.class.getResourceAsStream("/conf/minecraft_" + filename + ".obf");
     		parser.loadEntries(stream, obf, true);
     		return obf.size() > oldSize;
-    	} catch (FileNotFoundException e) {
-    		return false;
     	} catch (Exception e) {
     		if (mustThrow) {
     			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
+    		} else {
+    			e.printStackTrace();
     		}
     		return false;
     	}

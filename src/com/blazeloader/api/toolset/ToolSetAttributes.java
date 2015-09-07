@@ -1,22 +1,27 @@
 package com.blazeloader.api.toolset;
 
 import com.google.common.collect.Multimap;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 
+import java.util.HashMap;
 import java.util.UUID;
 
-public class ToolSetAttributes {
-    public static final ToolSetAttributes
-            WOOD = new ToolSetAttributes("WOOD", new ItemStack(Blocks.planks), 0, 59, 2.0F, 0.0F, 15),
-            STONE = new ToolSetAttributes("STONE", new ItemStack(Blocks.cobblestone), 1, 131, 4.0F, 1.0F, 5),
-            IRON = new ToolSetAttributes("IRON", new ItemStack(Items.iron_ingot), 2, 250, 6.0F, 2.0F, 14),
-            EMERALD = new ToolSetAttributes("EMERALD", new ItemStack(Items.diamond), 3, 1561, 8.0F, 3.0F, 10),
-            GOLD = new ToolSetAttributes("GOLD", new ItemStack(Items.gold_ingot), 0, 32, 12.0F, 0.0F, 22);
+public class ToolsetAttributes {
+	
+	private static final HashMap<ToolMaterial, ToolsetAttributes> conversionMapping = new HashMap<ToolMaterial, ToolsetAttributes>();
+	
+    public static final ToolsetAttributes
+            WOOD = new ToolsetAttributes(ToolMaterial.WOOD),
+            STONE = new ToolsetAttributes(ToolMaterial.STONE),
+            IRON = new ToolsetAttributes(ToolMaterial.IRON),
+            EMERALD = new ToolsetAttributes(ToolMaterial.EMERALD),
+            GOLD = new ToolsetAttributes(ToolMaterial.GOLD);
 
     private final String string;
     private final int hl;
@@ -24,17 +29,53 @@ public class ToolSetAttributes {
     private final float efficiencyOnProperMaterial;
     private final float damageVsEntity;
     private final int enchant;
+    
+    private final Item item;
+    private final int data;
 
-    private final String item;
-
-    public ToolSetAttributes(String name, ItemStack materialItem, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
+    public ToolsetAttributes(String name, Item materialItem, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
         string = name;
         hl = harvestLevel;
         uses = maxUses;
         efficiencyOnProperMaterial = efficiency;
         damageVsEntity = damage;
         enchant = enchantability;
-        item = (String) Item.itemRegistry.getNameForObject(materialItem.getItem());
+        item = materialItem;
+        data = -1;
+    }
+    
+    public ToolsetAttributes(String name, Block materialItem, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
+        string = name;
+        hl = harvestLevel;
+        uses = maxUses;
+        efficiencyOnProperMaterial = efficiency;
+        damageVsEntity = damage;
+        enchant = enchantability;
+        item = Item.getItemFromBlock(materialItem);
+        data = -1;
+    }
+    
+    public ToolsetAttributes(String name, ItemStack materialItem, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
+        string = name;
+        hl = harvestLevel;
+        uses = maxUses;
+        efficiencyOnProperMaterial = efficiency;
+        damageVsEntity = damage;
+        enchant = enchantability;
+        item = materialItem.getItem();
+        data = materialItem.getItemDamage();
+    }
+    
+    private ToolsetAttributes(ToolMaterial material) {
+    	string = material.name();
+    	hl = material.getHarvestLevel();
+    	uses = material.getMaxUses();
+    	efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
+    	damageVsEntity = material.getDamageVsEntity();
+    	enchant = material.getEnchantability();
+    	item = material.getRepairItem();
+    	data = -1;
+    	conversionMapping.put(material, this);
     }
 
     public int getMaxUses() {
@@ -58,11 +99,11 @@ public class ToolSetAttributes {
     }
 
     public Item getItem() {
-        return (Item) Item.itemRegistry.getObject(item);
+        return item;
     }
 
     public boolean getIsRepairable(ItemStack stack) {
-        return getItem() == stack.getItem();
+        return getItem() == stack.getItem() && (data < 0 || data == stack.getItemDamage());
     }
 
     public Multimap getAttributeModifiers(Multimap map, UUID attr, double damage, String name) {
@@ -72,5 +113,15 @@ public class ToolSetAttributes {
 
     public String toString() {
         return string;
+    }
+    
+    /**
+     * Converts the given vanilla tool material to an instance of ToolsetAttributes.
+     */
+    public static ToolsetAttributes fromEnum(ToolMaterial toolset) {
+    	if (conversionMapping.containsKey(toolset)) {
+    		return conversionMapping.get(toolset);
+    	}
+    	return new ToolsetAttributes(toolset);
     }
 }

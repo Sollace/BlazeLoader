@@ -1,4 +1,4 @@
-package com.blazeloader.api.world;
+package com.blazeloader.api.world.gen;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;

@@ -17,9 +17,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * 
  * Collection of block data. Can also be read from or written to nbt.
- *
  */
 public class BlockStore extends ArrayList<BlockStore.Entry> {
 	private final HashMap<BlockPos, BlockStore.Entry> map;

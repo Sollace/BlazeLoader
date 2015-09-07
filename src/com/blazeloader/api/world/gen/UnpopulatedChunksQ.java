@@ -1,4 +1,4 @@
-package com.blazeloader.api.world;
+package com.blazeloader.api.world.gen;
 
 import net.minecraft.world.chunk.Chunk;
 
@@ -18,7 +18,7 @@ public class UnpopulatedChunksQ {
     /**
      * This should not get very big since chunks get populated (and thus popped) directly after their onload event.
      */
-    private static List<Chunk> unpopulatedChunksQ = new ArrayList<Chunk>();
+    private static final List<Chunk> unpopulatedChunksQ = new ArrayList<Chunk>();
 
     public boolean pop(Chunk chunk) {
         if (unpopulatedChunksQ.contains(chunk)) {

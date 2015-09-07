@@ -19,7 +19,6 @@ public enum MoonPhase {
 	
 	/**
 	 * Gets the MoonPhase factor for this MoonPhase based on the factors in WorldProvider
-	 * @return
 	 */
 	public float getFactor() {
 		return WorldProvider.moonPhaseFactors[toInt()];

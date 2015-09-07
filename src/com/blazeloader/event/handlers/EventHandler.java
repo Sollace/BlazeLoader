@@ -2,8 +2,8 @@ package com.blazeloader.event.handlers;
 
 import java.net.SocketAddress;
 
-import com.blazeloader.api.entity.EntityPropertyManager;
-import com.blazeloader.api.world.UnpopulatedChunksQ;
+import com.blazeloader.api.entity.properties.EntityPropertyManager;
+import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
 import com.blazeloader.event.listeners.*;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.event.HandlerList;

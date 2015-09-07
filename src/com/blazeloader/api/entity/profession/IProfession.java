@@ -1,4 +1,4 @@
-package com.blazeloader.api.entity;
+package com.blazeloader.api.entity.profession;
 
 import java.util.Random;
 
@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * A custom villager profession
+ */
 public interface IProfession {
 	
 	/**

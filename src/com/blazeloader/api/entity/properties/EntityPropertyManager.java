@@ -1,4 +1,4 @@
-package com.blazeloader.api.entity;
+package com.blazeloader.api.entity.properties;
 
 import java.util.HashMap;
 import java.util.UUID;

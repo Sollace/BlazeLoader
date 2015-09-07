@@ -35,18 +35,22 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     	addEvent(Event.getOrCreate("BL.<init>." + name, true), new MethodInfo(clas, Obf.constructor, Void.TYPE, paramaterTypes), injectionPoint).addListener(new MethodInfo(side.getHandler(), "init" + capitaliseFirst(name)));
     }
     
-    public void addBLEvent(EventSide side, String method, InjectionPoint injectionPoint) {
-        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethod(method, OBFLevel.MCP)), injectionPoint);
-    }
-
     protected void addBLEvent(EventSide side, String method) {
-        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethod(method, OBFLevel.MCP)));
-    }
-
-    protected void addBLEvent(EventSide side, BLMethodInfo method) {
         addBLEvent(side, method, methodHead);
     }
-
+    
+    protected void addBLEvent(EventSide side, BLOBF obf) {
+    	addBLEvent(side, BLMethodInfo.create(obf), methodHead);
+    }
+    
+    public void addBLEvent(EventSide side, String method, InjectionPoint injectionPoint) {
+        addBLEvent(side, BLOBF.getMethod(method, OBFLevel.MCP), injectionPoint);
+    }
+    
+    public void addBLEvent(EventSide side, BLOBF obf, InjectionPoint injectionPoint) {
+        addBLEvent(side, BLMethodInfo.create(obf), injectionPoint);
+    }
+    
     protected void addBLEvent(EventSide side, BLMethodInfo method, InjectionPoint injectionPoint) {
         if (method == null || injectionPoint == null) {
             throw new InvalidEventException(side.toString(), method, injectionPoint);
@@ -99,6 +103,8 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.onUpdate ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.player.EntityPlayer.clonePlayer (Lnet/minecraft/entity/player/EntityPlayer;Z)V", beforeReturn);
         
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.EntityTracker.trackEntity (Lnet/minecraft/entity/Entity;)V");
+        
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.entityDropItem (Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/item/EntityItem;");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLiving.updateEquipmentIfNeeded (Lnet/minecraft/entity/item/EntityItem;)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.dropItem (Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;");
@@ -110,9 +116,11 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.inventory.Container.slotClick (IIILnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;", beforeReturn);
         
         //FIXME: Disabled because for some reason we can't transform EntityLivingBase. It results in a java.lang.ClassCircularityException on EntityPlayer
-        //addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLivingBase.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
-        //Part 2: It seems the same problem extends to EntityPlayerMP as well. So we can't get access to that method at all.
-        //addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayerMP.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
+        // addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLivingBase.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
+        //FIXME: Part 2: It seems the same problem extends to EntityPlayerMP as well. So we can't get access to that method at all.
+        // addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayerMP.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
+        //FIXME: Part 3: After looking into it a bit more the problem seems to be that liteloader produces an invalid class when transforming EntityLivingBase.
+        // The transformation can be forced by catching the exception but the game will crash saying the "locals are too large".
         
         addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClass("net.minecraft.world.World", OBFLevel.MCP) }, beforeReturn);
         //Event fired separately to ensure players are fully setup

@@ -4,17 +4,22 @@ import com.google.common.collect.Multimap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-public class ToolSword extends ItemSword {
-    private final ToolSetAttributes attributes;
+public class ToolSword extends ItemSword implements Tool {
+    private final ToolsetAttributes attributes;
 
     private float damageValue = 4;
 
-    public ToolSword(ToolSetAttributes material) {
+    public ToolSword(ToolsetAttributes material) {
         super(ToolMaterial.WOOD);
         attributes = material;
-        super.setMaxDamage(material.getMaxUses());
+        setMaxDamage(material.getMaxUses());
         damageValue = material.getDamageVsEntity(4);
     }
+
+	@Override
+	public ToolsetAttributes getToolAttributes() {
+		return attributes;
+	}
 
     @Override
     public float getDamageVsEntity() {
@@ -32,8 +37,8 @@ public class ToolSword extends ItemSword {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return attributes.getIsRepairable(par2ItemStack);
+    public boolean getIsRepairable(ItemStack repaired, ItemStack repairMaterial) {
+        return attributes.getIsRepairable(repairMaterial);
     }
 
     @Override

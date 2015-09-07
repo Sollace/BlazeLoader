@@ -5,18 +5,23 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 
 
-public class ToolAxe extends ItemAxe {
-    private final ToolSetAttributes attributes;
+public class ToolAxe extends ItemAxe implements Tool {
+    private final ToolsetAttributes attributes;
 
-    private float damageValue = 4;
+    private float damageValue = 3;
 
-    public ToolAxe(ToolSetAttributes material) {
+    public ToolAxe(ToolsetAttributes material) {
         super(ToolMaterial.WOOD);
         attributes = material;
         super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         damageValue = material.getDamageVsEntity(3);
     }
+    
+	@Override
+	public ToolsetAttributes getToolAttributes() {
+		return attributes;
+	}
 
     @Override
     public int getItemEnchantability() {

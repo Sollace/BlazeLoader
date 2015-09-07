@@ -1,4 +1,4 @@
-package com.blazeloader.api.world;
+package com.blazeloader.api.world.gen;
 
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;

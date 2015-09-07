@@ -1,4 +1,4 @@
-package com.blazeloader.api.entity;
+package com.blazeloader.api.entity.profession;
 
 import java.util.ArrayList;
 import java.util.Random;
