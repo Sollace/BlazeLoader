@@ -132,6 +132,13 @@ public class PacketChannel {
 		ServerPluginChannels.sendMessage(recipient, channelName, buf, ChannelPolicy.DISPATCH_ALWAYS);
 	}
 	
+	/**
+	 * Packs the given message to raw packet data.
+	 * 
+	 * @param message	Message to unpack
+	 * 
+	 * @return a PacketBuffer with the message's data and id
+	 */
 	public PacketBuffer getRawData(IMessage message) {
 		Integer id = client_packetClasses.get(message.getClass());
 		if (id == null) {
@@ -146,6 +153,15 @@ public class PacketChannel {
 		return buf;
 	}
 	
+	/**
+	 * Packages the given message into a Packet ready to be sent over the network.
+	 * <p>
+	 * This method serves as a bridge between Mojang code and LiteLoader/Blazeloader message handling.
+	 * 
+	 * @param message	Message to package
+	 * 
+	 * @return	A Packet with the given data that once, received on the opposite side, will be brought back to be handled by this PacketChannel.
+	 */
 	public Packet getRawPacket(IMessage message) {
 		PacketBuffer data = getRawData(message);
         return new S3FPacketCustomPayload(channelName, data);
