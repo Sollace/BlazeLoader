@@ -3,11 +3,17 @@ package com.blazeloader.api.entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-public interface IPickListener {
+/**
+ * Interface for entities that want to return a custom item when a player uses PickBlock on this entity.
+ * 
+ * e.g Boats give boats, and mobs give spawn eggs
+ */
+public interface IMousePickHandler {
 	
 	/**
 	 * Called when he player presses the pick-block button whilst looking a this entity.
-	 * Returns the item that must be picked up.
+	 * 
+	 * @return the item that must be picked or null for default behaviour.
 	 */
 	public ItemStack onPlayerMiddleClick(EntityPlayer player);
 }

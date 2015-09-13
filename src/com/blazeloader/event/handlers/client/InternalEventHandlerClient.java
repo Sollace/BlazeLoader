@@ -3,8 +3,6 @@ package com.blazeloader.event.handlers.client;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,15 +10,13 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 import com.blazeloader.api.client.render.BlockRenderRegistry;
-import com.blazeloader.api.entity.IPickListener;
-import com.blazeloader.api.gui.CreativeTabGui;
+import com.blazeloader.api.entity.IMousePickHandler;
 import com.blazeloader.api.item.ItemRegistry;
 import com.blazeloader.api.particles.ParticlesRegister;
 import com.blazeloader.event.handlers.EventHandler;
@@ -67,17 +63,6 @@ public class InternalEventHandlerClient {
         }
     }
     
-    //Set custom creative gui. Have to use this method because events on displayGuiScreen don't work.
-    public static void eventSetIngameNotInFocus(EventInfo<Minecraft> event) {
-    	Minecraft mc = event.getSource();
-    	if (CreativeTabs.creativeTabArray.length > 12 && mc.currentScreen instanceof GuiContainerCreative && !(mc.currentScreen instanceof CreativeTabGui)) {
-    		CreativeTabGui gui = new CreativeTabGui(event.getSource().thePlayer);
-    		mc.currentScreen = gui;
-    		ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-    		gui.setWorldAndResolution(mc, res.getScaledWidth(), res.getScaledHeight());
-    	}
-    }
-    
     public static void eventRegisterVanillaParticles(EventInfo<EffectRenderer> event) {
     	EffectRenderer renderer = event.getSource();
     	renderer.particleTypes = ParticlesRegister.instance().init(renderer.particleTypes);
@@ -87,8 +72,8 @@ public class InternalEventHandlerClient {
     	Minecraft mc = event.getSource();
     	if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectType.ENTITY) {
     		Entity entity = mc.objectMouseOver.entityHit;
-    		if (entity instanceof IPickListener) {
-    			ItemStack stack = ((IPickListener)entity).onPlayerMiddleClick(mc.thePlayer);
+    		if (entity instanceof IMousePickHandler) {
+    			ItemStack stack = ((IMousePickHandler)entity).onPlayerMiddleClick(mc.thePlayer);
     			if (stack != null && stack.stackSize > 0) {
     				boolean creative = mc.thePlayer.capabilities.isCreativeMode;
     				InventoryPlayer inventory = mc.thePlayer.inventory;
@@ -97,6 +82,7 @@ public class InternalEventHandlerClient {
     	                int change = mc.thePlayer.inventoryContainer.inventorySlots.size() - 9 + inventory.currentItem;
     	                mc.playerController.sendSlotPacket(inventory.getStackInSlot(inventory.currentItem), change);
     	            }
+    				event.cancel();
     			}
     		}
     	}

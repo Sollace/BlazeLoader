@@ -28,7 +28,6 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
         
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.particle.EffectRenderer.registerVanillaParticles ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.middleClickMouse ()V");
-        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.setIngameNotInFocus ()V", beforeReturn);
     }
     
     @Override

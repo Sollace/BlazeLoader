@@ -4,10 +4,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
@@ -24,6 +26,7 @@ import net.minecraft.profiler.Profiler;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
+import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.listeners.client.ClientBlockListener;
 import com.blazeloader.event.listeners.client.ClientPlayerListener;
@@ -46,10 +49,20 @@ public class EventHandlerClient extends EventHandler {
     public static final HandlerList<ClientPlayerListener> playerEventClients = new HandlerList<ClientPlayerListener>(ClientPlayerListener.class);
     public static final HandlerList<ProfilerListener> profilerEventClients = new HandlerList<ProfilerListener>(ProfilerListener.class);
     public static final HandlerList<ClientWorldListener> worldEventClients = new HandlerList<ClientWorldListener>(ClientWorldListener.class);
-
+    
+    private static boolean eventDisplayGuiScreen = false;
     public static void eventDisplayGuiScreen(EventInfo<Minecraft> event, GuiScreen gui) {
-        Minecraft mc = event.getSource();
-        guiEventClients.all().onGuiOpen(mc, mc.currentScreen, gui);
+    	if (!eventDisplayGuiScreen) {
+	        eventDisplayGuiScreen = true;
+	        Minecraft mc = event.getSource();
+	    	if (CreativeTabs.creativeTabArray.length > 12 && gui instanceof GuiContainerCreative && !(gui instanceof CreativeTabGui)) {
+	    		event.cancel();
+	    		mc.displayGuiScreen(new CreativeTabGui(event.getSource().thePlayer));
+	    		return;
+	    	}
+	        guiEventClients.all().onGuiOpen(mc, mc.currentScreen, gui);
+	        eventDisplayGuiScreen = false;
+    	}
     }
     
     public static void eventStartSection(EventInfo<Profiler> event, String name) {

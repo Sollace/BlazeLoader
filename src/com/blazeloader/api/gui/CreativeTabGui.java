@@ -64,6 +64,11 @@ public class CreativeTabGui extends GuiContainerCreative {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 	
+	public void onGuiClosed() {
+		super.onGuiClosed();
+		mc.getSoundHandler().stopSounds();
+	}
+	
 	public boolean checkTabBounds(CreativeTabs tab) {
 		if (tab != CreativeTabs.tabAllSearch && tab != CreativeTabs.tabInventory) {
 			int index = tab.getTabIndex();
