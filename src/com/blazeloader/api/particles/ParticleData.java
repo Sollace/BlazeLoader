@@ -24,7 +24,7 @@ public final class ParticleData {
 	 * Creates a ParticleData
 	 *
 	 * @param type        IParticle factory to be used when creating the spawned particle
-	 * @param fulcrum		Whether or not this particle obeys the distance rule.
+	 * @param fulcrum		Override whether the particle follows the distance rule.
 	 * @param arguments		Additional arguments given to the particle when creating.
 	 * 
 	 * @return ParticleData containing all the given information
@@ -43,7 +43,7 @@ public final class ParticleData {
 	 * @return ParticleData containing all the given information
 	 */
 	public static ParticleData get(EnumParticleTypes type, boolean fulcrum, int ...arguments) {
-		return new ParticleData(ApiParticles.getParticleFromName(type.getParticleName()), fulcrum, arguments);
+		return new ParticleData(ApiParticles.getParticleFromEnum(type), fulcrum, arguments);
 	}
 	
 	private ParticleData(IParticle particle, boolean fulcrum, int[] data) {

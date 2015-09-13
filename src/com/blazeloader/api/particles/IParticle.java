@@ -51,8 +51,6 @@ public interface IParticle {
 	 */
 	public String getName();
 	
-	public IParticle setId(int id);
-	
 	/**
 	 * Returns true if this particle takes any extra arguments.
 	 * 
@@ -61,9 +59,16 @@ public interface IParticle {
 	public boolean hasArguments();
 	
 	/**
-	 * Returns the total extra arguents this particle accepts.
+	 * Returns the total extra arguments this particle accepts.
 	 * 
 	 * @return int args
 	 */
 	public int getArgumentCount();
+	
+	/**
+	 * Gets a new ParticleData object to be used when spawning this type of particle.
+	 * 
+	 * @param arguments	Any additional arguments to be sent with this particle.
+	 */
+	public ParticleData getData(int... arguments);
 }

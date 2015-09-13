@@ -3,6 +3,7 @@ package com.blazeloader.api.particles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -32,18 +33,12 @@ import com.blazeloader.util.version.Versions;
  * Warning: Not yet fully implemented. It may be best to keep spawning your stuff on the client for now.
  *
  */
-public class ParticlesRegister {
+public class ParticlesRegister<T> {
 	private static ParticlesRegister instance;
 	
 	protected static final HashMap<String, IParticle> particleNames = new HashMap<String, IParticle>();
 	protected static final HashMap<Integer, IParticle> particleIds = new HashMap<Integer, IParticle>();
 	protected static final ArrayList<IParticle> particlesRegistry = new ArrayList<IParticle>();
-	
-	static {
-		for (EnumParticleTypes i : EnumParticleTypes.values()) {
-			if (!particleNames.containsKey(i.getParticleName())) particleNames.put(i.getParticleName(), instance().getParticle(i));
-		}
-	}
 	
 	protected ParticlesRegister() {
 		if (instance != null) {
@@ -83,7 +78,16 @@ public class ParticlesRegister {
 		return result;
 	}
 	
-	public void initialiseIds() {
+	/**
+	 * Initialises particle IDs and loads them into the vanilla registry for external API support.
+	 * @param mapping	Mapping of pre-registered vanilla Particles
+	 *
+	 * @return A new, or previously cached, mapping with all custom particles added.
+	 */
+	public void preInit() {
+		for (EnumParticleTypes i : EnumParticleTypes.values()) {
+			if (!particleNames.containsKey(i.getParticleName())) particleNames.put(i.getParticleName(), getParticle(i));
+		}
 		Set<Integer> registeredIds = EnumParticleTypes.PARTICLES.keySet();
 		int injected = 0;
 		Iterator<IParticle> types = particlesRegistry.iterator();
@@ -93,13 +97,17 @@ public class ParticlesRegister {
 			} else {
 				IParticle type = types.next();
 				if (!particleIds.containsValue(type)) {
-					particleIds.put(i, type.setId(i));
+					particleIds.put(i, ((ParticleType)type).setId(i));
 					i++;
 				}
 			}
 		}
 	}
 	
+	public Map<Integer, T> init(Map<Integer, T> mappings) {
+		return mappings;
+	}
+		
 	public IParticle registerParticle(String name, boolean ignoreDistance, int argumentCount) {
 		IParticle result = createParticleType(name, ignoreDistance, argumentCount);
 		particlesRegistry.add(result);
@@ -113,7 +121,7 @@ public class ParticlesRegister {
 		return new ParticleType(name, ignoreDistance, argumentCount);
 	}
 	
-	public IParticle setFactory(IParticle particle, Object factory) {
+	public IParticle setFactory(IParticle particle, T factory) {
 		return particle;
 	}
 	
@@ -181,7 +189,10 @@ public class ParticlesRegister {
 		}
 	}
 	
-	public void spawnParticleEmitter(Entity e, ParticleData particle) {}
+	public void spawnParticleEmitter(Entity e, ParticleData particle) {
+		if (particle.getType() == ParticleType.NONE) return;
+		
+	}
 	
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;

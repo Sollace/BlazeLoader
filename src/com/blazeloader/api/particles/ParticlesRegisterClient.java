@@ -29,27 +29,24 @@ import com.blazeloader.bl.network.BLPacketParticles;
  * Client Side implementation
  *
  */
-public class ParticlesRegisterClient extends ParticlesRegister {
+public class ParticlesRegisterClient extends ParticlesRegister<IParticleFactory> {
 	private static Map<Integer, IParticleFactory> vanillaRegistry;
 	
 	protected ParticlesRegisterClient() {
 		super();
 	}
 	
-	public void initialiseIds() {
-		if (isRendererReady()) {
-			syncroniseParticlesRegistry(getVanillaParticleRegistry());
-		}
+	public static ParticlesRegisterClient instance() {
+		return (ParticlesRegisterClient)ParticlesRegister.instance();
 	}
 	
-	/**
-	 * Initialises particle IDs and loads them into the vanilla registry for external API support.
-	 * @param mapping	Mapping of pre-registered vanilla Particles
-	 *
-	 * @return A new, or previously cached, mapping with all custom particles added.
-	 */
-	//FIXME: This has to be linked up at the bottom of EffectRenderer.registerVanillaParticles(). There might be a better place for this method though.
-	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
+	@Override
+	public void preInit() {
+		//Do nothing, initilialising is done after RenderManager init
+	}
+	
+	@Override
+	public Map<Integer, IParticleFactory> init(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;
 			int injected = 0;
@@ -80,8 +77,8 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	}
 	
 	@Override
-	public IParticle setFactory(IParticle particle, Object factory) {
-		return ((ParticleTypeClient)particle).setFactory((IParticleFactory)factory);
+	public IParticle setFactory(IParticle particle, IParticleFactory factory) {
+		return ((ParticleTypeClient)particle).setFactory(factory);
 	}
 	
 	@Override
@@ -153,12 +150,8 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     	}
     }
     
-    private boolean isRendererReady() {
-    	return ApiClient.getEffectRenderer() != null;
-    }
-    
     private Map<Integer, IParticleFactory> getVanillaParticleRegistry() {
-		return ApiClient.getEffectRenderer().particleTypes;
+		return vanillaRegistry;
 	}
     
     @Override

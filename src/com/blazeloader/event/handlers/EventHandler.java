@@ -80,7 +80,6 @@ public class EventHandler {
 
     public static <ReturnType> void eventRecreatePlayerEntity(ReturnEventInfo<ServerConfigurationManager, ReturnType> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
         playerEventHandlers.all().onPlayerRespawnMP(event.getSource(), oldPlayer, dimension, !didWin);
-        EntityPropertyManager.entityDestroyed(oldPlayer);
     }
     
     public static void eventAllowUserToConnect(ReturnEventInfo<ServerConfigurationManager, String> event, SocketAddress address, GameProfile profile) {

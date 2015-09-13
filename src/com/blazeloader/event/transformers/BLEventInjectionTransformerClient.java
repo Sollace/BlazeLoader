@@ -25,6 +25,9 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.resources.model.ModelBakery.registerVariantNames ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.dispatchKeypresses ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.renderer.BlockModelShapes.getTexture (Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+        
+        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.particle.EffectRenderer.registerVanillaParticles ()V", beforeReturn);
+        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.middleClickMouse ()V");
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.setIngameNotInFocus ()V", beforeReturn);
     }
     
