@@ -60,7 +60,9 @@ public class EntityPropertyManager {
 	}
 	
 	public static void entityDestroyed(Entity e) {
-		mapping.remove(e.getUniqueID());
+		if (mapping.containsKey(e.getUniqueID())) {
+			mapping.remove(e.getUniqueID());
+		}
 	}
 	
 	public static void entityinit(Entity e) {

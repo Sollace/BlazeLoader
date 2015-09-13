@@ -9,8 +9,10 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
@@ -93,7 +95,9 @@ public class InternalEventHandler {
     
     public static void eventClonePlayer(EventInfo<EntityPlayer> event, EntityPlayer old, boolean respawnedFromEnd) {
     	EntityPropertyManager.copyToEntity(old, event.getSource());
-    	EntityPropertyManager.entityDestroyed(old);
+    	if (!old.getUniqueID().equals(event.getSource().getUniqueID())) {
+    		EntityPropertyManager.entityDestroyed(old);
+    	}
     }
     
     public static void eventCopyDataFromOld(EventInfo<Entity> event, Entity old) {
@@ -107,6 +111,13 @@ public class InternalEventHandler {
     public static void eventTrackEntity(EventInfo<EntityTracker> event, Entity entity) {
     	if (EntityTrackerRegistry.instance().addEntityToTracker(event.getSource(), entity)) {
     		event.cancel();
+    	}
+    }
+    
+    public static void eventFunc_151260_c(ReturnEventInfo<EntityTrackerEntry, Packet> event) {
+    	Packet result = EntityTrackerRegistry.instance().getSpawnPacket(event.getSource());
+    	if (result != null) {
+    		event.setReturnValue(result);
     	}
     }
 }

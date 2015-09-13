@@ -208,6 +208,18 @@ public class MCColor {
     public int getBlue() {
         return blue_comp;
     }
+    
+    public int hashCode() {
+    	return value();
+    }
+    
+    public String toString() {
+    	return Integer.toHexString(value());
+    }
+    
+    public static MCColor valueOf(String s) {
+    	return new MCColor(Integer.parseInt(s, 16));
+    }
 
     public static int colorInteger(Float[] c) {
         return colorInteger(c[0], c[1], c[2]);
@@ -270,7 +282,6 @@ public class MCColor {
         for (int i = 0; i < result.length; i++) {
             result[i] = mult[i] * seed;
         }
-
         return result;
     }
 }

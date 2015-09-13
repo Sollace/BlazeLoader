@@ -62,7 +62,7 @@ public class ApiEntity {
      * @param updateFrequency	How often position/velocity updates are sent
      * @param includeVelocity	True to send velocity
      */
-    public static <T extends Entity> void registerEntityTracker(Class<T> entityClass, int range, int updateFrequency, boolean includeVelocity) {
+    public static void registerEntityTracker(Class<? extends Entity> entityClass, int range, int updateFrequency, boolean includeVelocity) {
     	EntityTrackerRegistry.instance().addTracker(entityClass, range, updateFrequency, includeVelocity);
 	}
     

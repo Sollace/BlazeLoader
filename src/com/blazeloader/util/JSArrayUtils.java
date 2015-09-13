@@ -45,14 +45,14 @@ public class JSArrayUtils {
 	/**
 	 * Adds one or more elements to the beginning of an array and returns the result.
 	 */
-    public static <T> T[] unshift(T[] array, T ...added) {
+    public static <T> T[] unshift(T[] array, T... added) {
     	return ArrayUtils.addAll(added, array);
     }
     
     /**
      * Joins one or more arrays or array elements onto the given array and returns the result.
      */
-    public static <T> T[] concat(T[] array, Object ...concatted) {
+    public static <T> T[] concat(T[] array, Object... concatted) {
     	T[] result = array;
     	for (int i = 0; i < concatted.length; i++) {
     		if (concatted[i].getClass() == array.getClass()) {
