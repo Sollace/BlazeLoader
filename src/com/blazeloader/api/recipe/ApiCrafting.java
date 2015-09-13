@@ -13,7 +13,7 @@ import java.util.*;
 
 public class ApiCrafting {
 
-	private static final Map<Integer, BLCraftingManager> instances = new HashMap<Integer, BLCraftingManager>();
+	private static final Map<Integer, ICraftingManager> instances = new HashMap<Integer, ICraftingManager>();
 	private static int nextId = 1;
 	
 	static {
@@ -24,25 +24,25 @@ public class ApiCrafting {
 	 * Gets a wrapped instance of the normal CraftingManager.
 	 * @return Manager instance of CraftingManager
 	 */
-	public static BLCraftingManager getVanillaCraftingManager() {
+	public static ICraftingManager getVanillaCraftingManager() {
 		return instances.get(0);
 	}
 	
 	/**
 	 * Intended for compatibility with mods that implemement their
-	 * own CraftingManageers based off of the vanilla one.
+	 * own CraftingManagers based off of the vanilla one.
 	 * 
-	 * Will parse a vanilla minecraft CraftingManager to a Blazeloader apis compatible Manager.
+	 * Will parse a vanilla Minecraft CraftingManager to a Blazeloader apis compatible Manager.
 	 * 
-	 * It is not recommened to use this method often. Rather start off with a Manager
+	 * It is not recommended to use this method often. Rather start off with a Manager
 	 * or keep a reference to the converted result for later use.
 	 * 
 	 * @param manager	CraftingManager to convert
 	 * 
 	 * @return Manager corresponding to the given CraftingManager
 	 */
-	public static BLCraftingManager toManager(CraftingManager manager) {
-		for (BLCraftingManager i : instances.values()) {
+	public static ICraftingManager toManager(CraftingManager manager) {
+		for (ICraftingManager i : instances.values()) {
 			if (i.equals(manager)) return i;
 		}
 		return createCraftingManager((ArrayList<IRecipe>)manager.getRecipeList());
@@ -55,29 +55,24 @@ public class ApiCrafting {
 	 * 
 	 * @return Manager or null if not found.
 	 */
-	public static BLCraftingManager getManagerFromId(int id) {
+	public static ICraftingManager getManagerFromId(int id) {
 		return instances.containsKey(id) ? instances.get(id) : null;
 	}
 	
 	/**
 	 * Creates a brand spanking **new** Crafting Manager.
 	 */
-	public static BLCraftingManager createCraftingManager() {
+	public static ICraftingManager createCraftingManager() {
 		return createCraftingManager(new ArrayList<IRecipe>());
 	}
 
-	private static BLCraftingManager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
+	private static ICraftingManager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
 		int id = nextId++;
 		instances.put(id, new BLCraftingManager(id, startingRecipes));
 		return instances.get(id);
 	}
 	
-	/**
-	 * Custom implementation of the CraftingManager.
-	 * Supports additional functionality such as reverse crafting,
-	 * crafting areas greater than 3x3 and methods for removing recipes.
-	 */
-	public static final class BLCraftingManager implements Comparable<BLCraftingManager> {
+	public static final class BLCraftingManager implements ICraftingManager {
 		private final int id;
 		private final List<IRecipe> recipes;
 
@@ -86,135 +81,50 @@ public class ApiCrafting {
 			this.recipes = recipes;
 		}
 		
-		/**
-		 * Gets the unique integer id for this CraftingManager.
-		 * Can be used to retrieve this manager again from the pool of CraftingManagers.
-		 * 
-		 * @return integer id
-		 */
 		public int getId() {
 			return id;
 		}
 		
-		/**
-		 * Returns an unmodifieable list of recipes registered to this CraftingManager.
-		 * 
-		 * @return List of Recipes
-		 */
 		public List<IRecipe> getRecipeList() {
 			return Collections.unmodifiableList(recipes);
 		}
 		
-	    /**
-	     * Adds a shaped recipe to this CraftingManager.
-	     * 
-	     * @param output	ItemStack output for this recipe
-	     * @param input		Strings of recipe pattern followed by chars mapped to Items/Blocks/ItemStacks
-	     */
 	    public ShapedRecipe addRecipe(ItemStack output, Object... input) {
 	    	ShapedRecipe result = createShaped(output, false, input);
 	        recipes.add(result);
 	        return result;
 	    }
 	    
-	    /**
-	     * Adds a shapeless crafting recipe to this CraftingManager.
-	     *  
-	     * @param output	ItemStack output for this recipe
-	     * @param input		An array of ItemStack's Item's and Block's that make up the recipe.
-	     */
 	    public ShapelessRecipe addShapelessRecipe(ItemStack output, Object... input) {
 	    	ShapelessRecipe result = createShapeless(output, false, input);
 	        recipes.add(result);
 	        return result;
 	    }
 	    
-	    /**
-	     * Adds a shaped recipe to this CraftingManager.
-	     * 
-	     * @param output	ItemStack output for this recipe
-	     * @param input		Strings of recipe pattern followed by chars mapped to Items/Blocks/ItemStacks
-	     */
 	    public ReversibleShapedRecipe addReverseRecipe(ItemStack output, Object... input) {
 	    	ShapedRecipe result = createShaped(output, true, input);
 	        recipes.add(result);
 	        return (ReversibleShapedRecipe)result;
 	    }
-
-	    /**
-	     * Adds a shapeless crafting recipe to this CraftingManager.
-	     *  
-	     * @param output	ItemStack output for this recipe
-	     * @param input		An array of ItemStack's Item's and Block's that make up the recipe.
-	     */
+	    
 	    public ReversibleShapelessRecipe addReverseShapelessRecipe(ItemStack output, Object... input) {
 	    	ShapelessRecipe result = createShapeless(output, true, input);
 	        recipes.add(result);
 	        return (ReversibleShapelessRecipe)result;
 	    }
 	    
-	    /**
-	     * Adds an IRecipe to this RecipeManager.
-	     *  
-	     * @param recipe A recipe that will be added to the recipe list.
-	     */
-	    public void addRecipe(ShapelessRecipe recipe) {
+	    public void addRecipe(IRecipe recipe) {
 	        recipes.add(recipe);
 	    }
 	    
-	    /**
-	     * Adds an IRecipe to this RecipeManager.
-	     *  
-	     * @param recipe A recipe that will be added to the recipe list.
-	     */
-	    public void addRecipe(ShapedRecipe recipe) {
-	        recipes.add(recipe);
-	    }
-	    
-	    /**
-	     * Adds an IRecipe to this RecipeManager.
-	     *  
-	     * @param recipe A recipe that will be added to the recipe list.
-	     */
-	    public void addRecipe(IReversibleRecipe recipe) {
-	        recipes.add(recipe);
-	    }
-	    
-	    /**
-	     * Removes the given recipe
-	     * 
-	     * @param recipe	recipe to be removed
-	     * 
-	     * @return true if the recipe was removed, false otherwise
-	     */
 	    public boolean removeRecipe(IRecipe recipe) {
-	    	int index = recipes.indexOf(recipe);
-	    	if (index >= 0) {
-	    		recipes.remove(index);
-	    		return true;
-	    	}
-	    	return false;
+	    	return recipes.remove(recipe);
 	    }
 	    
-	    /**
-	     * Removes recipes for the given item
-	     * 
-	     * @param result	ItemStack result of the recipe to be removed
-	     * 
-	     * @return total number of successful removals
-	     */
 	    public int removeRecipe(ItemStack result) {
 	    	return removeRecipe(result, -1);
 	    }
 	    
-	    /**
-	     * Removes recipes for the given item
-	     * 
-	     * @param result		ItemStack result of the recipe to be removed
-	     * @param maxRemovals	Maximum number of removals
-	     * 
-	     * @return total number of successful removals
-	     */
 	    public int removeRecipe(ItemStack result, int maxRemovals) {
 	    	int count = 0;
 	    	for (int i = 0; i < recipes.size(); i++) {
@@ -293,14 +203,6 @@ public class ApiCrafting {
 	        return new ShapelessRecipe(output, itemStacks);
 	    }
 	    
-	    /**
-	     * Retrieves the result of a matched recipe in this RecipeManager.
-	     * 
-	     * @param inventory		inventory containing the crafting materials
-	     * @param world			the world that the crafting is being done in (usually the world of the player)
-	     * 
-	     * @return ItemStack result or null if none match
-	     */
 	    public ItemStack findMatchingRecipe(InventoryCrafting inventory, World world) {
 	        for (IRecipe i : recipes) {
 	        	if (i.matches(inventory, world)) return i.getCraftingResult(inventory);
@@ -308,15 +210,6 @@ public class ApiCrafting {
 	        return null;
 	    }
 	    
-	    /**
-	     * Retrieves the input required to craft the given item.
-	     * 
-	     * @param recipeOutput	ItemStack you wish to uncraft
-	     * @param width			width of crafting table
-	     * @param height		height of crafting table
-	     * 
-	     * @return ItemStack[] array of inventory contents needed
-	     */
 	    public ItemStack[] findRecipeInput(ItemStack recipeOutput, int width, int height) {
 	    	for (IRecipe i : recipes) {
 	    		if (i instanceof IReversibleRecipe) {
@@ -327,14 +220,6 @@ public class ApiCrafting {
 	    	return null;
 	    }
 	    
-	    /**
-	     * Gets the remaining contents for the inventory after performing a craft.
-	     * 
-	     * @param inventory		inventory containing the crafting materials
-	     * @param world			the world that the crafting is being done in (usually the world of the player)
-	     * 
-	     * @return ItemStack[] array or remaining items
-	     */
 	    public ItemStack[] getUnmatchedInventory(InventoryCrafting inventory, World world) {
 	        for (IRecipe i : recipes) {
 	            if (i.matches(inventory, world)) return i.getRemainingItems(inventory);
@@ -347,8 +232,8 @@ public class ApiCrafting {
 	    }
 	    
 	    public boolean equals(Object obj) {
-			if (obj instanceof BLCraftingManager) {
-				return ((BLCraftingManager) obj).id == id;
+			if (obj instanceof ICraftingManager) {
+				return ((ICraftingManager) obj).getId() == id;
 			}
 	    	if (obj instanceof CraftingManager) {
 	    		return recipes.equals(((CraftingManager)obj).getRecipeList());
@@ -358,9 +243,5 @@ public class ApiCrafting {
 	    	}
 	    	return super.equals(obj);
 	    }
-
-		public int compareTo(BLCraftingManager o) {
-			return o.id - id;
-		}
 	}
 }

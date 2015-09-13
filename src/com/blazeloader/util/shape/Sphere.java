@@ -83,20 +83,20 @@ public class Sphere implements IShape {
 	}
 	
 	public double getXOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public double getYOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public double getZOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public Vec3 computePoint(Random rand) {
 		double rho = hollow ? rad : MathHelper.getRandomDoubleInRange(rand, 0, rad);
-		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
+		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
 		double phi = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
 		
 		return (new Vec3(rho * Math.sin(phi) * Math.cos(pheta) * stretch.xCoord,rho * Math.sin(phi) * Math.sin(pheta) * stretch.yCoord, rho * Math.cos(phi) * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
