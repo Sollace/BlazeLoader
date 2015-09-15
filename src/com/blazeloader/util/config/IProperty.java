@@ -9,7 +9,7 @@ public interface IProperty<T> {
 	/**
 	 * Sets the default value
 	 */
-	public void setDefault(T newDef);
+	public IProperty<T> setDefault(T newDef);
 	
 	/**
 	 * Gets the default value
@@ -17,7 +17,7 @@ public interface IProperty<T> {
 	public T getDefault();
 	
 	/**
-	 * Sets the curent value back to the default.
+	 * Sets the current value back to the default.
 	 */
 	public void reset();
 	
@@ -35,12 +35,12 @@ public interface IProperty<T> {
 	/**
 	 * Sets a description/comment to be stored with this property.
 	 */
-	public void setDescription(String... desc);
+	public IProperty<T> setDescription(String... desc);
 	
 	/**
 	 * Gets a string representation of the type this property takes.
 	 */
-	public Class getType();
+	public Class<T> getType();
 	
 	/**
 	 * The name of this property. Is also the key this property is registered under in config files and categories.

@@ -24,9 +24,9 @@ public class Prop<T> implements IProperty<T> {
 		String def = null;
 		if (first.startsWith("@default: ")) {
 			def = first.substring("@default:".length(), first.length()).split("\\(")[0].trim();
+			checkForComment(lines);
+			first = cfg.popNextLine(lines);
 		}
-		checkForComment(lines);
-		first = cfg.popNextLine(lines);
 		String[] remain = first.split(":");
 		propertyName = remain[0].trim();
 		String value = "";
@@ -40,7 +40,11 @@ public class Prop<T> implements IProperty<T> {
 		if (!value.trim().isEmpty()) {
 			currentValue.set(unescapeValue(value));
 		}
-		typeClass = defaultValue.get().getClass();
+		if (defaultValue.get() != null) {
+			typeClass = defaultValue.get().getClass();
+		} else {
+			typeClass = currentValue.get().getClass();
+		}
 		loaded = true;
 	}
 		
@@ -62,8 +66,9 @@ public class Prop<T> implements IProperty<T> {
 		return propertyName;
 	}
 	
-	public void setDefault(T newDef) {
+	public Prop<T> setDefault(T newDef) {
 		defaultValue.set(newDef);
+		return this;
 	}
 	
 	public T getDefault() {
@@ -82,7 +87,7 @@ public class Prop<T> implements IProperty<T> {
 		currentValue.set(val);
 	}
 	
-	public Class getType() {
+	public Class<T> getType() {
 		return typeClass;
 	}
 	
@@ -95,7 +100,7 @@ public class Prop<T> implements IProperty<T> {
 		return null;
 	}
 	
-	public void setDescription(String... desc) {
+	public Prop<T> setDescription(String... desc) {
 		StringBuilder full = new StringBuilder();
 		for (String i : desc) {
 			full.append(i);
@@ -106,6 +111,7 @@ public class Prop<T> implements IProperty<T> {
 		} else {
 			description = cfg.applyDescriptionRegexString(full.toString().trim());
 		}
+		return this;
 	}
 	
 	protected void updateType(T def) {
@@ -132,23 +138,27 @@ public class Prop<T> implements IProperty<T> {
 				builder.append("\r\n");
 			}
 		}
-		builder.append("   @default: ");
 		
-		if (typeClass == String.class) {
-			builder.append("\"" + defaultValue.toString() + "\"");
-		} else {
-			builder.append(defaultValue.toString());
-		}
-		T[] possibles = getPossibleValues();
-		if (possibles != null) {
-			builder.append(" (");
-			for (int i = 0; i < possibles.length; i++) {
-				if (i > 0) builder.append(", ");
-				builder.append(possibles[i].toString());
+		if (cfg.getWriteDefaults()) {
+			builder.append("   @default: ");
+			
+			if (typeClass == String.class) {
+				builder.append("\"" + defaultValue.toString() + "\"");
+			} else {
+				builder.append(defaultValue.toString());
 			}
-			builder.append(")");
+			T[] possibles = getPossibleValues();
+			if (possibles != null) {
+				builder.append(" (");
+				for (int i = 0; i < possibles.length; i++) {
+					if (i > 0) builder.append(", ");
+					builder.append(possibles[i].toString());
+				}
+				builder.append(")");
+			}
+			builder.append("\r\n");
 		}
-		builder.append("\r\n   ");
+		builder.append("   ");
 		builder.append(propertyName);
 		builder.append(": ");
 		if (typeClass == String.class) {
