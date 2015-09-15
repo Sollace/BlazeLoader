@@ -125,7 +125,7 @@ public class ApiParticles {
     }
 	
 	/**
-	 * Spawns a particle in a shaped dictated by the given function.
+	 * Spawns a particle in a shape dictated by the given function.
      *
 	 * @param particle        ParticleData for the particle to spawn
 	 * @param world				World to spawn the particle in

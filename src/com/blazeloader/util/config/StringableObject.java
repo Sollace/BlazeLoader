@@ -44,7 +44,11 @@ public class StringableObject<T> implements IWrapObject<T> {
 					if (!m.isAccessible()) {
 						m.setAccessible(true);
 					}
-					object = (T)m.invoke(typeClass.newInstance(), value);
+					try {
+						object = (T)m.invoke(typeClass.newInstance(), value);
+					} catch (Throwable e) {
+						object = (T)m.invoke(def, value);
+					}
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();

@@ -6,12 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipesTools;
 
 import com.blazeloader.api.recipe.ApiCrafting;
-import com.blazeloader.api.recipe.ApiCrafting.BLCraftingManager;
+import com.blazeloader.api.recipe.ICraftingManager;
 
 public class ToolRecipes {
     private static final String[][] patterns = new RecipesTools().recipePatterns;
     
-    private final BLCraftingManager manager;
+    private final ICraftingManager manager;
 	
     private Item stickMaterial = Items.stick;
     
@@ -19,7 +19,7 @@ public class ToolRecipes {
         this(ApiCrafting.getVanillaCraftingManager());
     }
 
-    public ToolRecipes(BLCraftingManager CraftingManager) {
+    public ToolRecipes(ICraftingManager CraftingManager) {
         manager = CraftingManager;
         AddToolSetRecipes(Items.stick, Items.stick);
     }

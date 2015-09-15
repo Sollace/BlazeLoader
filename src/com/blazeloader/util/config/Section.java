@@ -70,7 +70,7 @@ public class Section implements IPropertyGroup {
 	public <T> Prop<T> get(String key, T def) {
 		if (has(key)) {
 			Prop<T> result = properties.get(key);
-			if (!def.getClass().isAssignableFrom(result.getDefault().getClass())) {
+			if (!def.getClass().isAssignableFrom(result.getType())) {
 				result.updateType(def);
 			}
 			return result;

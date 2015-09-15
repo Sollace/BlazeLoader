@@ -54,7 +54,7 @@ public interface IShape {
 	public Vec3 computePoint(Random rand);
 	
 	/**
-	 * Checks if the given point on the edge, or if not hollow the inside, of this shape.
+	 * Checks if the given point is on the edge, or if not hollow the inside, of this shape.
 	 * @return
 	 */
 	public boolean isPointInside(Vec3 point);

@@ -54,7 +54,7 @@ public interface IConfig {
 	/**
 	 * Applies a regex to cleanup a description/comment.
 	 * @param description The description to clean
-	 * @return The noew safe to use description
+	 * @return The now safe to use description
 	 */
 	public String applyDescriptionRegexString(String description);
 	
@@ -63,4 +63,9 @@ public interface IConfig {
 	 * @param lines List of lines available
 	 */
 	public String popNextLine(List<String> lines);
+	
+	/**
+	 * Returns true if this IConfig allows writing @default annotations to property files.
+	 */
+	public boolean getWriteDefaults();
 }

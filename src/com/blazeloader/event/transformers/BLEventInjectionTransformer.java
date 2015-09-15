@@ -104,6 +104,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.player.EntityPlayer.clonePlayer (Lnet/minecraft/entity/player/EntityPlayer;Z)V", beforeReturn);
         
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.EntityTracker.trackEntity (Lnet/minecraft/entity/Entity;)V");
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.EntityTrackerEntry.func_151260_c ()Lnet/minecraft/network/Packet;");
         
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.entityDropItem (Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/item/EntityItem;");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLiving.updateEquipmentIfNeeded (Lnet/minecraft/entity/item/EntityItem;)V");

@@ -53,7 +53,7 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     
     @Override
     public void onStartupComplete() {
-    	ParticlesRegister.instance().initialiseIds();
+		ParticlesRegister.instance().preInit();
     	BLPacketChannels.instance().register();
     }
     

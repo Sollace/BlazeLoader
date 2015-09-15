@@ -9,6 +9,7 @@ import net.minecraft.network.PacketBuffer;
 import com.blazeloader.api.network.PacketChannel;
 import com.blazeloader.api.network.Side;
 import com.blazeloader.bl.network.BLPacketParticles;
+import com.blazeloader.bl.network.BLPacketSpawnObject;
 import com.blazeloader.event.listeners.PacketChannelListener;
 import com.blazeloader.util.reflect.Reflect;
 import com.blazeloader.util.reflect.SimpleFunc;
@@ -24,6 +25,7 @@ public class BLPacketChannels extends PacketChannel implements PacketChannelList
 	public BLPacketChannels() {
 		super(BLMain.instance().getPluginChannelName());
 		registerMessageHandler(Side.CLIENT, new BLPacketParticles(), BLPacketParticles.Message.class, 0);
+		registerMessageHandler(Side.CLIENT, new BLPacketSpawnObject(), BLPacketSpawnObject.Message.class, 1);
 	}
 	
 	public static BLPacketChannels instance() {

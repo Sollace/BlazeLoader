@@ -2,8 +2,13 @@ package com.blazeloader.api.entity.tracker;
 
 import java.util.HashMap;
 
+import com.blazeloader.bl.main.BLPacketChannels;
+import com.blazeloader.bl.network.BLPacketSpawnObject;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.EntityTrackerEntry;
+import net.minecraft.network.Packet;
 
 public class EntityTrackerRegistry {
 	private static EntityTrackerRegistry instance = new EntityTrackerRegistry();
@@ -37,5 +42,18 @@ public class EntityTrackerRegistry {
 			}
 		}
 		return false;
+	}
+	
+	public Packet getSpawnPacket(EntityTrackerEntry trackerEntry) {
+		if (trackerEntry != null) {
+			if (trackerEntry.trackedEntity instanceof ITrackable) {
+				return BLPacketChannels.instance().getRawPacket(new BLPacketSpawnObject.Message(trackerEntry.trackedEntity, 1));
+			}
+			ITrack entry = mappings.get(trackerEntry.trackedEntity.getClass());
+			if (entry != null) {
+				return entry.getEntitySpawnPacket(trackerEntry);
+			}
+		}
+		return null;
 	}
 }

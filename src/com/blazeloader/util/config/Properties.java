@@ -24,6 +24,8 @@ public class Properties implements IConfig {
 	
 	private File file;
 	
+	private boolean writeDefaults = true;
+	
 	public Properties(File file) {
 		load(file);
 	}
@@ -53,6 +55,15 @@ public class Properties implements IConfig {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Properties setWriteDefaults(boolean val) {
+		writeDefaults = val;
+		return this;
+	}
+	
+	public boolean getWriteDefaults() {
+		return writeDefaults;
 	}
 	
 	protected boolean hasSection(String section) {

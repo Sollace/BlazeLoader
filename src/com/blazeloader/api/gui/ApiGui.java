@@ -25,7 +25,7 @@ public class ApiGui {
 	 */
     public static void openContainer(EntityPlayerMP player, IModInventory inventory) {
         if (player.openContainer != player.inventoryContainer) player.closeScreen();
-
+        
         if (inventory instanceof IModLockableInventory) {
             IModLockableInventory lockable = (IModLockableInventory)inventory;
             if (lockable.isLocked() && !player.canOpen(lockable.getLockCode()) && !player.isSpectator()) {
