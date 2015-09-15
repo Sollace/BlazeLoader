@@ -4,6 +4,7 @@ package com.blazeloader.test;
 
 import java.util.Optional;
 
+import com.blazeloader.api.client.MCColor;
 import com.blazeloader.bl.interop.ForgeMLAccess;
 import com.blazeloader.util.JSArrayUtils;
 import com.blazeloader.util.data.Tuple.Tuple2;
@@ -46,6 +47,14 @@ public class Tests {
 		String result = JSArrayUtils.join(arr);
 		System.out.println("1,2,3 == " + result);
 		return "1,2,3".contentEquals(result);
+	}
+	
+	public static boolean colorTest() {
+		MCColor c = MCColor.valueOf("#010101");
+		
+		System.out.println(c);
+		
+		return true;
 	}
 	
 	/*public static boolean isArrayTest() {

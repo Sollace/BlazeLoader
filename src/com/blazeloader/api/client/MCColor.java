@@ -6,7 +6,7 @@ import net.minecraft.item.ItemDye;
  * Minecraft color values
  */
 public class MCColor {
-
+	
     public static final MCColor
             DYE_BLACK = new MCColor(ItemDye.dyeColors[0]),
             DYE_RED = new MCColor(ItemDye.dyeColors[1]),
@@ -214,10 +214,23 @@ public class MCColor {
     }
     
     public String toString() {
-    	return Integer.toHexString(value());
+    	String result = Integer.toHexString(value());
+    	if (result.length() < 6) result = "0" + result;
+    	return '#' + result;
     }
     
     public static MCColor valueOf(String s) {
+    	if (s.startsWith("#")) s = s.trim().substring(1);
+    	if (s.length() == 3) {
+    		String t = "";
+    		for (int i = 0; i < s.length(); i++) {
+    			String c = s.charAt(i) + "";
+    			t += c + c;
+    		}
+    		s = t;
+    	}
+    	while (s.length() < 6) s = "0" + s;
+    	while (s.length() > 6) s = s.substring(1);
     	return new MCColor(Integer.parseInt(s, 16));
     }
 
@@ -268,15 +281,15 @@ public class MCColor {
     public static int B(int c) {
         return c & 255;
     }
-
+    
     public static float[] newRGBarray(float rgb) {
         return newRGBarray(rgb, rgb, rgb);
     }
-
+    
     public static float[] newRGBarray(float r, float g, float b) {
         return new float[]{r, g, b};
     }
-
+    
     public static float[] multRGBarray(float seed, float[] mult) {
         float[] result = new float[mult.length];
         for (int i = 0; i < result.length; i++) {
