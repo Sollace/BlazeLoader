@@ -1,5 +1,7 @@
 package com.blazeloader.bl.obf;
 
+import com.blazeloader.util.version.Versions;
+
 /**
  * Type of obfuscation state for the game.
  */
@@ -16,4 +18,11 @@ public enum OBFLevel {
 	 * Development build, all references have human-readable names.
 	 */
 	MCP;
+	
+	/**
+	 * Gets the obfuscation level corresponding to the current game state.
+	 */
+	public static OBFLevel getCurrent() {
+		return Versions.isGameObfuscated() ? OBF : Versions.isForgeInstalled() ? SRG : MCP;
+	}
 }

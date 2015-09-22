@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.gui;
+package com.blazeloader.api.gui;
 
 import net.minecraft.world.ILockableContainer;
 

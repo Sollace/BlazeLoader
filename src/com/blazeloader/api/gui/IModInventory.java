@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.gui;
+package com.blazeloader.api.gui;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.world.IInteractionObject;

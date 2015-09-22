@@ -1,6 +1,7 @@
 package com.blazeloader.bl.obf;
 
 import net.acomputerdog.OBFUtil.table.DirectOBFTableSRG;
+import net.acomputerdog.OBFUtil.table.TargetTypeMap;
 import net.acomputerdog.OBFUtil.util.TargetType;
 
 import java.util.HashMap;
@@ -13,9 +14,9 @@ import java.util.Map;
 public class BLOBFTable extends DirectOBFTableSRG {
 	private int size = 0;
 	
-    private final Map<TargetType, Map<String, BLOBF>> obfNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> srgNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> mcpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
+    private final TargetTypeMap<Map<String, BLOBF>> obfNameMap = new TargetTypeMap<Map<String, BLOBF>>();
+    private final TargetTypeMap<Map<String, BLOBF>> srgNameMap = new TargetTypeMap<Map<String, BLOBF>>();
+    private final TargetTypeMap<Map<String, BLOBF>> mcpNameMap = new TargetTypeMap<Map<String, BLOBF>>();
 
     public BLOBFTable() {
         super();
@@ -68,9 +69,9 @@ public class BLOBFTable extends DirectOBFTableSRG {
     
     public boolean hasType(String name, TargetType type, OBFLevel level) {
     	switch (level) {
-			case SRG: return hasTypeSRG(name, type);
-			case MCP: return hasTypeDeobf(name, type);
-			default: return hasTypeObf(name, type);
+			case SRG: return hasSRG(name, type);
+			case MCP: return hasDeobf(name, type);
+			default: return hasObf(name, type);
 		}
     }
     
@@ -81,7 +82,7 @@ public class BLOBFTable extends DirectOBFTableSRG {
     	return obf;
     }
     
-    public Map<TargetType, Map<String, BLOBF>> getMapping(OBFLevel level) {
+    public TargetTypeMap<Map<String, BLOBF>> getMapping(OBFLevel level) {
     	switch (level) {
     		case SRG: return srgNameMap;
     		case MCP: return mcpNameMap;
@@ -91,24 +92,24 @@ public class BLOBFTable extends DirectOBFTableSRG {
     
     public String getObfFromType(String name, TargetType type, OBFLevel level) {
     	switch (level) {
-			case SRG: return getObfFromSRGType(name, type);
-			case MCP: return obfType(name, type);
+			case SRG: return getObfFromSRG(name, type);
+			case MCP: return obf(name, type);
 			default: return name;
 		}
     }
     
     public String getSRGFromType(String name, TargetType type, OBFLevel level) {
     	switch (level) {
-			case OBF: return getSRGFromObfType(name, type);
-			case MCP: return getSRGFromDeObfType(name, type);
+			case OBF: return getSRGFromObf(name, type);
+			case MCP: return getSRGFromDeObf(name, type);
 			default: return name;
 		}
     }
     
     public String getMCPFromType(String name, TargetType type, OBFLevel level) {
     	switch (level) {
-			case SRG: return getDeObfFromSRGType(name, type);
-			case OBF: return getDeObfFromSRGType(getSRGFromObfType(name, type), type);
+			case SRG: return getDeObfFromSRG(name, type);
+			case OBF: return getDeObfFromSRG(getSRGFromObf(name, type), type);
 			default: return name;
 		}
     }
