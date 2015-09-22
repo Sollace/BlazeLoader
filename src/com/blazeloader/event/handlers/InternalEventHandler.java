@@ -3,6 +3,9 @@ package com.blazeloader.event.handlers;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockTorch;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
@@ -11,17 +14,24 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
 import com.blazeloader.api.ApiGeneral;
+import com.blazeloader.api.block.ISided;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
+import com.blazeloader.api.recipe.FurnaceFuels;
 import com.blazeloader.api.world.ApiWorld;
 import com.blazeloader.api.world.gen.IChunkGenerator;
 import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
@@ -119,5 +129,17 @@ public class InternalEventHandler {
     	if (result != null) {
     		event.setReturnValue(result);
     	}
+    }
+    
+    public static void eventDoesBlockHaveSolidTopSurface(ReturnEventInfo<World, Boolean> event, IBlockAccess world, BlockPos pos) {
+    	Block block = world.getBlockState(pos).getBlock();
+    	if (block instanceof ISided) {
+    		event.setReturnValue(((ISided)block).isSideSolid(world, pos, EnumFacing.UP));
+    	}
+    }
+    
+    public static void eventGetItemBurnTime(ReturnEventInfo<TileEntityFurnace, Integer> event, ItemStack stack) {
+    	int result = FurnaceFuels.getItemBurnTime(stack);
+    	if (result > 0) event.setReturnValue(result);
     }
 }

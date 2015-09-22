@@ -4,6 +4,7 @@ import com.blazeloader.bl.exception.InvalidEventException;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.obf.BLMethodInfo;
 import com.blazeloader.bl.obf.BLOBF;
+import com.blazeloader.bl.obf.BLObfProvider;
 import com.blazeloader.bl.obf.OBFLevel;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.runtime.Obf;
@@ -22,7 +23,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     protected static final InjectionPoint beforeReturn = new BeforeReturn();
     
     protected void addBLAccessor(String className) {
-    	addAccessor("com.blazeloader.api.privileged.I" + className);
+    	addAccessor("com.blazeloader.api.privileged.I" + className, BLObfProvider.create(className));
     }
     
     protected void addBLConstructorEvent(EventSide side, String clazz, Object[] paramaterTypes) {
@@ -89,6 +90,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkLoad ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.WorldServer.init ()Lnet/minecraft/world/World;", beforeReturn);
+        
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.world.World.doesBlockHaveSolidTopSurface (Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;)Z", beforeReturn);
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime (Lnet/minecraft/item/ItemStack;)I");
         
         addBLEvent(EventSide.INTERNAL, "net.minecraft.server.MinecraftServer.createNewCommandManager ()Lnet/minecraft/command/ServerCommandManager;", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.server.integrated.IntegratedServer.createNewCommandManager ()Lnet/minecraft/command/ServerCommandManager;", beforeReturn);

@@ -1,13 +1,12 @@
 package com.blazeloader.api.gui;
 
-import com.blazeloader.api.client.gui.IModInventory;
-import com.blazeloader.api.client.gui.IModLockableInventory;
 import com.blazeloader.util.JSArrayUtils;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
@@ -43,6 +42,15 @@ public class ApiGui {
         player.openContainer.onCraftGuiOpened(player);
     }
     
+    /**
+     * Registers an additional creative tab for a mod.
+     * 
+     * @param mod				Mod name
+     * @param name				Name of creative tab
+     * @param iconItem			Item to be displayed on the tab
+     * @param iconMetadata		Metadata to be used with the item
+     * @return	A CreativeTabs instance.
+     */
     public static CreativeTabs registerCreativeTab(String mod, String name, Item iconItem, int iconMetadata) {
     	CreativeTabs.creativeTabArray = JSArrayUtils.push(CreativeTabs.creativeTabArray, (CreativeTabs)null);
     	return new CreativeTabs(CreativeTabs.creativeTabArray.length-1, mod + "." + name) {
@@ -59,5 +67,17 @@ public class ApiGui {
 				return (getTabIndex() - 12) % 10 < 5;
 			}
     	};
+    }
+    
+    /**
+     * Registers an additional creative tab for a mod.
+     * 
+     * @param mod				Mod name
+     * @param name				Name of creative tab
+     * @param stack				The itemstack to be displayed on the tab
+     * @return	A CreativeTabs instance.
+     */
+    public static CreativeTabs registerCreativeTab(String mod, String name, ItemStack stack) {
+    	return registerCreativeTab(mod, name, stack.getItem(), stack.getMetadata());
     }
 }

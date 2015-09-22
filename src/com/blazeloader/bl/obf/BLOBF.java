@@ -35,7 +35,7 @@ public class BLOBF extends Obf {
         simpleSrg = splitPackageOff(seargeName);
     }
     
-    protected static String splitPackageOff(String string) {
+    public static String splitPackageOff(String string) {
     	String[] nameParts = string.split(Patterns.PERIOD);
     	return nameParts.length > 0 ? nameParts[nameParts.length - 1] : string;
     }
@@ -60,7 +60,10 @@ public class BLOBF extends Obf {
      * Fix for BLOBF not matching against method names.
      */
     public boolean matches(String name) {
-    	return super.matches(name) || simpleObf.equals(name) || simpleSrg.equals(name) || simpleMcp.equals(name);
+    	return super.matches(name) ||
+    			simpleObf.equals(name) || simpleObf.split(" ")[0].equals(name) ||
+    			simpleSrg.equals(name) || simpleSrg.split(" ")[0].equals(name) ||
+    			simpleMcp.equals(name) || simpleMcp.split(" ")[0].equals(name);
     }
 
     //-----------------------------[Static Stuff]------------------------------------

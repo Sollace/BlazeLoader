@@ -22,6 +22,7 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
+import com.blazeloader.api.block.ISided;
 import com.blazeloader.api.block.UpdateType;
 import com.blazeloader.api.world.gen.IChunkGenerator;
 import com.blazeloader.api.world.gen.WorldSavedDataCollection;
@@ -397,9 +398,8 @@ public class ApiWorld {
     
     /**
      * Determine if the given block is considered solid on the
-     * specified side.  Used by placement logic.
+     * specified side. Used by placement logic.
      * <p>
-	 * Warning: This method depends on the Forge API for full functionality. Without that it may only return correctly for the top or bottom faces.
      * 
      * @forge This is part of the Forge API specification
      * @param w		The world
@@ -416,6 +416,10 @@ public class ApiWorld {
 	        if (Versions.isForgeInstalled()) {
 	    		return ForgeWorld.isSideSolid(w, pos, side, def);
 			}
+	        
+	        if (block instanceof ISided) {
+	        	return ((ISided)block).isSideSolid(w, pos, side);
+	        }
 	        
 	        if (block.getMaterial().isOpaque() && block.isFullCube()) {
 	        	return true;

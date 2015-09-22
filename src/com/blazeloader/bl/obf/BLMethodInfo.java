@@ -1,6 +1,5 @@
 package com.blazeloader.bl.obf;
 
-import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
 
@@ -44,13 +43,7 @@ public class BLMethodInfo extends MethodInfo {
     }
 
     private static Obf getObfType(String name) {
-        if (!Versions.isGameObfuscated()) {
-            return BLOBF.getClass(name, OBFLevel.MCP);
-        }
-        if (Versions.isForgeInstalled()) {
-            return BLOBF.getClass(name, OBFLevel.SRG);
-        }
-        return BLOBF.getClass(name, OBFLevel.OBF);
+    	return BLOBF.getClass(name, OBFLevel.getCurrent());
     }
 
     private static String getClassName(String[] parts) {

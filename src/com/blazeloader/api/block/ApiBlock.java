@@ -111,10 +111,7 @@ public class ApiBlock {
      */
     public static <T extends Block> T registerBlock(int id, ResourceLocation name, T block) {
         injectBlock(id, name, block);
-        for (IBlockState state : (ImmutableList<IBlockState>)block.getBlockState().getValidStates()) {
-            int metadata = Block.blockRegistry.getIDForObject(block) << 4 | block.getMetaFromState(state);
-            Block.BLOCK_STATE_IDS.put(state, metadata);
-        }
+        applyPostRegisterConditions(block);
         return block;
     }
     
@@ -222,6 +219,13 @@ public class ApiBlock {
     		Blocks.air = getBlockByName("air");
     	}
     	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
+    }
+    
+    private static void applyPostRegisterConditions(Block block) {
+    	for (IBlockState state : (ImmutableList<IBlockState>)block.getBlockState().getValidStates()) {
+            int metadata = Block.blockRegistry.getIDForObject(block) << 4 | block.getMetaFromState(state);
+            Block.BLOCK_STATE_IDS.put(state, metadata);
+        }
     }
     
     /**
