@@ -51,19 +51,19 @@ public class Cone implements IShape {
 	}
 	
 	public double getXOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public double getYOffset() {
-		return -height/2;
+		return 0;
 	}
 	
 	public double getZOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public Vec3 computePoint(Random rand) {
-		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
+		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
 		double phi = Math.abs(Math.atan(rad / height));
 		
 		if (!hollow) {
@@ -71,12 +71,13 @@ public class Cone implements IShape {
 		}
 		
 		double radius = Math.tan(phi) * height;
-		double rho = Math.sqrt((height * height) + (radius * radius));
-		if (!hollow) {
-			rho = MathHelper.getRandomDoubleInRange(rand, 0, height);
-		}
+		double rho = MathHelper.getRandomDoubleInRange(rand, 0, height);
 		
-		return (new Vec3(rho * Math.sin(phi) * Math.cos(pheta) * stretch.xCoord,rho * Math.sin(phi) * Math.sin(pheta) * stretch.yCoord, rho * Math.cos(phi) * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
+		double x = rho * Math.sin(phi) * Math.cos(pheta);
+		double y = rho * Math.sin(phi) * Math.sin(pheta);
+		double z = rho * Math.cos(phi);
+		
+		return (new Vec3(x * stretch.xCoord, y * stretch.yCoord, z * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
 	}
 	
 	public Cone setRotation(float u, float v) {

@@ -142,4 +142,30 @@ public class InternalEventHandler {
     	int result = FurnaceFuels.getItemBurnTime(stack);
     	if (result > 0) event.setReturnValue(result);
     }
+    /*
+    //=============Torch events======
+    
+    public static void eventOnNeighborChangeInternal(ReturnEventInfo<BlockTorch, Boolean> event, World world, BlockPos pos, IBlockState state) {
+        EnumFacing opposite = ((EnumFacing)state.getValue(BlockTorch.FACING)).getOpposite();
+        pos = pos.offset(opposite);
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof ISided) {
+        	BlockTorch torch = event.getSource();
+        	if (((ISided)state.getBlock()).isSideSolid(world, pos, opposite)) {
+        		event.setReturnValue(true);
+        	}
+        }
+    }
+    
+    public static void canPlaceAt(ReturnEventInfo<BlockTorch, Boolean> event, World world, BlockPos pos, EnumFacing facing) {
+    	facing = facing.getOpposite();
+    	pos = pos.offset(facing);
+    	IBlockState state = world.getBlockState(pos);
+    	if (state.getBlock() instanceof ISided) {
+    		event.setReturnValue(((ISided)state.getBlock()).isSideSolid(world, pos, facing));
+    	}
+    }
+    
+    //==============================
+     Possibly out of our scope*/
 }
