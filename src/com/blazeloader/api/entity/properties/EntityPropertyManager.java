@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.util.data.INBTWritable;
 import com.mumfrey.liteloader.core.event.HandlerList;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -16,7 +17,15 @@ import net.minecraft.world.World;
  */
 public class EntityPropertyManager {
 	
+	private static EntityPropertyManager instance = new EntityPropertyManager();
+	
 	private static final HashMap<UUID, Properties> mapping = new HashMap<UUID, Properties>();
+	
+	public static EntityPropertyManager instance() {
+		return instance;
+	}
+	
+	private EntityPropertyManager() { }
 	
 	public static void registerEntityProperties(Entity e, IEntityProperties p) {
 		if (e != null) {
@@ -47,7 +56,7 @@ public class EntityPropertyManager {
 		return null;
 	}
 	
-	public static void copyToEntity(Entity source, Entity destination) {
+	public void copyToEntity(Entity source, Entity destination) {
 		UUID key = source.getUniqueID();
 		if (mapping.containsKey(key)) {
 			Properties entry = mapping.get(key);
@@ -59,27 +68,27 @@ public class EntityPropertyManager {
 		}
 	}
 	
-	public static void entityDestroyed(Entity e) {
+	public void entityDestroyed(Entity e) {
 		if (mapping.containsKey(e.getUniqueID())) {
 			mapping.remove(e.getUniqueID());
 		}
 	}
 	
-	public static void entityinit(Entity e) {
+	public void entityinit(Entity e) {
 		UUID key = e.getUniqueID();
 		if (mapping.containsKey(key)) {
 			mapping.get(key).entityInit(e, e.worldObj);
 		}
 	}
 	
-	public static void onEntityUpdate(Entity e) {
+	public void onEntityUpdate(Entity e) {
 		UUID key = e.getUniqueID();
 		if (mapping.containsKey(key)) {
 			mapping.get(key).onEntityUpdate(e);
 		}
 	}
 	
-	public static void readFromNBT(Entity e, NBTTagCompound t) {
+	public void readFromNBT(Entity e, NBTTagCompound t) {
 		UUID key = e.getUniqueID();
 		if (mapping.containsKey(key)) {
 			//We have to make sure the registry's object remains with the entity after it's UUID is loaded from NBT
@@ -106,7 +115,7 @@ public class EntityPropertyManager {
 		}
 	}
 	
-	public static void writeToNBT(Entity e, NBTTagCompound t) {
+	public void writeToNBT(Entity e, NBTTagCompound t) {
 		UUID key = e.getUniqueID();
 		if (mapping.containsKey(key)) {
 			NBTTagCompound modsTag = new NBTTagCompound();
@@ -120,7 +129,7 @@ public class EntityPropertyManager {
 		}
 	}
 	
-	public static void addEntityCrashInfo(Entity e, CrashReportCategory section) {
+	public void addEntityCrashInfo(Entity e, CrashReportCategory section) {
 		UUID key = e.getUniqueID();
 		if (mapping.containsKey(key)) {
 			Properties p = mapping.get(key);
@@ -132,7 +141,7 @@ public class EntityPropertyManager {
 		}
 	}
 	
-	private static class Properties {
+	private static class Properties implements INBTWritable {
 		private final HandlerList<IEntityProperties> handlers = new HandlerList<IEntityProperties>(IEntityProperties.class);
 		
 		private Properties() {}

@@ -20,11 +20,11 @@ public final class Professions {
 	public static Professions instance() {
 		return instance;
 	}
-		
+	
 	private Professions() { }
 	
 	public int randomProfessionId(Random rand) {
-		return 6;// rand.nextInt(professions.size() + 6);
+		return rand.nextInt(professions.size() + 6);
 	}
 	
 	public boolean hasId(int id) {

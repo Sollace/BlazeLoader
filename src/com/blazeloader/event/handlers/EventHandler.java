@@ -124,13 +124,13 @@ public class EventHandler {
     public static void initEntity(EventInfo<Entity> event, World w) {
     	if (!(event.getSource() instanceof EntityPlayer)) {
 	    	entityEventHandlers.all().onEntityConstructed(event.getSource());
-	    	EntityPropertyManager.entityinit(event.getSource());
+	    	EntityPropertyManager.instance().entityinit(event.getSource());
     	}
     }
     
     public static void initEntityPlayer(EventInfo<EntityPlayer> event, World w, GameProfile profile) {
     	entityEventHandlers.all().onEntityConstructed(event.getSource());
-    	EntityPropertyManager.entityinit(event.getSource());
+    	EntityPropertyManager.instance().entityinit(event.getSource());
     }
     
     public static void eventCollideWithPlayer(EventInfo<EntityPlayer> event, Entity entity) {

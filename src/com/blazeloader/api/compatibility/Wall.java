@@ -6,10 +6,10 @@ import java.util.*;
 /**
  * A wall for mods to communicate between each other by setting and getting values by a string identifier.
  */
-public class Wall implements Iterable<Wall.Entry> {
+public final class Wall implements Iterable<Wall.Entry> {
     private static Map<String, Wall.Entry> wallMap = new HashMap<String, Wall.Entry>();
     
-    private static Wall instance = new Wall();
+    private static final Wall instance = new Wall();
     
     /**
      * Gets a wall object for iteration and select functions from List.
