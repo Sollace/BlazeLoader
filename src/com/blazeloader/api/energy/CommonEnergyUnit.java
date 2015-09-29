@@ -1,6 +1,6 @@
 package com.blazeloader.api.energy;
 
-class CommonEnergyUnit implements SIUnit {
+public class CommonEnergyUnit implements SIUnit {
 	/**
 	 * The common SIUnit used as an intermediate between other types of energies.
 	 * 
