@@ -20,6 +20,11 @@ public class CommonEnergyUnit implements SIUnit {
 	}
 	
 	@Override
+	public String getDisplayName() {
+		return getSymbol();
+	}
+	
+	@Override
 	public float convertTo(float value) {
 		return value;
 	}
@@ -27,5 +32,35 @@ public class CommonEnergyUnit implements SIUnit {
 	@Override
 	public float getUniversalValue(float value) {
 		return value;
+	}
+
+	@Override
+	public boolean isElectrical() {
+		return false;
+	}
+
+	@Override
+	public boolean isNewtonForce() {
+		return false;
+	}
+
+	@Override
+	public boolean isHydraulic() {
+		return false;
+	}
+
+	@Override
+	public boolean isPressure() {
+		return false;
+	}
+
+	@Override
+	public boolean isThermal() {
+		return false;
+	}
+
+	@Override
+	public boolean isLuminous() {
+		return false;
 	}
 }
