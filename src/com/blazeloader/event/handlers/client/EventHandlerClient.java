@@ -13,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
@@ -20,12 +21,14 @@ import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
+import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
+import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.listeners.client.ClientBlockListener;
@@ -163,6 +166,22 @@ public class EventHandlerClient extends EventHandler {
 						event.cancel();
 					}
 	    		}
+	    	}
+    	}
+    }
+    
+    public static void eventHandleCollectItem(EventInfo<NetHandlerPlayClient> event, S0DPacketCollectItem packet) {
+    	if (inventoryEventHandlers.size() > 0) {
+	    	Minecraft mc = ApiClient.getClient();
+	    	Entity owner = mc.theWorld.getEntityByID(packet.getEntityID());
+	    	if (owner == null) owner = mc.thePlayer;
+	    	Entity item = mc.theWorld.getEntityByID(packet.getCollectedItemEntityID());
+	    	if (item != null) {
+	    		int amount = 1;
+	    		if (item instanceof EntityItem) {
+	    			amount = ((EntityItem)item).getEntityItem().stackSize;
+	    		}
+	    		inventoryEventHandlers.all().onItemPickup(owner, item, amount);
 	    	}
     	}
     }

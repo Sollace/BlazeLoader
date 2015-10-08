@@ -2,6 +2,7 @@ package com.blazeloader.event.handlers;
 
 import java.net.SocketAddress;
 
+import com.blazeloader.api.ApiServer;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
 import com.blazeloader.event.listeners.*;
@@ -13,7 +14,6 @@ import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +21,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S0DPacketCollectItem;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -55,16 +57,6 @@ public class EventHandler {
     public static void eventEnd() {
         modEventHandlers.all().stop();
     }
-    
-    //TODO: Check if these are still needed
-    public static void overrideTickBlocksAndAmbiance(WorldServer world) {
-        worldEventHandlers.all().onBlocksAndAmbianceTicked(world);
-    }
-
-    public static void overrideTickServerWorld(WorldServer world) {
-        worldEventHandlers.all().onServerTick(world);
-    }
-    //
     
     public static void eventInit(ReturnEventInfo<WorldServer, World> event) {
     	worldEventHandlers.all().onWorldInit(event.getSource());
@@ -165,11 +157,11 @@ public class EventHandler {
     	}
     }
     
-    public static void eventOnItemPickup(EventInfo<EntityLivingBase> event, Entity itemEntity, int amount) {
+    /*public static void eventOnItemPickup(EventInfo<EntityLivingBase> event, Entity itemEntity, int amount) {
     	if (inventoryEventHandlers.size() > 0 && !itemEntity.isDead && !event.getSource().worldObj.isRemote) {
     		inventoryEventHandlers.all().onItemPickup(event.getSource(), itemEntity, amount);
     	}
-    }
+    }*/
     
     public static void eventUpdateEquipmentIfNeeded(EventInfo<EntityLiving> event, EntityItem entityItem) {
     	if (inventoryEventHandlers.size() > 0) {
@@ -278,6 +270,29 @@ public class EventHandler {
     			}
     			event.cancel();
         	}
+    	}
+    }
+    
+    public static void initS0DPacketCollectItem(EventInfo<S0DPacketCollectItem> event, int itemId, int entityId) {
+    	if (inventoryEventHandlers.size() > 0) {
+	    	MinecraftServer server = ApiServer.getServer();
+	    	Entity owner = null;
+	    	for (WorldServer i : server.worldServers) {
+	    		owner = i.getEntityByID(entityId);
+	    		if (owner != null) break;
+	    	}
+	    	Entity item = null;
+	    	for (WorldServer i : server.worldServers) {
+	    		item = i.getEntityByID(itemId);
+	    		if (item != null) break;
+	    	}
+	    	if (item != null && owner != null) {
+	    		int amount = 1;
+	    		if (item instanceof EntityItem) {
+	    			amount = ((EntityItem)item).getEntityItem().stackSize;
+	    		}
+	    		inventoryEventHandlers.all().onItemPickup(owner, item, amount);
+	    	}
     	}
     }
 }
