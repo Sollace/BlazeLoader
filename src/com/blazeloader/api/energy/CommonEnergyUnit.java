@@ -1,5 +1,7 @@
 package com.blazeloader.api.energy;
 
+import java.text.NumberFormat;
+
 public class CommonEnergyUnit implements SIUnit {
 	/**
 	 * The common SIUnit used as an intermediate between other types of energies.
@@ -7,6 +9,17 @@ public class CommonEnergyUnit implements SIUnit {
 	 * Conversion is done in a relative fashion so it is up to modders to decide how their units compare to this.
 	 */
 	public static final SIUnit COMMON_SI_UNIT = new CommonEnergyUnit("C");
+	
+	/**
+	 * The formatter used to represent values in this unit
+	 */
+	protected static final NumberFormat format;
+	static {
+		format = NumberFormat.getInstance();
+		format.setGroupingUsed(true);
+		format.setMinimumFractionDigits(2);
+		format.setMaximumFractionDigits(2);
+	}
 	
 	private final String symbol;
 	
@@ -25,6 +38,11 @@ public class CommonEnergyUnit implements SIUnit {
 	}
 	
 	@Override
+	public String formatValue(float value) {
+		return getSymbol() + " " + format.format(value).replace(".", ":");
+	}
+	
+	@Override
 	public float convertTo(float value) {
 		return value;
 	}
@@ -33,7 +51,7 @@ public class CommonEnergyUnit implements SIUnit {
 	public float getUniversalValue(float value) {
 		return value;
 	}
-
+	
 	@Override
 	public boolean isElectrical() {
 		return false;

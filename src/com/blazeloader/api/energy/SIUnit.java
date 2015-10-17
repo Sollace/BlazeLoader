@@ -17,6 +17,12 @@ public interface SIUnit {
 	public String getDisplayName();
 	
 	/**
+	 * Formats the given value for this SIUnit.
+	 * Values are assumed to have already been converted to this unit.
+	 */
+	public String formatValue(float value);
+	
+	/**
 	* Converts a value in the base units to this unit
 	**/
 	public float convertTo(float value);
@@ -25,6 +31,13 @@ public interface SIUnit {
 	* Converts a value in this unit to the base units.
 	**/
 	public float getUniversalValue(float value);
+	
+	/**
+	 * Checks if two SIUnits may be used interchangeably.
+	 */
+	public default boolean isEquivalent(SIUnit other) {
+		return equals(other);
+	}
 	
 	/**
 	 * Return true if this unit is associated with electrical energy.
