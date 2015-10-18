@@ -1,5 +1,8 @@
 package com.blazeloader.api.world;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -7,10 +10,15 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 
+import java.util.Collection;
+
+import com.blazeloader.api.block.IRotateable;
+import com.blazeloader.bl.interop.ForgeWorldAccess;
 import com.blazeloader.util.reflect.Func;
 import com.blazeloader.util.reflect.Reflect;
 import com.blazeloader.util.reflect.Var;
 import com.blazeloader.util.version.Versions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
 /**
@@ -19,7 +27,10 @@ import com.google.common.collect.ImmutableSetMultimap;
 public final class ForgeWorld {
 	
     /**
-     * Gets an accessor to Forge methods on the given Minecraft world
+     * Gets an accessor to Forge methods on the given Minecraft world.
+     * This may be used in cases where a mod specifically requires access to forge's methods.
+     * 
+     * @param w		A world instance to apply to
      */
     public static ForgeWorldAccess getForgeWorld(World w) {
     	return new ForgeWorldObj(w);
@@ -33,6 +44,9 @@ public final class ForgeWorld {
     private static Func<World, ForgeWorldAccess, MapStorage> _getPerWorldStorage;
     private static Func<World, ForgeWorldAccess, Integer> _getBlockLightOpacity;
 	
+    private static Func<Block, IRotateable, Boolean> _rotateBlock;
+    private static Func<Block, IRotateable, EnumFacing[]> _getValidRotations;
+    
 	protected static boolean isSideSolid(World worldObj, BlockPos pos, EnumFacing side, boolean def) {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.isSideSolid(pos, side, def);
@@ -47,7 +61,7 @@ public final class ForgeWorld {
 	    		}
 	    	}
 		}
-		return false;
+		return def;
 	}
 	
 	protected static <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks(World worldObj) {
@@ -122,6 +136,55 @@ public final class ForgeWorld {
 		return worldObj.getMapStorage();
 	}
 	
+	@Deprecated
+	protected static boolean rotateBlock(Block block, World worldObj, BlockPos pos, EnumFacing axis) {
+		if (Versions.isForgeInstalled()) {
+			//return block.rotateBlock(worldObj, pos, axis);
+			if (_rotateBlock == null) {
+				_rotateBlock = Reflect.lookupMethod(IRotateable.class, Block.class, boolean.class, "rotateBlock", World.class, BlockPos.class, EnumFacing.class);
+			}
+			if (_rotateBlock.valid()) {
+				try {
+					return _rotateBlock.getLambda(block).rotateBlock(worldObj, pos, axis);
+				} catch (Throwable e) {
+					_rotateBlock.invalidate();
+				}
+			}
+		}
+		IBlockState state = worldObj.getBlockState(pos);
+		for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
+			if (i.getName().contentEquals("facing")) {
+				worldObj.setBlockState(pos, state.cycleProperty(i));
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected static EnumFacing[] getValidRotations(Block block, World worldObj, BlockPos pos) {
+		if (Versions.isForgeInstalled()) {
+			//return block.getValidRotations(worldObj, pos);
+			if (_getValidRotations == null) {
+				_getValidRotations = Reflect.lookupMethod(IRotateable.class, Block.class, EnumFacing[].class, "getValidRotations", World.class, BlockPos.class);
+			}
+			if (_getValidRotations.valid()) {
+				try {
+					return _getValidRotations.getLambda(block).getValidRotations(worldObj, pos);
+				} catch (Throwable e) {
+					_getValidRotations.invalidate();
+				}
+			}
+		}
+		IBlockState state = worldObj.getBlockState(pos);
+		for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
+			if (i.getName().contentEquals("facing") && i.getValueClass() == EnumFacing.class) {
+				Collection<EnumFacing> result = i.getAllowedValues();
+				return result.toArray(new EnumFacing[result.size()]);
+			}
+		}
+		return null;
+	}
+	
 	protected static double getMaxEntitySize(World worldObj, double def) {
 		//return worldObj.MAX_ENTITY_RADIUS;
 		return MAX_ENTITY_RADIUS.get(worldObj, def);
@@ -131,7 +194,7 @@ public final class ForgeWorld {
 		//worldObj.MAX_ENTITY_RADIUS = size;
 		MAX_ENTITY_RADIUS.set(worldObj, size);
 	}
-    
+	
     protected static final class ForgeWorldObj implements ForgeWorldAccess {
 		private final World worldObj;
 		
@@ -163,7 +226,12 @@ public final class ForgeWorld {
 		public int countEntities(EnumCreatureType type, boolean forSpawnCount) {
 			return ForgeWorld.countEntities(worldObj, type, forSpawnCount);
 		}
-
+		
+		@Deprecated @Override
+		public boolean rotateBlock(BlockPos pos, EnumFacing axis) {
+			return ForgeWorld.rotateBlock(worldObj.getBlockState(pos).getBlock(), worldObj, pos, axis);
+		}
+		
 		@Override
 		public MapStorage getPerWorldStorage() {
 			return ForgeWorld.getPerWorldStorage(worldObj);

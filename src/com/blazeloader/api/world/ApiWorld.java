@@ -1,14 +1,17 @@
 package com.blazeloader.api.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
@@ -22,12 +25,15 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
+import com.blazeloader.api.block.IRotateable;
 import com.blazeloader.api.block.ISided;
 import com.blazeloader.api.block.UpdateType;
 import com.blazeloader.api.world.gen.IChunkGenerator;
 import com.blazeloader.api.world.gen.WorldSavedDataCollection;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.util.version.Versions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 /**
  * A collection of useful functions relating to worlds.
@@ -433,5 +439,61 @@ public class ApiWorld {
 			}
     	}
     	return def;
+    }
+    
+	/**
+	 * Rotates a block so that it's 'face' points towards the direction indicated by the provided EnumFacing
+	 * 
+	 * @param w			The world
+	 * @param pos		Block coordinates
+	 * @param state		Current block state
+	 * @param facing	Direction this block must be rotated to face towards
+	 * @return	True if the rotation succeeded, false otherwise.
+	 */
+    public static boolean rotateBlockTo(World w, BlockPos pos, EnumFacing facing) {
+    	IBlockState state = w.getBlockState(pos);
+    	if (state.getBlock() instanceof IRotateable) {
+    		return ((IRotateable)state.getBlock()).rotateBlockTo(w, pos, state, facing);
+    	}
+    	
+    	for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
+			if (i.getName().contentEquals("facing") && i.getValueClass() == EnumFacing.class) {
+				Collection allowedValues = null;
+		    	if (Versions.isForgeInstalled()) {
+		    		EnumFacing[] facings = ForgeWorld.getValidRotations(state.getBlock(), w, pos);
+		    		if (facings != null) allowedValues = Lists.newArrayList(facings);
+		    	} else {
+		    		allowedValues = i.getAllowedValues();
+		    	}
+				if (allowedValues.contains(facing)) {
+					w.setBlockState(pos, state.withProperty(i, facing));
+					return true;
+				}
+				return false;
+			}
+		}
+    	return false;
+    }
+    
+    /**
+	 * Gets a facing for the block at the given position.
+	 * 
+	 * @param w			The world
+	 * @param pos		Block coordinates
+	 * @param state 	Current block state
+	 * @return An EnumFacing corresponding to the block's orientation or null if it cannot be rotated
+	 */
+    public static EnumFacing getBlockRotation(World w, BlockPos pos) {
+    	IBlockState state = w.getBlockState(pos);
+    	if (state.getBlock() instanceof IRotateable) {
+    		return ((IRotateable)state.getBlock()).getBlockRotation(w, pos, state);
+    	}
+    	
+    	for (Entry<IProperty, ?> i : (ImmutableSet<Entry<IProperty, ?>>)state.getProperties().entrySet()) {
+			if (i.getKey().getName().contentEquals("facing") && i.getKey().getValueClass() == EnumFacing.class) {
+				return (EnumFacing)i.getValue();
+			}
+		}
+    	return null;
     }
 }
