@@ -18,6 +18,7 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
         addBLEvent(EventSide.CLIENT, "net.minecraft.entity.EntityTrackerEntry.func_151260_c ()Lnet/minecraft/network/Packet;");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleOpenWindow (Lnet/minecraft/network/play/server/S2DPacketOpenWindow;)V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleHeldItemChange (Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V");
+        addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleCollectItem (Lnet/minecraft/network/play/server/S0DPacketCollectItem;)V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.multiplayer.WorldClient.func_180503_b (Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.particle.EffectRenderer.spawnEffectParticle (IDDDDDD[I)Lnet/minecraft/client/particle/EntityFX;");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.entity.EntityPlayerSP.setPlayerSPHealth (F)V", beforeReturn);

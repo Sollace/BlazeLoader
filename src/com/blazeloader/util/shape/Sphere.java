@@ -95,11 +95,17 @@ public class Sphere implements IShape {
 	}
 	
 	public Vec3 computePoint(Random rand) {
-		double rho = hollow ? rad : MathHelper.getRandomDoubleInRange(rand, 0, rad);
-		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
-		double phi = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
+		double rad = this.rad;
 		
-		return (new Vec3(rho * Math.sin(phi) * Math.cos(pheta) * stretch.xCoord,rho * Math.sin(phi) * Math.sin(pheta) * stretch.yCoord, rho * Math.cos(phi) * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
+		if (!hollow) {
+			rad = MathHelper.getRandomDoubleInRange(rand, 0, rad);
+		}
+		
+		double z = MathHelper.getRandomDoubleInRange(rand, -rad, rad);
+		double phi = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
+		double theta = Math.asin(z / rad);
+		
+		return new Vec3(rad * Math.cos(theta) * Math.cos(phi) * stretch.xCoord, rad * Math.cos(theta) * Math.sin(phi) * stretch.yCoord, z * stretch.zCoord).rotateYaw(yaw).rotatePitch(pitch);
 	}
 	
 	public Sphere setRotation(float u, float v) {

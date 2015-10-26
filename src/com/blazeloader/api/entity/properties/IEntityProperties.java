@@ -1,14 +1,15 @@
 package com.blazeloader.api.entity.properties;
 
+import com.blazeloader.util.data.INBTWritable;
+
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 /**
  * Interface for entity extension classes
  */
-public interface IEntityProperties {
+public interface IEntityProperties extends INBTWritable {
 	
 	/**
 	 * Notifies this properties of who its owner is.
@@ -26,17 +27,6 @@ public interface IEntityProperties {
 	 * Called to update the entity's position/logic.
 	 */
 	public void onEntityUpdate(Entity e);
-	
-	/**
-	 * @param tagCompound
-	 */
-	public void writeToNBT(NBTTagCompound tagCompound);
-	
-	/**
-	 * 
-	 * @param tagCompound
-	 */
-	public void readFromNBT(NBTTagCompound tagCompund);
 	
 	/**
 	 * Used if the game crashes. Put stuff you want to know in the crash report from here.

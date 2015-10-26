@@ -15,7 +15,7 @@ public class ApiRenderPlayer {
 	 * 
 	 * @param skinType	The player skin type to replace
 	 * @param renderer	The renderer to use
-	 * @return	The passed in SKinType for chaining
+	 * @return	The passed in SkinType for chaining
 	 */
 	public static SkinType setPlayerRenderer(SkinType skinType, RenderPlayer renderer) {
 		if (defaultRenderer == null) {
@@ -67,7 +67,7 @@ public class ApiRenderPlayer {
 	public static RenderPlayer getPlayerRenderer(SkinType skinType) {
 		RenderPlayer result = skinMap().get(skinType.key);
 		if (result == null) {
-			result = skinMap().get("default");
+			return skinMap().get(SkinType.STEVE.key);
 		}
 		return result;
 	}
@@ -76,7 +76,7 @@ public class ApiRenderPlayer {
 	 * Gets a renderer for the given player based on the type of skin they use.
 	 * 
 	 * @param player	The EntityPlayer to render
-	 * @return	A render player for the given player
+	 * @return	A player renderer for the given player
 	 */
 	public static RenderPlayer getPlayerRenderer(EntityPlayer player) {
 		return (RenderPlayer)ApiClient.getRenderManager().getEntityRenderObject(player);

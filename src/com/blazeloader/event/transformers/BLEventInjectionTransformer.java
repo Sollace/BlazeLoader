@@ -120,12 +120,14 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.fall (FF)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.inventory.Container.slotClick (IIILnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;", beforeReturn);
         
-        //FIXME: Disabled because for some reason we can't transform EntityLivingBase. It results in a java.lang.ClassCircularityException on EntityPlayer
+        //FIX ME: Disabled because for some reason we can't transform EntityLivingBase. It results in a java.lang.ClassCircularityException on EntityPlayer
         // addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLivingBase.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
-        //FIXME: Part 2: It seems the same problem extends to EntityPlayerMP as well. So we can't get access to that method at all.
+        //FIX ME: Part 2: It seems the same problem extends to EntityPlayerMP as well. So we can't get access to that method at all.
         // addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayerMP.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
-        //FIXME: Part 3: After looking into it a bit more the problem seems to be that liteloader produces an invalid class when transforming EntityLivingBase.
+        //FIX ME: Part 3: After looking into it a bit more the problem seems to be that liteloader produces an invalid class when transforming EntityLivingBase.
         // The transformation can be forced by catching the exception but the game will crash saying the "locals are too large".
+        
+        addBLConstructorEvent(EventSide.SERVER, "net.minecraft.network.play.server.S0DPacketCollectItem", new Object[] {int.class, int.class}, beforeReturn);
         
         addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClass("net.minecraft.world.World", OBFLevel.MCP) }, beforeReturn);
         //Event fired separately to ensure players are fully setup

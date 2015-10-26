@@ -41,7 +41,6 @@ public interface InventoryListener extends BLMod {
 	 * @param itemEntity	The entity being picked up
 	 * @param amount		The number of items being picked up from this entity
 	 */
-	//TODO: Broken
 	public void onItemPickup(Entity entity, Entity itemEntity, int amount);
 	
 	/**

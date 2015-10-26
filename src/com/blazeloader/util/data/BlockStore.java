@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 /**
  * Collection of block data. Can also be read from or written to nbt.
  */
-public class BlockStore extends ArrayList<BlockStore.Entry> {
+public class BlockStore extends ArrayList<BlockStore.Entry> implements INBTWritable {
 	private final HashMap<BlockPos, BlockStore.Entry> map;
 	
 	public BlockStore() {
@@ -62,7 +62,6 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 	
 	/**
 	 * Stores the block information for a specific position in the world.
-	 * @param w		The world
 	 * @param pos	The position
 	 */
 	public void define(World w, BlockPos pos) {
@@ -79,7 +78,6 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 	
 	/**
 	 * Stores the block information for a specific position in the world.
-	 * @param w		The world
 	 * @param x		X-coordinate
 	 * @param y		Y-coordinate
 	 * @param z		Z-coordinate
@@ -90,7 +88,6 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 	
 	/**
 	 * Restored all saved data to the world.
-	 * @param w			The world
 	 * @param overwrite	true to replace blocks
 	 */
 	public void restoreAll(World w, boolean overwrite) {
@@ -103,13 +100,13 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 	/**
 	 * Reads this collection from nbt data
 	 */
-	public void readFromNBT(World w, NBTTagCompound nbt) {
+	public void readFromNBT(NBTTagCompound nbt) {
 		clear();
 		if (nbt.hasKey("BlocksLog")) {
 			NBTTagList list = (NBTTagList) nbt.getTag("BlocksLog");
 			
 			for (int i = 0; i < list.tagCount(); i++) {
-				add(new Entry(w, list.getCompoundTagAt(i)));
+				add(new Entry(list.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -221,24 +218,22 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 		return super.addAll(index, c);
 	}
 	
-	public static class Entry {
-		private World worldObj;
-		
+	public class Entry implements INBTWritable {
 		private BlockPos position;
 		
 		private IBlockState blockState;
 		private TileEntity blockEntity;
 		
-		private Entry(World w, NBTTagCompound nbt) {
-			worldObj = w;
+		private NBTTagCompound blockEntityNBT;
+		
+		private Entry(NBTTagCompound nbt) {
 			readFromNBT(nbt);
 		}
 		
 		private Entry(World w, BlockPos pos) {
 			position = pos;
-			worldObj = w;
-			blockState = worldObj.getBlockState(position);
-			blockEntity = worldObj.getTileEntity(position);
+			blockState = w.getBlockState(position);
+			blockEntity = w.getTileEntity(position);
 		}
 		
 		public int getX() { return position.getX(); }
@@ -268,6 +263,10 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 				w.setBlockState(position, blockState, 2);
 				if (blockEntity != null) {
 					w.setTileEntity(position, blockEntity);
+				} else if (blockEntityNBT != null) {
+					blockEntity = ((BlockContainer)blockState.getBlock()).createNewTileEntity(w, blockState.getBlock().getMetaFromState(blockState));
+					blockEntity.readFromNBT(blockEntityNBT);
+					blockEntityNBT = null;
 				}
 			}
 		}
@@ -282,9 +281,8 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 			blockState = block.getStateFromMeta(nbt.getInteger("metadata"));
 			
 			if (nbt.hasKey("tileEntity")) {
-				if (BlockContainer.class.isAssignableFrom(block.getClass())) {
-					blockEntity = ((BlockContainer)block).createNewTileEntity(worldObj, block.getMetaFromState(blockState));
-					blockEntity.readFromNBT(nbt.getCompoundTag("tileEntity"));
+				if (block instanceof BlockContainer) {
+					blockEntityNBT = nbt.getCompoundTag("tileEntity");
 				}
 			}
 		}
@@ -300,6 +298,8 @@ public class BlockStore extends ArrayList<BlockStore.Entry> {
 				NBTTagCompound entityTag = new NBTTagCompound();
 				blockEntity.writeToNBT(entityTag);
 				nbt.setTag("tileEntity", entityTag);
+			} else if (blockEntityNBT != null) {
+				nbt.setTag("tileEntity", blockEntityNBT);
 			}
 		}
 	}

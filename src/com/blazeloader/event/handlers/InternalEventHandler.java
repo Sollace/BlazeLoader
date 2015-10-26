@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockTorch;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
@@ -86,36 +84,36 @@ public class InternalEventHandler {
 	public static void eventOnEntityRemoved(EventInfo<World> event, Entity entity) {
 		if (entity.isDead) {
 			if (!(entity instanceof EntityPlayer)) {
-				EntityPropertyManager.entityDestroyed(entity);
+				EntityPropertyManager.instance().entityDestroyed(entity);
 			}
 		}
 	}
 	
 	public static void eventOnUpdate(EventInfo<Entity> event) {
-		EntityPropertyManager.onEntityUpdate(event.getSource());
+		EntityPropertyManager.instance().onEntityUpdate(event.getSource());
 	}
 	
     public static void eventWriteToNBT(EventInfo<Entity> event, NBTTagCompound tag) {
-    	EntityPropertyManager.writeToNBT(event.getSource(), tag);
+    	EntityPropertyManager.instance().writeToNBT(event.getSource(), tag);
     }
     
     public static void eventReadFromNBT(EventInfo<Entity> event, NBTTagCompound tag) {
-    	EntityPropertyManager.readFromNBT(event.getSource(), tag);
+    	EntityPropertyManager.instance().readFromNBT(event.getSource(), tag);
     }
     
     public static void eventClonePlayer(EventInfo<EntityPlayer> event, EntityPlayer old, boolean respawnedFromEnd) {
-    	EntityPropertyManager.copyToEntity(old, event.getSource());
+    	EntityPropertyManager.instance().copyToEntity(old, event.getSource());
     	if (!old.getUniqueID().equals(event.getSource().getUniqueID())) {
-    		EntityPropertyManager.entityDestroyed(old);
+    		EntityPropertyManager.instance().entityDestroyed(old);
     	}
     }
     
     public static void eventCopyDataFromOld(EventInfo<Entity> event, Entity old) {
-    	EntityPropertyManager.copyToEntity(old, event.getSource());
+    	EntityPropertyManager.instance().copyToEntity(old, event.getSource());
     }
     
     public static void eventAddEntityCrashInfo(EventInfo<Entity> event, CrashReportCategory section) {
-    	EntityPropertyManager.addEntityCrashInfo(event.getSource(), section);
+    	EntityPropertyManager.instance().addEntityCrashInfo(event.getSource(), section);
     }
     
     public static void eventTrackEntity(EventInfo<EntityTracker> event, Entity entity) {
@@ -142,4 +140,30 @@ public class InternalEventHandler {
     	int result = FurnaceFuels.getItemBurnTime(stack);
     	if (result > 0) event.setReturnValue(result);
     }
+    /*
+    //=============Torch events======
+    
+    public static void eventOnNeighborChangeInternal(ReturnEventInfo<BlockTorch, Boolean> event, World world, BlockPos pos, IBlockState state) {
+        EnumFacing opposite = ((EnumFacing)state.getValue(BlockTorch.FACING)).getOpposite();
+        pos = pos.offset(opposite);
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof ISided) {
+        	BlockTorch torch = event.getSource();
+        	if (((ISided)state.getBlock()).isSideSolid(world, pos, opposite)) {
+        		event.setReturnValue(true);
+        	}
+        }
+    }
+    
+    public static void canPlaceAt(ReturnEventInfo<BlockTorch, Boolean> event, World world, BlockPos pos, EnumFacing facing) {
+    	facing = facing.getOpposite();
+    	pos = pos.offset(facing);
+    	IBlockState state = world.getBlockState(pos);
+    	if (state.getBlock() instanceof ISided) {
+    		event.setReturnValue(((ISided)state.getBlock()).isSideSolid(world, pos, facing));
+    	}
+    }
+    
+    //==============================
+     Possibly out of our scope*/
 }

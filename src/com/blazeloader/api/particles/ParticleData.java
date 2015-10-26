@@ -152,7 +152,7 @@ public final class ParticleData {
 	public ParticleData setVel(double x, double y, double z) {
 		velX = x;
 		velY = y;
-		velX = z;
+		velZ = z;
 		return this;
 	}
 	
