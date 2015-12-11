@@ -192,10 +192,29 @@ public class Properties implements IConfig {
 	}
 	
 	public String popNextLine(List<String> lines) {
+		int quote_type = -1;
+		int arrays_open = 0;
+		int objects_open = 0;
 		String next = "";
+		String result = "";
 		do {
-			next = lines.remove(0).trim();
-		} while (next.isEmpty());
-		return next;
+			next = lines.remove(0);
+			for (int i = 0; i < next.length; i++) {
+				if (i > 0 && next[i - 1] == '\\') continue;
+				if (quote_type < 0) {
+					if (next[i] == '"') quote_type = 0;
+					if (next[i] == '\'') quote_type = 1;
+					if (next[i] == '[') arrays_open++;
+					if (next[i] == ']' && arrays_open > 0) arrays_open--;
+					if (next[i] == '{') objects_open++;
+					if (next[i] == '}' && objects_open > 0) objects_open--;
+				} else {
+					if (quote_type == 0 && next[i] == '"') quote_type = -1;
+					if (quote_type == 1 && next[i] == '\'') quote_type = -1;
+				}
+			}
+			result += (result.isEmpty() ? "" : "\n") + next;
+		} while (lines.size() > 0 && (result.trim().isEmpty() || quote_type > -1 || arrays_open > 0 || objects_open > 0));
+		return result.trim();
 	}
 }
