@@ -1,4 +1,4 @@
-package com.blazeloader.api.world;
+package com.blazeloader.bl.interop;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
@@ -49,6 +49,20 @@ public interface ForgeWorldAccess {
 	 * @param forSpawnCount	True if we are checking for spawn count limits
 	 */
 	public int countEntities(EnumCreatureType type, boolean forSpawnCount);
+	
+	/**
+     * Rotate the block at the given coordinates. For vanilla blocks this rotates around the axis passed in (generally, it should be the "face" that was hit).
+     * Note: for mod blocks, this is up to the block and modder to decide. It is not mandated that it be a rotation around the
+     * face, but could be a rotation to orient *to* that face, or a visiting of possible rotations.
+     * The method should return true if the rotation was successful though.
+     *
+     * @forge This is part of the Forge API specification
+     * @param pos Block position in world
+     * @param axis The axis to rotate around
+     * @return True if the rotation was successful, False if the rotation failed, or is not possible
+     */
+	@Deprecated
+	public boolean rotateBlock(BlockPos pos, EnumFacing axis);
 	
 	/**
 	 * Gets the per-world map storage introduced by forge

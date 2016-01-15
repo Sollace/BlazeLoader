@@ -1,7 +1,5 @@
 package com.blazeloader.test;
 
-
-
 import java.util.Optional;
 
 import com.blazeloader.api.client.MCColor;
@@ -75,4 +73,5 @@ public class Tests {
 		System.out.println(end - start);
 		return true;
 	}*/
+	
 }

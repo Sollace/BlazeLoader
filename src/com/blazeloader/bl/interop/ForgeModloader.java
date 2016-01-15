@@ -40,7 +40,6 @@ public final class ForgeModloader {
 					} catch (Throwable e) {
 						_exitJava.invalidate();
 					}
-					return;
 				}
 			}
 		}
