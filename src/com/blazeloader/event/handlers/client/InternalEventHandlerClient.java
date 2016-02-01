@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererChestHelper;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
@@ -85,6 +86,12 @@ public class InternalEventHandlerClient {
     				event.cancel();
     			}
     		}
+    	}
+    }
+    
+    public static void eventRenderByItem(EventInfo<TileEntityRendererChestHelper> event, ItemStack itemStack) {
+    	if (BlockRenderRegistry.tryRenderTileEntity(itemStack)) {
+    		event.cancel();
     	}
     }
 }
