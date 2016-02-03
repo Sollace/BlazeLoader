@@ -65,6 +65,13 @@ public interface IConfig {
 	public String popNextLine(List<String> lines);
 	
 	/**
+	 * Gets a key-value string from the file.
+	 * These may span multiple lines.
+	 * @param lines List of lines available
+	 */
+	public String popNextValue(List<String> lines);
+	
+	/**
 	 * Returns true if this IConfig allows writing @default annotations to property files.
 	 */
 	public boolean getWriteDefaults();

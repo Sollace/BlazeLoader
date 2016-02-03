@@ -192,25 +192,35 @@ public class Properties implements IConfig {
 	}
 	
 	public String popNextLine(List<String> lines) {
+		String next = "";
+ 		do {
+			next = lines.remove(0).trim();
+		} while (next.isEmpty());
+ 		return next;
+	}
+	
+	public String popNextValue(List<String> lines) {
 		int quote_type = -1;
 		int arrays_open = 0;
 		int objects_open = 0;
 		String next = "";
 		String result = "";
+		
 		do {
 			next = lines.remove(0);
-			for (int i = 0; i < next.length; i++) {
-				if (i > 0 && next[i - 1] == '\\') continue;
+			for (int i = 0; i < next.length(); i++) {
+				if (i > 0 && next.charAt(i - 1) == '\\') continue;
+				char c = next.charAt(i);
 				if (quote_type < 0) {
-					if (next[i] == '"') quote_type = 0;
-					if (next[i] == '\'') quote_type = 1;
-					if (next[i] == '[') arrays_open++;
-					if (next[i] == ']' && arrays_open > 0) arrays_open--;
-					if (next[i] == '{') objects_open++;
-					if (next[i] == '}' && objects_open > 0) objects_open--;
+					if (c == '"') quote_type = 0;
+					if (c == '\'') quote_type = 1;
+					if (c == '[') arrays_open++;
+					if (c == ']' && arrays_open > 0) arrays_open--;
+					if (c == '{') objects_open++;
+					if (c == '}' && objects_open > 0) objects_open--;
 				} else {
-					if (quote_type == 0 && next[i] == '"') quote_type = -1;
-					if (quote_type == 1 && next[i] == '\'') quote_type = -1;
+					if (quote_type == 0 && c == '"') quote_type = -1;
+					if (quote_type == 1 && c == '\'') quote_type = -1;
 				}
 			}
 			result += (result.isEmpty() ? "" : "\n") + next;

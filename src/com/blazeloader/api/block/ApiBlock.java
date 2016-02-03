@@ -138,9 +138,11 @@ public class ApiBlock {
      * @param nameFunc	Function used by the itemblock to get the display name
      * @param <K> The type of the block you are replacing
      * @param <V> The type of the new block you are replacing it with. Must extend the original.
+     * 
+     * @return the block for simplicity
      */
-    public static <K extends Block,V extends K> void replaceBlock(K original, V block, Function nameFunc) {
-    	replaceBlock(original, block, new ItemMultiTexture(block, block, nameFunc));
+    public static <K extends Block,V extends K> V replaceBlock(K original, V block, Function nameFunc) {
+    	return replaceBlock(original, block, new ItemMultiTexture(block, block, nameFunc));
     }
     
     /**
@@ -152,10 +154,13 @@ public class ApiBlock {
      * @param item		An item to be used for the replacement block
      * @param <K> The type of the block you are replacing
      * @param <V> The type of the new block you are replacing it with. Must extend the original.
+     * 
+     * @return the block for simplicity
      */
-    public static <K extends Block,V extends K> void replaceBlock(K original, V block, ItemBlock item) {
+    public static <K extends Block,V extends K> V replaceBlock(K original, V block, ItemBlock item) {
     	replaceBlock(original, block);
     	ApiItem.registerItemBlock(block, item);
+    	return block;
     }
     
     /**
@@ -166,8 +171,10 @@ public class ApiBlock {
      * @param block		New block to insert
      * @param <K> The type of the block you are replacing
      * @param <V> The type of the new block you are replacing it with. Must extend the original.
+     * 
+     * @return the block for simplicity
      */
-    public static <K extends Block,V extends K> void replaceBlock(K original, V block) {
+    public static <K extends Block,V extends K> V replaceBlock(K original, V block) {
     	Map<Integer, IBlockState> builtStates = new HashMap<Integer, IBlockState>();
     	for (IBlockState original_state : (List<IBlockState>)original.getBlockState().getValidStates()) {
     		int original_metadata = getBlockId(original) << 4 | original.getMetaFromState(original_state);
@@ -187,6 +194,7 @@ public class ApiBlock {
     	if (Versions.isClient()) {
     		com.blazeloader.api.client.render.ApiRenderBlock.swapoutBlockModels(original, block);
     	}
+    	return block;
     }
     
     /**

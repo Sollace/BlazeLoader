@@ -32,7 +32,7 @@ public class Section implements IPropertyGroup {
 				e.printStackTrace();
 			}
 		} while (lines.size() > 0 && lines.get(0).trim().indexOf("}") != 0);
-		lines.remove(0);
+		if (lines.size() > 0) lines.remove(0);
 		loaded = true;
 	}
 	

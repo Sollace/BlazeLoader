@@ -27,6 +27,9 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.dispatchKeypresses ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.renderer.BlockModelShapes.getTexture (Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
         
+        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.renderer.entity.RenderItem.renderItem (Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/resources/model/IBakedModel;)V");
+        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.renderer.tileentity.TileEntityRendererChestHelper.renderByItem (Lnet/minecraft/item/ItemStack;)V");
+        
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.particle.EffectRenderer.registerVanillaParticles ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.middleClickMouse ()V");
     }

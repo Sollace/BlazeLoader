@@ -2,7 +2,6 @@ package com.blazeloader.util.transformers.transformations;
 
 import com.blazeloader.bl.obf.AccessLevel;
 
-import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
 public class FieldPublicTransformation extends FieldTransformation {
@@ -13,18 +12,9 @@ public class FieldPublicTransformation extends FieldTransformation {
         this.access = access;
     }
 
-    @Override
-    public boolean apply(ClassNode cls) {
-        String dotName = getDotName(cls.name);
-        boolean didApply = false;
-        if (dotName.equals(targetClass)) {
-            for (FieldNode field : cls.fields) {
-                if (isGlobal || field.name.equals(fieldName)) {
-                    field.access = setAccess(field.access, access);
-                    didApply = true;
-                }
-            }
-        }
-        return didApply;
-    }
+	@Override
+	protected void transformField(FieldNode field) {
+		//BLMain.LOGGER_MAIN.logDebug("FieldPublicTransformation:" + dotName + "." + field.name + "\r\n\tTarget: " + fieldName);
+        field.access = setAccess(field.access, access);
+	}
 }

@@ -14,9 +14,7 @@ public abstract class Transformation {
         this.targetClass = targetClass;
         this.isGlobal = isGlobal;
     }
-
-    public abstract boolean apply(ClassNode cls);
-
+    
     protected final int setAccess(int currAccess, AccessLevel publicity) {
         return setAccess(currAccess, publicity, false);
     }
@@ -29,7 +27,6 @@ public abstract class Transformation {
     protected final int setAccess(int currAccess, AccessLevel publicity, boolean changeFinal, boolean finalValue) {
         int pubValue = publicity.getValue();
         int ret = (currAccess & ~7);
-        
         switch (currAccess & 7) {
             case ACC_PRIVATE:
                 ret |= pubValue;
@@ -60,4 +57,6 @@ public abstract class Transformation {
     public static String getDotName(String slashName) {
         return slashName.replace('/', '.');
     }
+    
+    public abstract boolean apply(ClassNode cls);
 }

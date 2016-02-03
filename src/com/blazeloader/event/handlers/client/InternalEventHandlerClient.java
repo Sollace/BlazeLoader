@@ -5,7 +5,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererChestHelper;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
@@ -13,8 +18,11 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.world.IBlockAccess;
 
+import com.blazeloader.api.block.ApiBlock;
 import com.blazeloader.api.client.render.BlockRenderRegistry;
 import com.blazeloader.api.entity.IMousePickHandler;
 import com.blazeloader.api.item.ItemRegistry;
@@ -86,5 +94,27 @@ public class InternalEventHandlerClient {
     			}
     		}
     	}
+    }
+    
+    public static void eventRenderByItem(EventInfo<TileEntityRendererChestHelper> event, ItemStack itemStack) {
+    	if (BlockRenderRegistry.tryRenderTileEntity(itemStack)) {
+    		event.cancel();
+    	}
+    }
+    
+    public static void eventRenderItem(EventInfo<RenderItem> event, ItemStack stack, IBakedModel model) {
+    	Block block = ApiBlock.getBlockByItem(stack.getItem());
+        if (BlockRenderRegistry.isTileEntityRendered(block)) {
+        	GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            if (BlockRenderRegistry.doRenderTileEntity(block, stack)) {
+            	event.cancel();
+            }
+            GlStateManager.popMatrix();
+        }
     }
 }
