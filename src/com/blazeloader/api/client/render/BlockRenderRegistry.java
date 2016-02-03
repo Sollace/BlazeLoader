@@ -20,13 +20,17 @@ public class BlockRenderRegistry {
 	}
 	
 	public static boolean isTileEntityRendered(Block block) {
-		return block != null && block instanceof TileEntityRendered;
+		return block != null && block instanceof ITileEntityRendered;
 	}
 	
 	public static boolean tryRenderTileEntity(ItemStack stack) {
 		Block block = ApiBlock.getBlockByItem(stack.getItem());
 		if (!isTileEntityRendered(block)) return false;
-		TileRenderer render = ((TileEntityRendered)block).getTileRenderer();
+		return doRenderTileEntity(block, stack);
+	}
+	
+	public static boolean doRenderTileEntity(Block block, ItemStack stack) {
+		ITileRenderer render = ((ITileEntityRendered)block).getTileRenderer();
 		if (render == null) return false;
 		if (!render.customRenderPass(stack)) {
 			TileEntity tile = render.getTileEntityForRender(stack); 

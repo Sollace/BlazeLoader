@@ -4,9 +4,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Container for TileEntity rendering logic as a way to keep is separated from the block's code which may be running in a server.
+ * Container for TileEntity rendering logic as a way to keep it separated from the block's code which may be running in a server.
  */
-public interface TileRenderer {
+public interface ITileRenderer<T extends TileEntity> {
 	
 	/**
 	 * Perform any custom rendering here and then return true to stop the default behaviour.
@@ -25,5 +25,5 @@ public interface TileRenderer {
 	 * @param stack		Itemstack currently being rendered.
 	 * @return A TileEntity
 	 */
-	public TileEntity getTileEntityForRender(ItemStack stack);
+	public T getTileEntityForRender(ItemStack stack);
 }

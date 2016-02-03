@@ -192,6 +192,14 @@ public class Properties implements IConfig {
 	}
 	
 	public String popNextLine(List<String> lines) {
+		String next = "";
+ 		do {
+			next = lines.remove(0).trim();
+		} while (next.isEmpty());
+ 		return next;
+	}
+	
+	public String popNextValue(List<String> lines) {
 		int quote_type = -1;
 		int arrays_open = 0;
 		int objects_open = 0;

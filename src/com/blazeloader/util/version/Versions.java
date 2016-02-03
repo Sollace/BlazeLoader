@@ -13,7 +13,7 @@ public class Versions {
     private static final boolean isOBF = VersionUtils.isGameOBF();
     private static final boolean isForgeInstalled = VersionUtils.hasForge();
     private static final Map<String, Version> versionMap = new HashMap<String, Version>();
-    private static final Version BL_VERSION = new BasicVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 1);
+    private static final Version BL_VERSION = new BasicVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 1, 0);
 
     /**
      * Detects if the game is obfuscated.

@@ -20,12 +20,12 @@ public class Prop<T> implements IProperty<T> {
 		defaultValue = new StringableObject(null);
 		currentValue = new StringableObject(null);
 		checkForComment(lines);
-		String first = cfg.popNextLine(lines);
+		String first = cfg.popNextValue(lines);
 		String def = null;
 		if (first.startsWith("@default: ")) {
 			def = first.substring("@default:".length(), first.length()).split("\\(")[0].trim();
 			checkForComment(lines);
-			first = cfg.popNextLine(lines);
+			first = cfg.popNextValue(lines);
 		}
 		String[] remain = first.split(":");
 		propertyName = remain[0].trim();
