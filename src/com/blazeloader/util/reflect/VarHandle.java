@@ -29,14 +29,14 @@ public class VarHandle {
 	
 	public VarHandle(boolean isStatic, String descriptor) {
 		staticField = isStatic;
-		String[] methodRef = descriptor.split(".");
+		String[] methodRef = descriptor.split("\\.");
 		String className = "";
 		String fieldName = "";
 		for (int i = 0; i < methodRef.length; i++) {
-			if (className.length() > 0) {
-				className += ".";
-			}
 			if (i < methodRef.length - 1) {
+				if (className.length() > 0) {
+					className += ".";
+				}
 				className += methodRef[i];
 			} else {
 				fieldName = methodRef[i];

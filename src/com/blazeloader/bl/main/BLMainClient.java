@@ -50,10 +50,10 @@ public class BLMainClient extends BLMain {
     }
     
     @Override
-    public void tick(boolean clock, float partialTicks, boolean isInGame) {
+    public void tick(boolean clock, float partial, boolean isInGame) {
     	Minecraft client = ApiClient.getClient();
     	if (client != null) {
-    		partialTicks = client.timer.elapsedPartialTicks;
+    		partialTicks = partial;
     		numTicks = client.timer.elapsedTicks;
     	} else {
     		partialTicks = numTicks = 0;
