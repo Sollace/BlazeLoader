@@ -6,6 +6,7 @@ import com.blazeloader.api.ApiServer;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
 import com.blazeloader.event.listeners.*;
+import com.blazeloader.event.listeners.BlockChangedListener.BlockEventArgs;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
@@ -48,7 +49,7 @@ public class EventHandler {
     public static final HandlerList<InventoryListener> inventoryEventHandlers = new HandlerList<InventoryListener>(InventoryListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<TickListener> tickEventHandlers = new HandlerList<TickListener>(TickListener.class);
     public static final HandlerList<WorldListener> worldEventHandlers = new HandlerList<WorldListener>(WorldListener.class);
-    public static final HandlerList<BlockChangedListener> blockEventHandlers = new HandlerList<BlockChangedListener>(BlockChangedListener.class);
+    public static final HandlerList<BlockChangedListener> blockEventHandlers = new HandlerList<BlockChangedListener>(BlockChangedListener.class, ReturnLogicOp.AND_BREAK_ON_FALSE);
     public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
@@ -69,9 +70,24 @@ public class EventHandler {
     	worldEventHandlers.all().onWorldInit(event.getSource());
     }
     
-    public static void eventSetBlockState(ReturnEventInfo<World, Boolean> event, BlockPos pos, IBlockState state) {
-    	if (event.getReturnValue()) {
-    		blockEventHandlers.all().onBlockChanged(event.getSource(), pos, event.getSource().getBlockState(pos), state);
+    private static boolean eventSetBlockState = false;
+    public static void eventSetBlockState(ReturnEventInfo<World, Boolean> event, BlockPos pos, IBlockState state, int flag) {
+    	if (!eventSetBlockState && blockEventHandlers.size() > 0) {
+    		World w = event.getSource();
+    		if (w.isValid(pos)) {
+	    		IBlockState old = event.getSource().getBlockState(pos);
+	    		if (!old.equals(state)) {
+	    			BlockEventArgs args = new BlockEventArgs(old, state);
+		    		eventSetBlockState = true;
+		    		blockEventHandlers.all().onBlockChanged(w, pos, args);
+		    		if (args.isCancelled()) {
+		    			event.setReturnValue(false);
+		    		} else if (!state.equals(args.getNewState())) {
+		    			event.setReturnValue(w.setBlockState(pos, args.getNewState()));
+		    		}
+		    		eventSetBlockState = false;
+	    		}
+    		}
     	}
     }
     

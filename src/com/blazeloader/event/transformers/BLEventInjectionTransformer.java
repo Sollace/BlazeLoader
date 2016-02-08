@@ -91,7 +91,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkLoad ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.WorldServer.init ()Lnet/minecraft/world/World;", beforeReturn);
-        addBLEvent(EventSide.SERVER, "net.minecraft.world.World.setBlockState (Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z", beforeReturn);
+        addBLEvent(EventSide.SERVER, "net.minecraft.world.World.setBlockState (Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z");
         
         addBLEvent(EventSide.INTERNAL, "net.minecraft.world.World.doesBlockHaveSolidTopSurface (Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;)Z", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime (Lnet/minecraft/item/ItemStack;)I");
