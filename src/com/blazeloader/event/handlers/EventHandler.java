@@ -12,6 +12,7 @@ import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -20,10 +21,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -42,6 +48,7 @@ public class EventHandler {
     public static final HandlerList<InventoryListener> inventoryEventHandlers = new HandlerList<InventoryListener>(InventoryListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<TickListener> tickEventHandlers = new HandlerList<TickListener>(TickListener.class);
     public static final HandlerList<WorldListener> worldEventHandlers = new HandlerList<WorldListener>(WorldListener.class);
+    public static final HandlerList<BlockChangedListener> blockEventHandlers = new HandlerList<BlockChangedListener>(BlockChangedListener.class);
     public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
@@ -60,6 +67,26 @@ public class EventHandler {
     
     public static void eventInit(ReturnEventInfo<WorldServer, World> event) {
     	worldEventHandlers.all().onWorldInit(event.getSource());
+    }
+    
+    public static void eventSetBlockState(ReturnEventInfo<World, Boolean> event, BlockPos pos, IBlockState state) {
+    	if (event.getReturnValue()) {
+    		blockEventHandlers.all().onBlockChanged(event.getSource(), pos, event.getSource().getBlockState(pos), state);
+    	}
+    }
+    
+    public static void eventTryHarvestBlock(ReturnEventInfo<ItemInWorldManager, Boolean> event, BlockPos pos) {
+    	if (event.getReturnValue() && blockEventHandlers.size() > 0) {
+    		World w = event.getSource().theWorld;
+    		IBlockState state = w.getBlockState(pos);
+    		blockEventHandlers.all().onBreakBlock(event.getSource().thisPlayerMP, w, state, pos);
+    	}
+    }
+    
+    public static void eventOnItemUse(ReturnEventInfo<ItemBlock, Boolean> event, ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+    	if (event.getReturnValue() && blockEventHandlers.size() > 0) {
+    		blockEventHandlers.all().onPlaceBlock(player, world, world.getBlockState(pos), pos);
+    	}
     }
     
     public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
@@ -128,6 +155,18 @@ public class EventHandler {
     public static void eventCollideWithPlayer(EventInfo<EntityPlayer> event, Entity entity) {
     	if (playerEventHandlers.size() > 0 && !playerEventHandlers.all().onEntityCollideWithPlayer(entity, event.getSource())) {
     		event.cancel();
+    	}
+    }
+    
+    public static void eventMoveEntity(EventInfo<Entity> event, double x, double y, double z) {
+    	if (playerEventHandlers.size() > 0 && event.getSource() instanceof EntityPlayer) {
+    		Entity player = event.getSource();
+    		int X = MathHelper.floor_double(player.posX);
+            int Y = MathHelper.floor_double(player.posY - 0.20000000298023224D);
+            int Z = MathHelper.floor_double(player.posZ);
+            BlockPos pos = new BlockPos(X, Y, Z);
+            IBlockState state = player.worldObj.getBlockState(pos);
+            playerEventHandlers.all().onPlayerCollideWithBlock(state, pos, (EntityPlayer)player);
     	}
     }
     

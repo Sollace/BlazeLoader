@@ -2,6 +2,7 @@ package com.blazeloader.bl.main;
 
 import com.blazeloader.bl.mod.BLMod;
 import com.blazeloader.event.handlers.EventHandler;
+import com.blazeloader.event.listeners.BlockChangedListener;
 import com.blazeloader.event.listeners.ChunkListener;
 import com.blazeloader.event.listeners.EntityConstructingListener;
 import com.blazeloader.event.listeners.InventoryListener;
@@ -56,6 +57,10 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
     
     public void addWorldEvent(WorldListener e) {
     	EventHandler.worldEventHandlers.add(e);
+    }
+    
+    public void addBlockEvent(BlockChangedListener e) {
+    	EventHandler.blockEventHandlers.add(e);
     }
     
     public void addPlayerEvent(PlayerListener e) {

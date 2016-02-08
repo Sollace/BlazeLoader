@@ -1,6 +1,5 @@
 package com.blazeloader.event.handlers.client;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
@@ -25,13 +24,11 @@ import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.event.handlers.EventHandler;
-import com.blazeloader.event.listeners.client.ClientBlockListener;
 import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
@@ -46,7 +43,6 @@ import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
  * Distributes game events to mods
  */
 public class EventHandlerClient extends EventHandler {
-    public static final HandlerList<ClientBlockListener> blockEventClients = new HandlerList<ClientBlockListener>(ClientBlockListener.class);
     public static final HandlerList<GuiListener> guiEventClients = new HandlerList<GuiListener>(GuiListener.class);
     public static final HandlerList<OverrideListener> overrideEventClients = new HandlerList<OverrideListener>(OverrideListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ClientPlayerListener> playerEventClients = new HandlerList<ClientPlayerListener>(ClientPlayerListener.class);
@@ -127,10 +123,6 @@ public class EventHandlerClient extends EventHandler {
         	event.getSource().addEffect(entity);
         	event.setReturnValue(entity);
         }
-    }
-    
-    public static void eventFunc_180503_b(ReturnEventInfo<WorldClient, Boolean> event, BlockPos pos, IBlockState state) {
-    	blockEventClients.all().onBlockChanged(Minecraft.getMinecraft().theWorld, pos, event.getSource().getBlockState(pos), state);
     }
     
     public static void eventSetPlayerSPHealth(EventInfo<EntityPlayerSP> event, float health) {

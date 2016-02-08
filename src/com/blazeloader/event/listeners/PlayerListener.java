@@ -3,10 +3,12 @@ package com.blazeloader.event.listeners;
 import com.blazeloader.bl.mod.BLMod;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.BlockPos;
 
 /**
  * Server-side player events.
@@ -59,6 +61,15 @@ public interface PlayerListener extends BLMod {
      * @return true to allow the entity to collide, false to cancel the event.
      */
     public boolean onEntityCollideWithPlayer(Entity entity, EntityPlayer player);
+    
+    /**
+     * Called when a player collides with a block.
+     * 
+     * @param state		Type of block being hit
+     * @param pos		Location of block
+     * @param player	The player
+     */
+    public void onPlayerCollideWithBlock(IBlockState state, BlockPos pos, EntityPlayer player);
     
     /**
      * Called when a player falls, but immediately before any action is taken.
