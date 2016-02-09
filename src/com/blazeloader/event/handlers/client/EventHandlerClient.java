@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.event.handlers.EventHandler;
+import com.blazeloader.event.listeners.args.ContainerOpenedEventArgs;
 import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
@@ -110,7 +111,7 @@ public class EventHandlerClient extends EventHandler {
     public static void eventHandleOpenWindow(EventInfo<INetHandlerPlayClient> event, S2DPacketOpenWindow packet) {
     	Minecraft gameController = Minecraft.getMinecraft();
     	PacketThreadUtil.checkThreadAndEnqueue(packet, event.getSource(), gameController);
-        OverrideListener.ContainerOpenedEventArgs args = new OverrideListener.ContainerOpenedEventArgs(gameController.thePlayer, packet);
+        ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(gameController.thePlayer, packet);
         if (overrideEventClients.all().onContainerOpened(gameController.thePlayer, args)) {
         	gameController.thePlayer.openContainer.windowId = packet.getWindowId();
         	event.cancel();

@@ -1,16 +1,13 @@
 package com.blazeloader.event.listeners.client;
 
 import com.blazeloader.bl.mod.BLMod;
+import com.blazeloader.event.listeners.args.ContainerOpenedEventArgs;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
 
 /**
  * Interface for mods that handle game events not handled by vanilla.  Override events are only called if the game is unable to handle the event on it's own.
@@ -59,30 +56,4 @@ public interface OverrideListener extends BLMod {
      * @return Return true if container has been handled
      */
     public boolean onContainerOpened(AbstractClientPlayer player, ContainerOpenedEventArgs e);
-
-    /**
-     * Contains args for a ContainerOpenedEvent
-     */
-    public static class ContainerOpenedEventArgs {
-    	public final boolean hasSlots;
-    	public final int slotsCount;
-    	
-    	public final String inventoryId;
-    	public final IChatComponent inventoryTitle;
-
-        public final int posX;
-        public final int posY;
-        public final int posZ;
-
-        public ContainerOpenedEventArgs(EntityPlayer player, S2DPacketOpenWindow packet) {
-            hasSlots = packet.hasSlots();
-            slotsCount = packet.getSlotCount();
-            inventoryId = packet.getGuiId();
-            inventoryTitle = packet.getWindowTitle();
-            
-            posX = MathHelper.floor_double(player.posX);
-            posY = MathHelper.floor_double(player.posY);
-            posZ = MathHelper.floor_double(player.posZ);
-        }
-    }
 }

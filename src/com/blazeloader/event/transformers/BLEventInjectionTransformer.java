@@ -12,7 +12,6 @@ import com.mumfrey.liteloader.transformers.event.Event;
 import com.mumfrey.liteloader.transformers.event.EventInjectionTransformer;
 import com.mumfrey.liteloader.transformers.event.InjectionPoint;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
-import com.mumfrey.liteloader.transformers.event.inject.BeforeInvoke;
 import com.mumfrey.liteloader.transformers.event.inject.BeforeReturn;
 import com.mumfrey.liteloader.transformers.event.inject.MethodHead;
 
@@ -92,6 +91,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.WorldServer.init ()Lnet/minecraft/world/World;", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.World.setBlockState (Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z");
+        addBLEvent(EventSide.SERVER, "net.minecraft.world.World.spawnEntityInWorld (Lnet/minecraft/entity/Entity;)Z");
         
         addBLEvent(EventSide.INTERNAL, "net.minecraft.world.World.doesBlockHaveSolidTopSurface (Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;)Z", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime (Lnet/minecraft/item/ItemStack;)I");
@@ -143,10 +143,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.VILLAGER, "net.minecraft.entity.passive.EntityVillager.populateBuyingList ()V");
         addBLEvent(EventSide.VILLAGER, "net.minecraft.client.renderer.entity.RenderVillager.getEntityTexture (Lnet/minecraft/entity/passive/EntityVillager;)Lnet/minecraft/util/ResourceLocation;");
         
-        
-        
-        InjectionPoint onEntityCollidedWithBlock = new BeforeInvoke(BLMethodInfo.create(BLOBF.getMethod("net.minecraft.block.Block.onEntityCollidedWithBlock (Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/entity/Entity;)V", OBFLevel.MCP)));
-        addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.moveEntity (DDD)V", onEntityCollidedWithBlock);
+        addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.doBlockCollisions ()V");
     }
     
     protected void addBLAccessors() {

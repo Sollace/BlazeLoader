@@ -1,8 +1,8 @@
 package com.blazeloader.event.listeners;
 
 import com.blazeloader.bl.mod.BLMod;
+import com.blazeloader.event.listeners.args.EntitySpawnEventArgs;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -18,10 +18,13 @@ public interface WorldListener extends BLMod {
     public void onWorldInit(WorldServer world);
     
     /**
-     * Called when an entity is added to a world
+     * Called when an entity is spawned in the world.
+     * <br>
+     * This does not necessarily mean the entity is new, it may be removed and readded.
+     * i.e when going through a portal
      * 
      * @param world		The world
-     * @param entity	The entity being added
+     * @param args		Additional information about the current event
      */
-    public void onEntitySpawned(World world, Entity entity);
+    public void onEntitySpawned(World world, EntitySpawnEventArgs args);
 }
