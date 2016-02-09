@@ -35,7 +35,7 @@ public class BlockRenderRegistry {
 		if (!render.customRenderPass(stack)) {
 			TileEntity tile = render.getTileEntityForRender(stack); 
 			if (tile == null) return false;
-	        ApiRenderTileEntity.renderTileEntity(tile, 0, 0, 0, 0);
+	        ApiRenderTileEntity.renderTileEntity(tile, 0, 0, 0, 0, -1);
 		}
         return true;
 	}

@@ -15,6 +15,7 @@ public class ParticleEmitter extends EntityParticleEmitter {
 	public ParticleEmitter(World world, Entity e, ParticleData particleData) {
 		super(world, e, null);
 		entity = e;
+		maxAge = 3;
 		particle = particleData;
 	}
 	

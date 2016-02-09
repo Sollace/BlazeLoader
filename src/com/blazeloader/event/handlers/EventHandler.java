@@ -6,12 +6,18 @@ import com.blazeloader.api.ApiServer;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.world.gen.UnpopulatedChunksQ;
 import com.blazeloader.event.listeners.*;
+import com.blazeloader.event.listeners.args.BlockEventArgs;
+import com.blazeloader.event.listeners.args.EntitySpawnEventArgs;
+import com.blazeloader.event.listeners.args.FallEventArgs;
+import com.blazeloader.event.listeners.args.InventoryEventArgs;
+import com.blazeloader.event.listeners.args.LoginEventArgs;
 import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -20,10 +26,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -42,6 +52,7 @@ public class EventHandler {
     public static final HandlerList<InventoryListener> inventoryEventHandlers = new HandlerList<InventoryListener>(InventoryListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<TickListener> tickEventHandlers = new HandlerList<TickListener>(TickListener.class);
     public static final HandlerList<WorldListener> worldEventHandlers = new HandlerList<WorldListener>(WorldListener.class);
+    public static final HandlerList<BlockChangedListener> blockEventHandlers = new HandlerList<BlockChangedListener>(BlockChangedListener.class, ReturnLogicOp.AND_BREAK_ON_FALSE);
     public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
@@ -62,6 +73,63 @@ public class EventHandler {
     	worldEventHandlers.all().onWorldInit(event.getSource());
     }
     
+    private static boolean eventSpawnEntityInWorld = false;
+    public static void eventSpawnEntityInWorld(ReturnEventInfo<World, Boolean> event, Entity entity) {
+    	if (!eventSpawnEntityInWorld && worldEventHandlers.size() > 0) {
+    		if (!(entity instanceof EntityPlayer)) {
+    			eventSpawnEntityInWorld = true;
+    			EntitySpawnEventArgs args = new EntitySpawnEventArgs(entity);
+    			worldEventHandlers.all().onEntitySpawned(event.getSource(), args);
+    			if (args.getEntityChanged()) {
+    				entity = args.getEntity();
+    			}
+    			if (args.getForced() != entity.forceSpawn) {
+    				entity.forceSpawn = args.getForced();
+    				event.setReturnValue(event.getSource().spawnEntityInWorld(entity));
+    				entity.forceSpawn = !entity.forceSpawn;
+    			} else if (args.getEntityChanged()) {
+    				event.setReturnValue(event.getSource().spawnEntityInWorld(entity));
+    			}
+    			eventSpawnEntityInWorld = false;
+    		}
+    	}
+    }
+    
+    private static boolean eventSetBlockState = false;
+    public static void eventSetBlockState(ReturnEventInfo<World, Boolean> event, BlockPos pos, IBlockState state, int flag) {
+    	if (!eventSetBlockState && blockEventHandlers.size() > 0) {
+    		World w = event.getSource();
+    		if (w.isValid(pos)) {
+	    		IBlockState old = event.getSource().getBlockState(pos);
+	    		if (!old.equals(state)) {
+	    			BlockEventArgs args = new BlockEventArgs(old, state);
+		    		eventSetBlockState = true;
+		    		blockEventHandlers.all().onBlockChanged(w, pos, args);
+		    		if (args.isCancelled()) {
+		    			event.setReturnValue(false);
+		    		} else if (!state.equals(args.getNewState())) {
+		    			event.setReturnValue(w.setBlockState(pos, args.getNewState()));
+		    		}
+		    		eventSetBlockState = false;
+	    		}
+    		}
+    	}
+    }
+    
+    public static void eventTryHarvestBlock(ReturnEventInfo<ItemInWorldManager, Boolean> event, BlockPos pos) {
+    	if (event.getReturnValue() && blockEventHandlers.size() > 0) {
+    		World w = event.getSource().theWorld;
+    		IBlockState state = w.getBlockState(pos);
+    		blockEventHandlers.all().onBreakBlock(event.getSource().thisPlayerMP, w, state, pos);
+    	}
+    }
+    
+    public static void eventOnItemUse(ReturnEventInfo<ItemBlock, Boolean> event, ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+    	if (event.getReturnValue() && blockEventHandlers.size() > 0) {
+    		blockEventHandlers.all().onPlaceBlock(player, world, world.getBlockState(pos), pos);
+    	}
+    }
+    
     public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
         playerEventHandlers.all().onPlayerLoginMP(event.getSource(), player);
     }
@@ -78,7 +146,7 @@ public class EventHandler {
     	if (playerEventHandlers.size() > 0) {
     		String errorMessage = event.getReturnValue();
     		if (errorMessage == null) {
-    			PlayerListener.LoginEventArgs args = new PlayerListener.LoginEventArgs(profile);
+    			LoginEventArgs args = new LoginEventArgs(profile);
     			for (PlayerListener i : playerEventHandlers) {
     				i.onPlayerTryLoginMP(args);
     				if (args.isBlocked()) {
@@ -90,15 +158,6 @@ public class EventHandler {
     	}
     }
     
-    /*
-    public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
-        boolean allow = isAllowed;
-        for (PlayerListener mod : playerEventHandlers) {
-            allow = mod.onPlayerTryLoginMP(username, isAllowed);
-        }
-        return allow;
-    }*/
-
     public static void eventOnChunkLoad(EventInfo<Chunk> event) {
         Chunk chunk = event.getSource();
         if (!chunk.isTerrainPopulated()) {
@@ -128,6 +187,29 @@ public class EventHandler {
     public static void eventCollideWithPlayer(EventInfo<EntityPlayer> event, Entity entity) {
     	if (playerEventHandlers.size() > 0 && !playerEventHandlers.all().onEntityCollideWithPlayer(entity, event.getSource())) {
     		event.cancel();
+    	}
+    }
+    
+    public static void eventDoBlockCollisions(EventInfo<Entity> event) {
+    	if (playerEventHandlers.size() > 0 && event.getSource() instanceof EntityPlayer) {
+    		EntityPlayer player = (EntityPlayer)event.getSource();
+    		if (player.isEntityAlive() && !player.isPlayerSleeping() && !player.noClip) {
+	    		BlockPos var1 = new BlockPos(player.getEntityBoundingBox().minX + 0.001D, player.getEntityBoundingBox().minY + 0.001D, player.getEntityBoundingBox().minZ + 0.001D);
+	            BlockPos var2 = new BlockPos(player.getEntityBoundingBox().maxX - 0.001D, player.getEntityBoundingBox().maxY - 0.001D, player.getEntityBoundingBox().maxZ - 0.001D);
+	            if (player.worldObj.isAreaLoaded(var1, var2)) {
+	                for (int var3 = var1.getX(); var3 <= var2.getX(); ++var3) {
+	                    for (int var4 = var1.getY(); var4 <= var2.getY(); ++var4) {
+	                        for (int var5 = var1.getZ(); var5 <= var2.getZ(); ++var5) {
+	                            BlockPos pos = new BlockPos(var3, var4, var5);
+	                            IBlockState state = player.worldObj.getBlockState(pos);
+	                            if (state.getBlock().isVisuallyOpaque()) {
+	                            	playerEventHandlers.all().onPlayerCollideWithBlock(state, pos, player);
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+    		}
     	}
     }
     
@@ -166,7 +248,7 @@ public class EventHandler {
     public static void eventUpdateEquipmentIfNeeded(EventInfo<EntityLiving> event, EntityItem entityItem) {
     	if (inventoryEventHandlers.size() > 0) {
 	    	ItemStack pickedUp = entityItem.getEntityItem();
-	    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(pickedUp);
+	    	InventoryEventArgs args = new InventoryEventArgs(pickedUp);
 	    	inventoryEventHandlers.all().onEntityEquipItem(event.getSource(), entityItem, args);
 	    	if (args.isCancelled()) {
 	    		event.cancel();
@@ -182,7 +264,7 @@ public class EventHandler {
     	if (!isInEvent && droppedItem != null && droppedItem.stackSize > 0) {
     		if (inventoryEventHandlers.size() > 0) {
 	    		Entity entity = event.getSource();
-	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+	    		InventoryEventArgs args = new InventoryEventArgs(droppedItem);
 	    		inventoryEventHandlers.all().onDropItem(entity, false, false, args);
 		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
@@ -205,7 +287,7 @@ public class EventHandler {
     		if (inventoryEventHandlers.size() > 0) {
 	    		EntityPlayer player = event.getSource();
 	    		ItemStack held = player.inventory.getItemStack();
-	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+	    		InventoryEventArgs args = new InventoryEventArgs(droppedItem);
 	    		inventoryEventHandlers.all().onDropItem(player, dropAround, traceItem, args);
 		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
@@ -243,7 +325,7 @@ public class EventHandler {
 	    	ItemStack droppedItem = player.inventory.getCurrentItem().copy();
 	    	if (droppedItem != null) {
 		    	if (!dropAll) droppedItem.stackSize = 1;
-		    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+		    	InventoryEventArgs args = new InventoryEventArgs(droppedItem);
 		    	inventoryEventHandlers.all().onDropOneItem(player, dropAll, args);
 		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
@@ -259,7 +341,7 @@ public class EventHandler {
     public static void eventFall(EventInfo<EntityPlayer> event, float distance, float multiplier) {
     	if (playerEventHandlers.size() > 0) {
     		if (!isInEvent) {
-    			PlayerListener.FallEventArgs args = new PlayerListener.FallEventArgs(distance, multiplier);
+    			FallEventArgs args = new FallEventArgs(distance, multiplier);
     			playerEventHandlers.all().onPlayerFall(event.getSource(), args);
     			if (!args.isCancelled()) {
 					distance = args.getFallDistance();

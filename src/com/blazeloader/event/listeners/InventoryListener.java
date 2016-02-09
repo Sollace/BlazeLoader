@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.blazeloader.bl.mod.BLMod;
+import com.blazeloader.event.listeners.args.InventoryEventArgs;
 
 /**
  * Interface for mods that handle inventory events
@@ -60,58 +61,4 @@ public interface InventoryListener extends BLMod {
 	 * @return True to allow the slot to change, otherwise false to cancel the event.
 	 */
 	public boolean onSlotSelectionChanged(EntityPlayer player, ItemStack item, int selectedSlot);
-	
-	/**
-	 * Event arguments for inventory events.
-	 */
-	public static class InventoryEventArgs {
-		
-    	private ItemStack theItem;
-    	private boolean stackChanged = false;
-    	private boolean cancelled = false;
-    	
-    	/**
-    	 * Returns true if the itemstack for this event has been changed.
-    	 */
-    	public boolean isDirty() {
-    		return stackChanged;
-    	}
-    	
-    	/**
-    	 * Returns true if the event must be discarded.
-    	 * </br>
-    	 * Other mods may still receive the event after {@code cancel} is called so you should always check this first when handling an event.
-    	 */
-    	public boolean isCancelled() {
-    		return cancelled;
-    	}
-    	
-    	/**
-    	 * Cancels the current event.
-    	 */
-    	public void cancel() {
-    		cancelled = true;
-    	}
-    	
-        public InventoryEventArgs(ItemStack stack) {
-        	theItem = stack;
-        }
-        
-        /**
-         * Sets the itemstack associated with this event.
-         * @param stack	The stack to use.
-         */
-        public void setItemStack(ItemStack stack) {
-        	theItem = stack;
-        	stackChanged = true;
-        }
-        
-        /**
-         * Gets the itemstack associated with this event.
-         * @return
-         */
-        public ItemStack getItemStack() {
-        	return theItem;
-        }
-    }
 }
