@@ -27,8 +27,6 @@ public class Downloader {
 	private final File cached;
 	private final String url;
 	
-	private boolean iscached = false;
-	
 	private Thread downloadThread;
 	
 	/**
@@ -49,19 +47,21 @@ public class Downloader {
 	
 	/**
 	 * Launches a download operation.
+	 * <br>
+	 * Will return results from a cached location if one exists.
 	 * 
 	 * @param callback	Callback to be notified on completion.
 	 */
 	public void download(IDownloadCallback callback) {
-		if (!iscached) {
-			launchHttpThread(callback);
+		if (cached != null && cached.isFile()) {
+			try {
+				returnCachedData(callback);
+			} catch (IOException e) {
+				BLMain.LOGGER_MAIN.logError("Couldn\'t open cached resource file", e);
+			}
 			return;
 		}
-		try {
-			returnCachedData(callback);
-		} catch (IOException e) {
-			BLMain.LOGGER_MAIN.logError("Couldn\'t open cached resource file", e);
-		}
+		launchHttpThread(callback);
 	}
 	
 	private void returnCachedData(IDownloadCallback callback) throws IOException {
@@ -90,8 +90,8 @@ public class Downloader {
                     InputStream input = connection.getInputStream();
                     try {
 	                    if (cached != null) {
+	                    	if (!cached.exists()) cached.createNewFile();
 	                        FileUtils.copyInputStreamToFile(input, cached);
-	                        iscached = true;
 	                    }
 	                    callback.success(input);
                     } finally {

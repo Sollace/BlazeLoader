@@ -8,6 +8,12 @@ import com.blazeloader.util.http.JsonDownload;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * PlayerInfo class for getting details about a player from mojang's servers.
+ * <br>
+ * eg. skin location, cape location, type of skin.
+ *
+ */
 class PlayerInfoProvider {
 	
 	protected UUID uuid;

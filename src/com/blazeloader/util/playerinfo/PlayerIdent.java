@@ -2,8 +2,11 @@ package com.blazeloader.util.playerinfo;
 
 import java.util.UUID;
 
+import com.blazeloader.util.config.IStringable;
+import com.blazeloader.util.config.JsonUtils;
 import com.blazeloader.util.data.INBTWritable;
 import com.blazeloader.util.version.Versions;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -14,7 +17,7 @@ import net.minecraft.server.management.PreYggdrasilConverter;
 /**
  * Combined identity for a player. Includes id, name, skins, etc.
  */
-public class PlayerIdent implements INBTWritable {
+public class PlayerIdent implements INBTWritable, IStringable<PlayerIdent> {
 	private GameProfile gameProfile;
 	private UUID uuid;
 	
@@ -140,5 +143,22 @@ public class PlayerIdent implements INBTWritable {
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		uuid = new UUID(tagCompound.getLong("UUIDMost"), tagCompound.getLong("UUIDLeast"));
 		gameProfile = new GameProfile(uuid, tagCompound.getString("Name"));
+	}
+	
+	public String toString() {
+		return "{ name: \"" + getGameProfile().getName() + "\", id: \"" + this.getUniqueID().toString() + "\" }";
+	}
+	
+	public PlayerIdent fromString(String string) {
+		JsonObject json = JsonUtils.parseJSONObj(string);
+		if (json != null) {
+			if (json.has("name") && json.has("id")) {
+				PlayerIdent result = create();
+				result.uuid = UUID.fromString(json.get("id").getAsString());
+				result.gameProfile = new GameProfile(result.uuid, json.get("name").getAsString());
+				return result;
+			}
+		}
+		return null;
 	}
 }

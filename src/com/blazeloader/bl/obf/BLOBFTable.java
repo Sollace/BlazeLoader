@@ -3,15 +3,24 @@ package com.blazeloader.bl.obf;
 import net.acomputerdog.OBFUtil.table.DirectOBFTableSRG;
 import net.acomputerdog.OBFUtil.table.TargetTypeMap;
 import net.acomputerdog.OBFUtil.util.TargetType;
+import net.acomputerdog.core.java.Patterns;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.blazeloader.util.JSArrayUtils;
 
 /**
  * BlazeLoader OBFTable that allows converting stored data into BLOBFs.
  * Provided methods automatically cache calls, so repeated calls with the same parameters will return the same BLOBF object.
  */
 public class BLOBFTable extends DirectOBFTableSRG {
+	private static final Pattern DESCRIPTOR_MATCHER = Pattern.compile(Patterns.DESCRIPTOR_PARAMETER);
+	
 	private int size = 0;
 	
     private final TargetTypeMap<Map<String, BLOBF>> obfNameMap = new TargetTypeMap<Map<String, BLOBF>>();
@@ -26,38 +35,49 @@ public class BLOBFTable extends DirectOBFTableSRG {
             mcpNameMap.put(type, new HashMap<String, BLOBF>());
         }
     }
-            
+         
     public BLOBF getConstructor(String obfClass, OBFLevel level, String... parameterClasses) {
-    	String obfName = obfClass + ".<init> (";
+    	String descript = "";
     	for (int i = 0; i < parameterClasses.length; i++) {
-    		obfName += parameterClasses[i];
+    		descript += parameterClasses[i];
     	}
-    	obfName += ")V";
-    	BLOBF obf = getMapping(level).get(TargetType.CONSTRUCTOR).get(obfName);
+    	BLOBF obf = getMapping(level).get(TargetType.CONSTRUCTOR).get(obfClass + ".<init> (" + descript + ")V");
     	if (obf == null) {
-    		String srg = getSRGFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
-    		String obfsc = getObfFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
-    		String mcp = getMCPFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
-    		for (int i = 0; i < parameterClasses.length; i++) {
-    			 //Only try to parse things we know. i.e. Minecraft classes
-    			if (parameterClasses[i].endsWith(";") && hasType(parameterClasses[i], TargetType.CLASS, level)) {
-	    			srg += getSRGFromType(parameterClasses[i], TargetType.CLASS, level);
-	    			obfsc += getMCPFromType(parameterClasses[i], TargetType.CLASS, level);
-	    			mcp += getMCPFromType(parameterClasses[i], TargetType.CLASS, level);
-    			} else {
-    				srg += parameterClasses[i];
-    				obfsc += parameterClasses[i];
-    				mcp += parameterClasses[i];
-    			}
-    		}
-    		obf = recordOBF(TargetType.CONSTRUCTOR, new BLOBF(obfsc + ")V", srg + ")V", mcp + ")V"));
+    		return recordConstructor(obfClass, level, parameterClasses);
     	}
     	return obf;
+    }
+    
+    private BLOBF recordConstructor(String obfClass, OBFLevel level, String... parameterClasses) {
+		String srg = getSRGFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
+		String obfsc = getObfFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
+		String mcp = getMCPFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
+		for (int i = 0; i < parameterClasses.length; i++) {
+			 //Only try to parse things we know. i.e. Minecraft classes
+			String trimmed = parameterClasses[i].substring(1, parameterClasses[i].length() - 1);
+			if (parameterClasses[i].endsWith(";") && hasType(trimmed, TargetType.CLASS, level)) {
+    			srg += "L" + getSRGFromType(trimmed, TargetType.CLASS, level) + ";";
+    			obfsc += "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
+    			mcp += "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
+			} else {
+				srg += parameterClasses[i];
+				obfsc += parameterClasses[i];
+				mcp += parameterClasses[i];
+			}
+		}
+		return recordOBF(TargetType.CONSTRUCTOR, new BLOBF(obfsc + ")V", srg + ")V", mcp + ")V"));
     }
     
     public BLOBF getBLOBF(String name, TargetType type, OBFLevel level) {
     	BLOBF result = getMapping(level).get(type).get(name);
     	if (result == null) {
+    		if (type == TargetType.CONSTRUCTOR) {
+		    	String obfClass = name.split(" ")[0].replace(".<init>", "");
+		    	List<String> params = new ArrayList<String>();
+		    	Matcher matcher = DESCRIPTOR_MATCHER.matcher(name.split(" ")[1].trim());
+		    	while (matcher.find()) params.add(matcher.group());
+		    	return recordConstructor(obfClass, level, params.size() > 0 ? JSArrayUtils.toArray(params) : new String[0]);
+    		}
     		if (hasType(name, type, level)) {
     			result = recordOBF(type, new BLOBF(getObfFromType(name, type, level), getSRGFromType(name, type, level), getMCPFromType(name, type, level)));
     		} else {

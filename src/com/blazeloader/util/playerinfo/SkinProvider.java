@@ -28,31 +28,56 @@ public class SkinProvider {
 	
 	private PlayerInfoProvider playerInfo;
 	
+	/**
+	 * Creates a new SkinProvider.
+	 * 
+	 * @param profile	GameProfile of the player's skins this provider must fetch.
+	 */
 	public SkinProvider(GameProfile profile) {
 		this(EntityPlayer.getUUID(profile));
 	}
 	
+	/**
+	 * Creates a new SkinProvider.
+	 * 
+	 * @param uuid	Id of the player's skins this provider must fetch.
+	 */
 	public SkinProvider(UUID uuid) {
 		this(new PlayerInfoProvider(uuid));
 	}
 	
-	public SkinProvider(PlayerInfoProvider provider) {
+	protected SkinProvider(PlayerInfoProvider provider) {
 		playerInfo = provider;
 		skincache = new File(BLMain.instance().environment.getAssetsDirectory(), "skins");
 	}
 	
+	/**
+	 * Returns true if a skin location has been loaded.
+	 */
 	public boolean hasSkin() {
         return locationSkin != null;
     }
 	
+	/**
+	 * Returns true if a cape location has been loaded.
+	 */
 	public boolean hasCape() {
 		return provideCape() != null;
 	}
 	
+	/**
+	 * Gets the type of askin associated with a player.
+	 * @return	Associated skin type, or a default based on their id hash.
+	 */
 	public String getSkinType() {
 		return playerInfo.skinType == null ? DefaultPlayerSkin.getSkinType(playerInfo.uuid) : playerInfo.skinType;
 	}
 	
+	/**
+	 * Gets the skin resource for a player.
+	 * 
+	 * @return	The skin resource location, or the default if one is not available.
+	 */
 	public ResourceLocation provideSkin() {
 		if (locationSkin == null) {
 			if (!playerInfo.hasLoaded) playerInfo.loadPlayerInfo();
@@ -64,6 +89,11 @@ public class SkinProvider {
     	return Objects.firstNonNull(locationSkin, DefaultPlayerSkin.getDefaultSkin(playerInfo.uuid));
 	}
 	
+	/**
+	 * Gets the cape resource for a player.
+	 * 
+	 * @return	The cape resource location, or null if one is not available.
+	 */
 	public ResourceLocation provideCape() {
 		if (locationCape == null) {
     		if (!playerInfo.hasLoaded) playerInfo.loadPlayerInfo();
