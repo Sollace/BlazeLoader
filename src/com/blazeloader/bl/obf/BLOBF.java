@@ -126,6 +126,14 @@ public class BLOBF extends Obf {
         return getOBF(obfName, TargetType.CLASS, level);
     }
     
+    /**
+     * Gets a BLOBF constructor descriptor, creating one if necessary.
+     * 
+     * @param className	Class owner name
+     * @param level		Obfuscation level
+     * @param params	Parameter classes, qualified with L; when needed.
+     * @return
+     */
     public static BLOBF getConstructor(String className, OBFLevel level, String... params) {
     	return OBF.getConstructor(className, level, params);
     }

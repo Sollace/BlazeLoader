@@ -10,7 +10,6 @@ public interface IStringable<T extends IStringable<T>> {
 	
 	/**
 	 * Just like object. But you really, really need to override it.
-	 * @return
 	 */
 	public String toString();
 	
