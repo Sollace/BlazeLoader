@@ -69,20 +69,20 @@ public class Cylinder implements IShape {
 	}
 	
 	public double getXOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public double getYOffset() {
-		return -height/2;
+		return 0;
 	}
 	
 	public double getZOffset() {
-		return -rad/2;
+		return 0;
 	}
 	
 	public Vec3 computePoint(Random rand) {
 		double y = MathHelper.getRandomDoubleInRange(rand, 0, height);
-		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
+		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
 		double rho = hollow && Math.abs(y) != height/2 ? rad : MathHelper.getRandomDoubleInRange(rand, 0, rad);
 		
 		return (new Vec3(rho * Math.cos(pheta) * stretchX, y, rho * Math.sin(pheta) * stretchZ)).rotateYaw(yaw).rotatePitch(pitch);

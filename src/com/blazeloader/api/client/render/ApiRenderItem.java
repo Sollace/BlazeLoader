@@ -1,10 +1,14 @@
 package com.blazeloader.api.client.render;
 
+import java.util.Set;
+
 import com.blazeloader.api.client.ApiClient;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 
 public class ApiRenderItem {
 	
@@ -44,5 +48,23 @@ public class ApiRenderItem {
 	 */
 	public static void registerItem(Item item, ItemMeshDefinition mesh) {
 		ApiClient.getRenderItem().getItemModelMesher().register(item, mesh);
+	}
+	
+	/**
+	 * Contains all item/block textures registered but do not have an associated item/block.
+	 */
+	private static Set<ResourceLocation> getBuiltInTextures() {
+		return ModelBakery.LOCATIONS_BUILTIN_TEXTURES;
+	}
+	
+	/**
+	 * Registers a texture to be added to the block/items atlas without need for an item.
+	 * @param resources ResourceLocation to add.
+	 */
+	public static void registerBuiltInTextures(ResourceLocation... resources) {
+		Set<ResourceLocation> s = getBuiltInTextures();
+		for (ResourceLocation i : resources) {
+			if (s.contains(i)) s.add(i);
+		}
 	}
 }
