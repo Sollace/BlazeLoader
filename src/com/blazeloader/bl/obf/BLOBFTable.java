@@ -54,16 +54,24 @@ public class BLOBFTable extends DirectOBFTableSRG {
 		String mcp = getMCPFromType(obfClass, TargetType.CLASS, level) + ".<init> (";
 		for (int i = 0; i < parameterClasses.length; i++) {
 			 //Only try to parse things we know. i.e. Minecraft classes
-			String trimmed = parameterClasses[i].substring(1, parameterClasses[i].length() - 1);
-			if (parameterClasses[i].endsWith(";") && hasType(trimmed, TargetType.CLASS, level)) {
-    			srg += "L" + getSRGFromType(trimmed, TargetType.CLASS, level) + ";";
-    			obfsc += "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
-    			mcp += "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
-			} else {
-				srg += parameterClasses[i];
-				obfsc += parameterClasses[i];
-				mcp += parameterClasses[i];
+			if (parameterClasses[i].length() > 2 && parameterClasses[i].endsWith(";")) {
+				String trimmed = parameterClasses[i];
+				String arrPart = "";
+				while (trimmed.indexOf("[") == 0) {
+					arrPart += "[";
+					trimmed = trimmed.substring(1, trimmed.length());
+				}
+				trimmed = trimmed.substring(1, parameterClasses[i].length() - 1);
+				if (hasType(trimmed, TargetType.CLASS, level)) {
+	    			srg += arrPart + "L" + getSRGFromType(trimmed, TargetType.CLASS, level) + ";";
+	    			obfsc += arrPart + "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
+	    			mcp += arrPart + "L" + getMCPFromType(trimmed, TargetType.CLASS, level) + ";";
+	    			continue;
+				}
 			}
+			srg += parameterClasses[i];
+			obfsc += parameterClasses[i];
+			mcp += parameterClasses[i];
 		}
 		return recordOBF(TargetType.CONSTRUCTOR, new BLOBF(obfsc + ")V", srg + ")V", mcp + ")V"));
     }

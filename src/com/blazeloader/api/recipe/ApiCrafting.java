@@ -56,7 +56,7 @@ public class ApiCrafting {
 	 * @return Manager or null if not found.
 	 */
 	public static ICraftingManager getManagerFromId(int id) {
-		return instances.containsKey(id) ? instances.get(id) : null;
+		return instances.get(id);
 	}
 	
 	/**
