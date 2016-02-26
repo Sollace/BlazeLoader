@@ -6,7 +6,6 @@ import com.blazeloader.bl.obf.BLMethodInfo;
 import com.blazeloader.bl.obf.BLOBF;
 import com.blazeloader.bl.obf.BLObfProvider;
 import com.blazeloader.bl.obf.OBFLevel;
-import com.mojang.authlib.GameProfile;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.Event;
 import com.mumfrey.liteloader.transformers.event.EventInjectionTransformer;
@@ -18,6 +17,7 @@ import com.mumfrey.liteloader.transformers.event.inject.MethodHead;
 /**
  * Side-independent event injector
  */
+@Deprecated
 public class BLEventInjectionTransformer extends EventInjectionTransformer {
     protected static final InjectionPoint methodHead = new MethodHead();
     protected static final InjectionPoint beforeReturn = new BeforeReturn();
@@ -82,7 +82,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     }
     
     protected void addBLEvents() {
-        addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.playerLoggedIn (Lnet/minecraft/entity/player/EntityPlayerMP;)V");
+        /*addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.playerLoggedIn (Lnet/minecraft/entity/player/EntityPlayerMP;)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.playerLoggedOut (Lnet/minecraft/entity/player/EntityPlayerMP;)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.recreatePlayerEntity (Lnet/minecraft/entity/player/EntityPlayerMP;IZ)Lnet/minecraft/entity/player/EntityPlayerMP;", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.allowUserToConnect (Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Ljava/lang/String;", beforeReturn);
@@ -120,9 +120,10 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.dropItem (Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.dropOneItem (Z)Lnet/minecraft/entity/item/EntityItem;");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.collideWithPlayer (Lnet/minecraft/entity/Entity;)V");
+        addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.fall (FF)V");
+        
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.InventoryPlayer.changeCurrentItem (I)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.InventoryPlayer.setCurrentItem (Lnet/minecraft/item/Item;IZZ)V", beforeReturn);
-        addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.fall (FF)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.inventory.Container.slotClick (IIILnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;", beforeReturn);
         
         addBLEvent(EventSide.SERVER, "net.minecraft.item.ItemBlock.onItemUse (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z", beforeReturn);
@@ -144,13 +145,12 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.VILLAGER, "net.minecraft.entity.passive.EntityVillager.getDisplayName ()Lnet/minecraft/util/IChatComponent;");
         addBLEvent(EventSide.VILLAGER, "net.minecraft.entity.passive.EntityVillager.readEntityFromNBT (Lnet/minecraft/nbt/NBTTagCompound;)V");
         addBLEvent(EventSide.VILLAGER, "net.minecraft.entity.passive.EntityVillager.populateBuyingList ()V");
-        addBLEvent(EventSide.VILLAGER, "net.minecraft.client.renderer.entity.RenderVillager.getEntityTexture (Lnet/minecraft/entity/passive/EntityVillager;)Lnet/minecraft/util/ResourceLocation;");
         
-        addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.doBlockCollisions ()V");
+        addBLEvent(EventSide.SERVER, "net.minecraft.entity.Entity.doBlockCollisions ()V");*/
     }
     
     protected void addBLAccessors() {
-    	addBLAccessor("EntityVillager");
+    	//addBLAccessor("EntityVillager");
     }
     
     public String getSide() {

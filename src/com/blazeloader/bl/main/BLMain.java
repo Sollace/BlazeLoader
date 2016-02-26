@@ -91,7 +91,7 @@ public class BLMain {
     }
 
     public String[] getRequiredTransformers() {
-        return new String[]{"com.blazeloader.util.transformers.BLAccessTransformer", "com.blazeloader.event.transformers.BLEventInjectionTransformer"};
+        return null;
     }
 
     public String[] getRequiredDownstreamTransformers() {

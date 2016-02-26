@@ -40,8 +40,8 @@ public final class Professions {
 		professions.add(profession);
 	}
 	
-	private int getProfessionId(EntityVillager villager) {
-		return villager.getDataWatcher().getWatchableObjectInt(16);
+	public static int getProfessionId(EntityVillager villager) {
+		return Math.max(villager.getDataWatcher().getWatchableObjectInt(16),0);
 	}
 	
 	public Boolean checkMatingConditions(EntityVillager villager, boolean fixedMarkiplier, int markiplier) {

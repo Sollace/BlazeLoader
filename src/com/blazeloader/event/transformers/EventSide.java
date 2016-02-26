@@ -1,5 +1,6 @@
 package com.blazeloader.event.transformers;
 
+@Deprecated
 public enum EventSide {
     //XXX: Reminder to update these when changing package structure.
 	CLIENT("com.blazeloader.event.handlers.client.EventHandlerClient"),

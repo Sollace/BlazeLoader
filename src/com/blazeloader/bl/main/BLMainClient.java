@@ -1,6 +1,5 @@
 package com.blazeloader.bl.main;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
 import com.blazeloader.api.client.ApiClient;
-import com.google.common.collect.Lists;
 import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -21,19 +19,6 @@ public class BLMainClient extends BLMain {
 	
     BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
         super(environment, properties);
-    }
-    
-    @Override
-    public String[] getRequiredTransformers() {
-        String[] superRequiredArr = super.getRequiredTransformers();
-        ArrayList<String> list = null;
-        if (superRequiredArr != null) {
-        	list = Lists.newArrayList(superRequiredArr);
-        } else {
-        	list = new ArrayList(1);
-        }
-        list.add("com.blazeloader.event.transformers.BLEventInjectionTransformerClient");
-        return list.toArray(new String[list.size()]);
     }
     
     @Override
