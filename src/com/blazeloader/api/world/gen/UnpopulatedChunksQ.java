@@ -5,7 +5,7 @@ import net.minecraft.world.chunk.Chunk;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnpopulatedChunksQ {
+public final class UnpopulatedChunksQ {
     public static final UnpopulatedChunksQ instance = new UnpopulatedChunksQ();
 
     private UnpopulatedChunksQ() {
@@ -18,7 +18,7 @@ public class UnpopulatedChunksQ {
     /**
      * This should not get very big since chunks get populated (and thus popped) directly after their onload event.
      */
-    private static final List<Chunk> unpopulatedChunksQ = new ArrayList<Chunk>();
+    private final List<Chunk> unpopulatedChunksQ = new ArrayList<Chunk>();
 
     public boolean pop(Chunk chunk) {
         if (unpopulatedChunksQ.contains(chunk)) {
