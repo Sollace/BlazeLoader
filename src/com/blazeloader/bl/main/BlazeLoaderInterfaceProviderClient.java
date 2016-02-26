@@ -2,7 +2,6 @@ package com.blazeloader.bl.main;
 
 import com.blazeloader.event.handlers.client.EventHandlerClient;
 import com.blazeloader.event.handlers.client.ResourcesEventHandler;
-import com.blazeloader.event.listeners.BlockChangedListener;
 import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
@@ -23,7 +22,6 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
     @Override
     public void registerInterfaces(InterfaceRegistrationDelegate delegate) {
     	super.registerInterfaces(delegate);
-        delegate.registerInterface(BlockChangedListener.class);
         delegate.registerInterface(GuiListener.class);
         delegate.registerInterface(OverrideListener.class);
         delegate.registerInterface(ClientPlayerListener.class);

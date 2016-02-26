@@ -10,18 +10,14 @@ import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
@@ -81,31 +77,6 @@ public class EventHandlerClient extends EventHandler {
         } else {
             worldEventClients.all().onWorldUnload(mc, mc.theWorld, message);
         }
-    }
-    
-    public static void eventFunc_151260_c(ReturnEventInfo<EntityTrackerEntry, Packet> event) {
-    	EntityTrackerEntry entry = event.getSource();
-    	if (!entry.trackedEntity.isDead) {
-    		S0EPacketSpawnObject packet = null;
-            for (OverrideListener mod : overrideEventClients) {
-                S0EPacketSpawnObject modPacket = mod.onCreateSpawnPacket(entry.trackedEntity, packet != null);
-                if (modPacket != null) packet = modPacket;
-            }
-            if (packet != null) {
-            	event.setReturnValue(packet);
-            }
-        }
-    }
-    
-    public static void eventTrackEntity(EventInfo<EntityTracker> event, Entity entity) {
-    	if (!isInEvent) {
-	    	isInEvent = true;
-	    	boolean isHandled = false;
-	        for (OverrideListener mod : overrideEventClients) {
-	            isHandled |= mod.onAddEntityToTracker(event.getSource(), entity, isHandled);
-	        }
-	        isInEvent = false;
-    	}
     }
     
     public static void eventHandleOpenWindow(EventInfo<INetHandlerPlayClient> event, S2DPacketOpenWindow packet) {

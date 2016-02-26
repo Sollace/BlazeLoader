@@ -20,6 +20,8 @@ import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,7 +30,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
+import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -56,6 +60,7 @@ public class EventHandler {
     public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
+    public static final HandlerList<EntityTrackingListener> entityTrackings = new HandlerList<EntityTrackingListener>(EntityTrackingListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
 
     public static void eventTick() {
         tickEventHandlers.all().onTick();
@@ -375,6 +380,30 @@ public class EventHandler {
 	    		}
 	    		inventoryEventHandlers.all().onItemPickup(owner, item, amount);
 	    	}
+    	}
+    }
+    
+    
+    public static void eventFunc_151260_c(ReturnEventInfo<EntityTrackerEntry, Packet> event) {
+    	EntityTrackerEntry entry = event.getSource();
+    	if (!entry.trackedEntity.isDead) {
+    		S0EPacketSpawnObject packet = null;
+            for (EntityTrackingListener mod : entityTrackings) {
+                S0EPacketSpawnObject modPacket = mod.onCreateSpawnPacket(entry.trackedEntity, packet != null);
+                if (modPacket != null) packet = modPacket;
+            }
+            if (packet != null) event.setReturnValue(packet);
+        }
+    }
+    
+    public static void eventTrackEntity(EntityTracker sender, Entity entity) {
+    	if (!isInEvent) {
+	    	isInEvent = true;
+	    	boolean isHandled = false;
+	        for (EntityTrackingListener mod : entityTrackings) {
+	            isHandled |= mod.onAddEntityToTracker(sender, entity, isHandled);
+	        }
+	        isInEvent = false;
     	}
     }
 }
