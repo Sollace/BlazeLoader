@@ -1,11 +1,15 @@
 package com.blazeloader.bl.interop;
 
+import net.minecraft.world.World;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.storage.MapStorage;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
 public interface ForgeWorldAccess {
@@ -17,7 +21,9 @@ public interface ForgeWorldAccess {
 	 * @param pos	The location
 	 * @param side	The face
 	 */
-	public boolean isSideSolid(BlockPos pos, EnumFacing side);
+	public default boolean isSideSolid(BlockPos pos, EnumFacing side) {
+		return isSideSolid(pos, side, false);
+	}
 	
 	/**
 	 * Checks if the given side of a block is solid.
@@ -34,12 +40,17 @@ public interface ForgeWorldAccess {
 	 * @forge This is part of the Forge API specification
 	 * @param <Ticket> A forge chunk manager ticket.
 	 */
-	public <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks();
+	public default <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks() {
+		return ImmutableSetMultimap.<ChunkCoordIntPair, Ticket>of();
+	}
 	
 	/**
 	 * Gets the amount of light a block will allow through
 	 */
-	public int getBlockLightOpacity(BlockPos pos);
+	public default int getBlockLightOpacity(BlockPos pos) {
+		if (!((World)this).isValid(pos)) return 0;
+        return ((World)this).getChunkFromBlockCoords(pos).getBlockLightOpacity(pos);
+	}
 	
 	/**
 	 * Counts the number of entities with the given creature type.
@@ -48,7 +59,9 @@ public interface ForgeWorldAccess {
 	 * @param type			Type of entity
 	 * @param forSpawnCount	True if we are checking for spawn count limits
 	 */
-	public int countEntities(EnumCreatureType type, boolean forSpawnCount);
+	public default int countEntities(EnumCreatureType type, boolean forSpawnCount) {
+		return ((World)this).countEntities(type.getCreatureClass());
+	}
 	
 	/**
      * Rotate the block at the given coordinates. For vanilla blocks this rotates around the axis passed in (generally, it should be the "face" that was hit).
@@ -62,12 +75,23 @@ public interface ForgeWorldAccess {
      * @return True if the rotation was successful, False if the rotation failed, or is not possible
      */
 	@Deprecated
-	public boolean rotateBlock(BlockPos pos, EnumFacing axis);
+	public default boolean rotateBlock(BlockPos pos, EnumFacing axis) {
+		IBlockState state = ((World)this).getBlockState(pos);
+		for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
+			if (i.getName().contentEquals("facing")) {
+				((World)this).setBlockState(pos, state.cycleProperty(i));
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Gets the per-world map storage introduced by forge
 	 */
-	public MapStorage getPerWorldStorage();
+	public default MapStorage getPerWorldStorage() {
+		return ((World)this).getMapStorage();
+	}
 	
 	/**
 	 * Gets the maximum entity size. Used when checking if an entity is within a given region.

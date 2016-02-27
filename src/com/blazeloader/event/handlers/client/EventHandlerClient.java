@@ -5,7 +5,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,6 +21,7 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.api.gui.CreativeTabGui;
@@ -33,8 +33,6 @@ import com.blazeloader.event.listeners.client.GuiListener;
 import com.blazeloader.event.listeners.client.OverrideListener;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
-import com.mumfrey.liteloader.transformers.event.EventInfo;
-import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
 /**
  * Distributes game events to mods
@@ -69,26 +67,26 @@ public class EventHandlerClient extends EventHandler {
         }
     }
     
-    public static void eventHandleOpenWindow(EventInfo<INetHandlerPlayClient> event, S2DPacketOpenWindow packet) {
+    public static void eventHandleOpenWindow(INetHandlerPlayClient sender, CallbackInfo info, S2DPacketOpenWindow packet) {
     	Minecraft gameController = Minecraft.getMinecraft();
-    	PacketThreadUtil.checkThreadAndEnqueue(packet, event.getSource(), gameController);
+    	PacketThreadUtil.checkThreadAndEnqueue(packet, sender, gameController);
         ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(gameController.thePlayer, packet);
         if (overrideEventClients.all().onContainerOpened(gameController.thePlayer, args)) {
         	gameController.thePlayer.openContainer.windowId = packet.getWindowId();
-        	event.cancel();
+        	info.cancel();
         }
     }
     
-    public static void eventSpawnEffectParticle(ReturnEventInfo<EffectRenderer, EntityFX> event, int particleId, double x, double y, double z, double xOffset, double yOffset, double zOffset, int ... args) {
+    public static void eventSpawnEffectParticle(EffectRenderer sender, CallbackInfoReturnable<EntityFX> info, int particleId, double x, double y, double z, double xOffset, double yOffset, double zOffset, int ... args) {
         EntityFX entity = overrideSpawnEffectParticle(particleId, x, y, z, xOffset, yOffset, zOffset, args);
         if (entity != null) {
-        	event.getSource().addEffect(entity);
-        	event.setReturnValue(entity);
+        	sender.addEffect(entity);
+        	info.setReturnValue(entity);
         }
     }
     
-    public static void eventSetPlayerSPHealth(EventInfo<EntityPlayerSP> event, float health) {
-    	if (!event.getSource().isEntityAlive() || event.getSource().getHealth() <= 0) {
+    public static void eventSetPlayerSPHealth(EntityPlayerSP sender, float health) {
+    	if (!sender.isEntityAlive() || sender.getHealth() <= 0) {
     		playerEventClients.all().onClientPlayerDeath();
     	}
     }
@@ -98,7 +96,6 @@ public class EventHandlerClient extends EventHandler {
         for (OverrideListener mod : overrideEventClients) {
             entity = mod.onSpawnParticle(particleId, x, y, z, zOffset, yOffset, zOffset, entity);
         }
-        
         return entity;
     }
     
@@ -110,21 +107,21 @@ public class EventHandlerClient extends EventHandler {
     	worldEventClients.all().onWorldChanged(world);
     }
     
-    public static void eventHandleHeldItemChange(EventInfo<NetHandlerPlayClient> event, S09PacketHeldItemChange packet) {
+    public static void eventHandleHeldItemChange(CallbackInfo info, S09PacketHeldItemChange packet) {
     	if (inventoryEventHandlers.size() > 0) {
     		int index = packet.getHeldItemHotbarIndex();
 	    	if (index >= 0 && index < InventoryPlayer.getHotbarSize()) {
 	    		Minecraft mc = Minecraft.getMinecraft();
 	    		if (mc != null && mc.thePlayer != null) {
 					if (!inventoryEventHandlers.all().onSlotSelectionChanged(mc.thePlayer, mc.thePlayer.inventory.getStackInSlot(index), index)) {
-						event.cancel();
+						info.cancel();
 					}
 	    		}
 	    	}
     	}
     }
     
-    public static void eventHandleCollectItem(EventInfo<NetHandlerPlayClient> event, S0DPacketCollectItem packet) {
+    public static void eventHandleCollectItem(S0DPacketCollectItem packet) {
     	if (inventoryEventHandlers.size() > 0) {
 	    	Minecraft mc = ApiClient.getClient();
 	    	Entity owner = mc.theWorld.getEntityByID(packet.getEntityID());
