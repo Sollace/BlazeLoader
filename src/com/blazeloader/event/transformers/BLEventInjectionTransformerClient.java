@@ -11,11 +11,10 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
      */
     @Override
     protected void addBLEvents() {
-        addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
-        addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
-        
-        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.dispatchKeypresses ()V", beforeReturn);
-        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.middleClickMouse ()V");
+        //addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
+        //addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
+        //addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.dispatchKeypresses ()V", beforeReturn);
+        //addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.middleClickMouse ()V");
         
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleOpenWindow (Lnet/minecraft/network/play/server/S2DPacketOpenWindow;)V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleHeldItemChange (Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V");

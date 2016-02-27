@@ -77,13 +77,12 @@ public class EventHandler {
     	worldEventHandlers.all().onWorldInit(sender);
     }
     
-    public static void eventStartSection(EventInfo<Profiler> event, String name) {
-        profilerHandlers.all().onSectionStart(event.getSource(), name);
+    public static void eventStartSection(Profiler sender, String name) {
+        profilerHandlers.all().onSectionStart(sender, name);
     }
 
-    public static void eventEndSection(EventInfo<Profiler> event) {
-        Profiler prof = event.getSource();
-        profilerHandlers.all().onSectionEnd(prof, prof.getNameOfLastSection());
+    public static void eventEndSection(Profiler sender) {
+        profilerHandlers.all().onSectionEnd(sender, sender.getNameOfLastSection());
     }
     
     private static boolean eventSpawnEntityInWorld = false;

@@ -21,6 +21,8 @@ import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.api.gui.CreativeTabGui;
 import com.blazeloader.event.handlers.EventHandler;
@@ -44,27 +46,26 @@ public class EventHandlerClient extends EventHandler {
     public static final HandlerList<ClientWorldListener> worldEventClients = new HandlerList<ClientWorldListener>(ClientWorldListener.class);
     
     private static boolean eventDisplayGuiScreen = false;
-    public static void eventDisplayGuiScreen(EventInfo<Minecraft> event, GuiScreen gui) {
+    public static void eventDisplayGuiScreen(Minecraft sender, CallbackInfo info, GuiScreen gui) {
     	if (!eventDisplayGuiScreen) {
 	        eventDisplayGuiScreen = true;
-	        Minecraft mc = event.getSource();
-	    	if (CreativeTabs.creativeTabArray.length > 12 && gui instanceof GuiContainerCreative && !(gui instanceof CreativeTabGui)) {
-	    		event.cancel();
-	    		mc.displayGuiScreen(new CreativeTabGui(event.getSource().thePlayer));
-	    		eventDisplayGuiScreen = false;
-	    		return;
-	    	}
-	        guiEventClients.all().onGuiOpen(mc, mc.currentScreen, gui);
+	        guiEventClients.all().onGuiOpen(sender, sender.currentScreen, gui);
 	        eventDisplayGuiScreen = false;
     	}
     }
     
-    public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
-        Minecraft mc = event.getSource();
+    public static GuiScreen getCreativeGui(Minecraft sender, GuiScreen original) {
+    	if (CreativeTabs.creativeTabArray.length > 12 && original instanceof GuiContainerCreative && !(original instanceof CreativeTabGui)) {
+    		return new CreativeTabGui(sender.thePlayer);
+    	}
+    	return original;
+    }
+
+    public static void eventLoadWorld(Minecraft sender, WorldClient world, String message) {
         if (world != null) {
-            worldEventClients.all().onWorldLoad(mc, world, message);
+            worldEventClients.all().onWorldLoad(sender, world, message);
         } else {
-            worldEventClients.all().onWorldUnload(mc, mc.theWorld, message);
+            worldEventClients.all().onWorldUnload(sender, sender.theWorld, message);
         }
     }
     

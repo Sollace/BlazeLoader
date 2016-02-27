@@ -18,6 +18,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import com.blazeloader.api.block.ApiBlock;
 import com.blazeloader.api.client.render.BlockRenderRegistry;
 import com.blazeloader.api.entity.IMousePickHandler;
@@ -31,16 +33,15 @@ import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
  * Event handler for events that are not passed to mods, but rather to BL itself
  */
 public class InternalEventHandlerClient {
-	public static void eventDispatchKeypresses(EventInfo<Minecraft> event) {
+	public static void eventDispatchKeypresses(Minecraft sender) {
 		if (EventHandler.inventoryEventHandlers.size() > 0) {
-			Minecraft mc = event.getSource();
-			if (mc == null) return;
-			if (mc.thePlayer != null && !mc.thePlayer.isSpectator()) {
-				if (mc.currentScreen == null || mc.currentScreen.allowUserInput) {
-					for (int i = 0; i < mc.gameSettings.keyBindsHotbar.length; i++) {
-			            if (mc.gameSettings.keyBindsHotbar[i].isPressed()) {
-		                    if (EventHandler.inventoryEventHandlers.all().onSlotSelectionChanged(mc.thePlayer, mc.thePlayer.inventory.getCurrentItem(), i)) {
-		                    	KeyBinding.onTick(mc.gameSettings.keyBindsHotbar[i].getKeyCode());
+			if (sender == null) return;
+			if (sender.thePlayer != null && !sender.thePlayer.isSpectator()) {
+				if (sender.currentScreen == null || sender.currentScreen.allowUserInput) {
+					for (int i = 0; i < sender.gameSettings.keyBindsHotbar.length; i++) {
+			            if (sender.gameSettings.keyBindsHotbar[i].isPressed()) {
+		                    if (EventHandler.inventoryEventHandlers.all().onSlotSelectionChanged(sender.thePlayer, sender.thePlayer.inventory.getCurrentItem(), i)) {
+		                    	KeyBinding.onTick(sender.gameSettings.keyBindsHotbar[i].getKeyCode());
 		                    }
 		                    break;
 		                }
@@ -72,21 +73,20 @@ public class InternalEventHandlerClient {
     	renderer.particleTypes = ParticlesRegister.instance().init(renderer.particleTypes);
     }
     
-    public static void eventMiddleClickMouse(EventInfo<Minecraft> event) {
-    	Minecraft mc = event.getSource();
-    	if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectType.ENTITY) {
-    		Entity entity = mc.objectMouseOver.entityHit;
+    public static void eventMiddleClickMouse(Minecraft sender, CallbackInfo info) {
+    	if (sender.objectMouseOver != null && sender.objectMouseOver.typeOfHit == MovingObjectType.ENTITY) {
+    		Entity entity = sender.objectMouseOver.entityHit;
     		if (entity instanceof IMousePickHandler) {
-    			ItemStack stack = ((IMousePickHandler)entity).onPlayerMiddleClick(mc.thePlayer);
+    			ItemStack stack = ((IMousePickHandler)entity).onPlayerMiddleClick(sender.thePlayer);
     			if (stack != null && stack.stackSize > 0) {
-    				boolean creative = mc.thePlayer.capabilities.isCreativeMode;
-    				InventoryPlayer inventory = mc.thePlayer.inventory;
+    				boolean creative = sender.thePlayer.capabilities.isCreativeMode;
+    				InventoryPlayer inventory = sender.thePlayer.inventory;
     				inventory.setCurrentItem(stack.getItem(), stack.getMetadata(), stack.getItem().getHasSubtypes(), creative);
     				if (creative) {
-    	                int change = mc.thePlayer.inventoryContainer.inventorySlots.size() - 9 + inventory.currentItem;
-    	                mc.playerController.sendSlotPacket(inventory.getStackInSlot(inventory.currentItem), change);
+    	                int change = sender.thePlayer.inventoryContainer.inventorySlots.size() - 9 + inventory.currentItem;
+    	                sender.playerController.sendSlotPacket(inventory.getStackInSlot(inventory.currentItem), change);
     	            }
-    				event.cancel();
+    				info.cancel();
     			}
     		}
     	}
