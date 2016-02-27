@@ -1,4 +1,4 @@
-package com.blazeloader.event.listeners.client;
+package com.blazeloader.event.listeners;
 
 import com.blazeloader.bl.mod.BLMod;
 

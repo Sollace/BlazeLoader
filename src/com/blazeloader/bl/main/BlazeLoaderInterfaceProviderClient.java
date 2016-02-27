@@ -6,7 +6,6 @@ import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
 import com.blazeloader.event.listeners.client.OverrideListener;
-import com.blazeloader.event.listeners.client.ProfilerListener;
 import com.blazeloader.event.listeners.client.ResourcesListener;
 import com.mumfrey.liteloader.core.InterfaceRegistrationDelegate;
 
@@ -25,7 +24,6 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
         delegate.registerInterface(GuiListener.class);
         delegate.registerInterface(OverrideListener.class);
         delegate.registerInterface(ClientPlayerListener.class);
-        delegate.registerInterface(ProfilerListener.class);
         delegate.registerInterface(ClientWorldListener.class);
         delegate.registerInterface(ResourcesListener.class);
     }
@@ -45,10 +43,6 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
     
     public void addPlayerEvent(ClientPlayerListener e) {
         EventHandlerClient.playerEventClients.add(e);
-    }
-    
-    public void addProfilerEvent(ProfilerListener e) {
-        EventHandlerClient.profilerEventClients.add(e);
     }
     
     public void addWorldEventHandler(ClientWorldListener e) {

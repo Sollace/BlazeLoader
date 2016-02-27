@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -61,7 +62,8 @@ public class EventHandler {
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
     public static final HandlerList<EntityTrackingListener> entityTrackings = new HandlerList<EntityTrackingListener>(EntityTrackingListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
-
+    public static final HandlerList<ProfilerListener> profilerHandlers = new HandlerList<ProfilerListener>(ProfilerListener.class);
+    
     public static void eventTick() {
         tickEventHandlers.all().onTick();
     }
@@ -76,6 +78,15 @@ public class EventHandler {
     
     public static void eventInit(ReturnEventInfo<WorldServer, World> event) {
     	worldEventHandlers.all().onWorldInit(event.getSource());
+    }
+    
+    public static void eventStartSection(EventInfo<Profiler> event, String name) {
+        profilerHandlers.all().onSectionStart(event.getSource(), name);
+    }
+
+    public static void eventEndSection(EventInfo<Profiler> event) {
+        Profiler prof = event.getSource();
+        profilerHandlers.all().onSectionEnd(prof, prof.getNameOfLastSection());
     }
     
     private static boolean eventSpawnEntityInWorld = false;

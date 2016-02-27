@@ -19,7 +19,6 @@ import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.network.play.server.S0DPacketCollectItem;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 
 import com.blazeloader.api.client.ApiClient;
@@ -30,7 +29,6 @@ import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
 import com.blazeloader.event.listeners.client.OverrideListener;
-import com.blazeloader.event.listeners.client.ProfilerListener;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
@@ -43,7 +41,6 @@ public class EventHandlerClient extends EventHandler {
     public static final HandlerList<GuiListener> guiEventClients = new HandlerList<GuiListener>(GuiListener.class);
     public static final HandlerList<OverrideListener> overrideEventClients = new HandlerList<OverrideListener>(OverrideListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ClientPlayerListener> playerEventClients = new HandlerList<ClientPlayerListener>(ClientPlayerListener.class);
-    public static final HandlerList<ProfilerListener> profilerEventClients = new HandlerList<ProfilerListener>(ProfilerListener.class);
     public static final HandlerList<ClientWorldListener> worldEventClients = new HandlerList<ClientWorldListener>(ClientWorldListener.class);
     
     private static boolean eventDisplayGuiScreen = false;
@@ -61,15 +58,6 @@ public class EventHandlerClient extends EventHandler {
     	}
     }
     
-    public static void eventStartSection(EventInfo<Profiler> event, String name) {
-        profilerEventClients.all().onSectionStart(event.getSource(), name);
-    }
-
-    public static void eventEndSection(EventInfo<Profiler> event) {
-        Profiler prof = event.getSource();
-        profilerEventClients.all().onSectionEnd(prof, prof.getNameOfLastSection());
-    }
-
     public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
         Minecraft mc = event.getSource();
         if (world != null) {
