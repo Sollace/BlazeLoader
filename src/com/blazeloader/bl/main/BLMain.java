@@ -3,6 +3,7 @@ package com.blazeloader.bl.main;
 import java.util.Collections;
 import java.util.List;
 
+import net.acomputerdog.core.logger.Logger;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
 import net.minecraft.command.CommandHandler;
@@ -30,15 +31,15 @@ public class BLMain {
     /**
      * Logger that logs date and time
      */
-    public static final CLogger LOGGER_FULL = new CLogger("BlazeLoader", true, true, LogLevel.DEBUG);
+    public static final Logger LOGGER_FULL = new CLogger("BlazeLoader", true, true, LogLevel.DEBUG);
     /**
      * Logger that logs time but not date
      */
-    public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, LogLevel.DEBUG);
+    public static final Logger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, LogLevel.DEBUG);
     /**
      * Logger that does not log date or time
      */
-    public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
+    public static final Logger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
 
     public static boolean isClient;
     

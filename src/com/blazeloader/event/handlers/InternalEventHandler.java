@@ -119,6 +119,8 @@ public class InternalEventHandler {
     public static void eventTrackEntity(EventInfo<EntityTracker> event, Entity entity) {
     	if (EntityTrackerRegistry.instance().addEntityToTracker(event.getSource(), entity)) {
     		event.cancel();
+    	} else {
+    		EventHandler.eventTrackEntity(event.getSource(), entity);
     	}
     }
     
@@ -126,6 +128,8 @@ public class InternalEventHandler {
     	Packet result = EntityTrackerRegistry.instance().getSpawnPacket(event.getSource());
     	if (result != null) {
     		event.setReturnValue(result);
+    	} else {
+    		EventHandler.eventFunc_151260_c(event);
     	}
     }
     

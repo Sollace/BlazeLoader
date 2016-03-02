@@ -5,9 +5,11 @@ import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.listeners.BlockChangedListener;
 import com.blazeloader.event.listeners.ChunkListener;
 import com.blazeloader.event.listeners.EntityConstructingListener;
+import com.blazeloader.event.listeners.EntityTrackingListener;
 import com.blazeloader.event.listeners.InventoryListener;
 import com.blazeloader.event.listeners.StartupListener;
 import com.blazeloader.event.listeners.PlayerListener;
+import com.blazeloader.event.listeners.ProfilerListener;
 import com.blazeloader.event.listeners.TickListener;
 import com.blazeloader.event.listeners.WorldListener;
 import com.mumfrey.liteloader.api.InterfaceProvider;
@@ -36,10 +38,13 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
 		delegate.registerInterface(StartupListener.class);
 		delegate.registerInterface(TickListener.class);
 		delegate.registerInterface(WorldListener.class);
+		delegate.registerInterface(ProfilerListener.class);
+		delegate.registerInterface(BlockChangedListener.class);
 		delegate.registerInterface(PlayerListener.class);
+		delegate.registerInterface(InventoryListener.class);
 		delegate.registerInterface(ChunkListener.class);
 		delegate.registerInterface(EntityConstructingListener.class);
-		delegate.registerInterface(InventoryListener.class);
+		delegate.registerInterface(EntityTrackingListener.class);
 	}
 	
     @Override
@@ -57,6 +62,10 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
     
     public void addWorldEvent(WorldListener e) {
     	EventHandler.worldEventHandlers.add(e);
+    }
+    
+    public void addProfilerEvent(ProfilerListener e) {
+        EventHandler.profilerHandlers.add(e);
     }
     
     public void addBlockEvent(BlockChangedListener e) {
@@ -77,5 +86,9 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
     
     public void addEntityConstructingEvent(EntityConstructingListener e) {
     	EventHandler.entityEventHandlers.add(e);
+    }
+    
+    public void addEntityTrackingListener(EntityTrackingListener e) {
+    	EventHandler.entityTrackings.add(e);
     }
 }

@@ -11,11 +11,7 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
     @Override
     protected void addBLEvents() {
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
-        addBLEvent(EventSide.CLIENT, "net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
-        addBLEvent(EventSide.CLIENT, "net.minecraft.profiler.Profiler.endSection ()V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
-        addBLEvent(EventSide.CLIENT, "net.minecraft.entity.EntityTracker.trackEntity (Lnet/minecraft/entity/Entity;)V");
-        addBLEvent(EventSide.CLIENT, "net.minecraft.entity.EntityTrackerEntry.func_151260_c ()Lnet/minecraft/network/Packet;");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleOpenWindow (Lnet/minecraft/network/play/server/S2DPacketOpenWindow;)V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleHeldItemChange (Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V");
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.network.NetHandlerPlayClient.handleCollectItem (Lnet/minecraft/network/play/server/S0DPacketCollectItem;)V");

@@ -87,6 +87,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.recreatePlayerEntity (Lnet/minecraft/entity/player/EntityPlayerMP;IZ)Lnet/minecraft/entity/player/EntityPlayerMP;", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.allowUserToConnect (Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Ljava/lang/String;", beforeReturn);
         
+        addBLEvent(EventSide.SERVER, "net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
+        addBLEvent(EventSide.SERVER, "net.minecraft.profiler.Profiler.endSection ()V");
+        
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkLoad ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.WorldServer.init ()Lnet/minecraft/world/World;", beforeReturn);

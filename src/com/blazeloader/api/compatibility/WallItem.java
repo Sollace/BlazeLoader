@@ -34,7 +34,7 @@ public class WallItem<T> {
      * Subscribes to this item to be notified when it changes.
      * @param subscriptionObject	Handler to receive the event
      */
-	public void subScribeTo(ISubscription<T> subscriptionObject) {
+	public void subscribeTo(ISubscription<T> subscriptionObject) {
 		item.subscribe(subscriptionObject);
 	}
 	
