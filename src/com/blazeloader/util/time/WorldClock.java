@@ -8,33 +8,49 @@ import net.minecraft.world.World;
  */
 public class WorldClock implements IPreciseTime, IDate {
 	
-	private final World world;
+	private World world;
 	
 	public WorldClock(World referenceFrame) {
 		world = referenceFrame;
 	}
 	
+	public void setWorld(World w) {
+		world = w;
+	}
+	
 	public String getDate() {
-		return getDay().ordinal() + "-" + getMonth().ordinal() + "-" + getYears();
+		return padded(getDay()) + "-" + padded(getMonth().ordinal() + 1) + "-" + padded(getYears());
+	}
+	
+	public String getTime() {
+		return padded(getHours()) + ":" + padded(getMinutes()) + ":" + padded(getSeconds());
+	}
+	
+	protected String padded(int v) {
+		return v < 10 ? "0" + v : v + "";
 	}
 	
 	public int getDays() {
-		return getTotalDays() - getWeeks()*7;
+		return getExtendedWorldTime(1);
 	}
 	
 	public int getWeeks() {
-		return getTotalWeeks() - getMonths()*4;
+		return getExtendedWorldTime(7);
 	}
 	
 	public int getMonths() {
-		return getTotalMonths() - getYears()*12;
+		return getExtendedWorldTime(30);
 	}
 	
 	public int getYears() {
-		return (int)Math.floor(getTotalMonths()/12);
+		return getExtendedWorldTime(360) + 1;
 	}
 	
-	public Day getDay() {
+	public int getDay() {
+		return getDays() - getMonths()*30;
+	}
+	
+	public Day getDayOfWeek() {
 		return Day.values()[getDays() % 7];
 	}
 	
@@ -58,55 +74,45 @@ public class WorldClock implements IPreciseTime, IDate {
 		return "AN";
 	}
 	
-	public String getTime() {
-		return getHours() + ":" + getMinutes() + ":" + getSeconds();
-	}
-	
 	public int getHours() {
-		return getTotalHours() - getDays()*24;
+		long time = getWorldTime() - 18000;
+		if (time < 0) time += 24000;
+		return (int)Math.floor(time / 1000) % 24;
 	}
 	
 	public int getMinutes() {
-		return getTotalMinutes() - getHours()*60;
+		return (int)Math.floor(getWorldTime() * 60 / 1000) % 60;
 	}
 	
 	public int getSeconds() {
-		return getTotalSeconds() - getMinutes()*60;
+		return (int)Math.floor(getWorldTime() * 60 * 60 / 1000) % 60;
 	}
 	
 	public String getTimePrecise() {
-		return getTime() + ":" + getMilliseconds();
+		return getTime() + ":" + padded(getMilliseconds());
 	}
 	
 	public int getMilliseconds() {
-		return (int)Math.floor(getTotalMilliseconds()) - getSeconds()*1000;
+		return (int)Math.floor(getWorldTime() * 60 * 60 / 10) % 100 + (int)(getWorldTime() % 10);
+	}
+	
+	private long getWorldTime() {
+		long time = world.getWorldTime();
+		if (time == 1) time = 0;
+		return time;
+	}
+	
+	private int getExtendedWorldTime(long dayFactor) {
+		long time = getWorldTime();
+		long timeOfDay = time % 24000;
+		return (int)Math.floor((time - timeOfDay) / (24000 * dayFactor));
+	}
+	
+	public String toString() {
+		return getDate() + " " + getTimePrecise();
 	}
 	
 	public long getTotalMilliseconds() {
-		return world.getTotalWorldTime();
-	}
-	
-	private int getTotalSeconds() {
-		return (int)Math.floor((double)getTotalMilliseconds() / 1000);
-	}
-	
-	private int getTotalMinutes() {
-		return (int)Math.floor(getTotalSeconds() / 60);
-	}
-	
-	private int getTotalHours() {
-		return (int)Math.floor(getTotalMinutes() / 60);
-	}
-	
-	private int getTotalDays() {
-		return (int)Math.floor(getTotalHours() / 24);
-	}
-	
-	private int getTotalWeeks() {
-		return (int)Math.floor(getTotalDays() / 7);
-	}
-	
-	private int getTotalMonths() {
-		return (int)Math.floor(getTotalWeeks() / 4);
+		return (long)Math.floor(getWorldTime() / 100);
 	}
 }
