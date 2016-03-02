@@ -51,6 +51,7 @@ public class EventHandlerClient extends EventHandler {
 	    	if (CreativeTabs.creativeTabArray.length > 12 && gui instanceof GuiContainerCreative && !(gui instanceof CreativeTabGui)) {
 	    		event.cancel();
 	    		mc.displayGuiScreen(new CreativeTabGui(event.getSource().thePlayer));
+	    		eventDisplayGuiScreen = false;
 	    		return;
 	    	}
 	        guiEventClients.all().onGuiOpen(mc, mc.currentScreen, gui);
