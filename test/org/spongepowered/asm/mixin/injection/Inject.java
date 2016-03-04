@@ -29,7 +29,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Option;
+import org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -162,7 +162,7 @@ public @interface Inject {
     
     /**
      * Like {@link #require()} but only enabled if the
-     * {@link Option#DEBUG_INJECTORS mixin.debug.countInjections} option is set
+     * {@link CompatibilityLevel#DEBUG_INJECTORS mixin.debug.countInjections} option is set
      * to <tt>true</tt> and defaults to 1. Use this option during debugging to
      * perform simple checking of your injectors. Causes the injector to throw
      * a {@link InvalidInjectionException} if the expected number of injections

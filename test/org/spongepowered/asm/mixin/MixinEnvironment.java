@@ -6,7 +6,7 @@ public abstract class MixinEnvironment {
     /**
      * Mixin options
      */
-    public static enum Option {
+    public static enum CompatibilityLevel {
         
         /**
          * Enable all debugging options
@@ -18,7 +18,7 @@ public abstract class MixinEnvironment {
          * to the .mixin.out directory within the runtime directory
          * <em>after</em> mixins are applied, for debugging purposes. 
          */
-        DEBUG_EXPORT(Option.DEBUG_ALL, "export"),
+        DEBUG_EXPORT(CompatibilityLevel.DEBUG_ALL, "export"),
         
         /**
          * Export filter, if omitted allows all transformed classes to be
@@ -33,12 +33,12 @@ public abstract class MixinEnvironment {
          *   <dt>?</dt><dd>Matches exactly one character</dd>
          * </dl>
          */
-        DEBUG_EXPORT_FILTER(Option.DEBUG_EXPORT, "filter", false),
+        DEBUG_EXPORT_FILTER(CompatibilityLevel.DEBUG_EXPORT, "filter", false),
         
         /**
          * Allow fernflower to be disabled even if it is found on the classpath
          */
-        DEBUG_EXPORT_DECOMPILE(Option.DEBUG_EXPORT, "decompile") {
+        DEBUG_EXPORT_DECOMPILE(CompatibilityLevel.DEBUG_EXPORT, "decompile") {
             @Override
             boolean getBooleanValue() {
                 return Booleans.parseBoolean(System.getProperty(this.property), super.getBooleanValue());
@@ -48,24 +48,24 @@ public abstract class MixinEnvironment {
         /**
          * Run the CheckClassAdapter on all classes after mixins are applied 
          */
-        DEBUG_VERIFY(Option.DEBUG_ALL, "verify"),
+        DEBUG_VERIFY(CompatibilityLevel.DEBUG_ALL, "verify"),
         
         /**
          * Enable verbose mixin logging (elevates all DEBUG level messages to
          * INFO level) 
          */
-        DEBUG_VERBOSE(Option.DEBUG_ALL, "verbose"),
+        DEBUG_VERBOSE(CompatibilityLevel.DEBUG_ALL, "verbose"),
         
         /**
          * Elevates failed injections to an error condition, see
          * {@link Inject#expect} for details
          */
-        DEBUG_INJECTORS(Option.DEBUG_ALL, "countInjections"),
+        DEBUG_INJECTORS(CompatibilityLevel.DEBUG_ALL, "countInjections"),
         
         /**
          * Disable the injector handler remapper
          */
-        DEBUG_DISABLE_HANDLER_REMAP(Option.DEBUG_ALL, "disableHandlerRename") {
+        DEBUG_DISABLE_HANDLER_REMAP(CompatibilityLevel.DEBUG_ALL, "disableHandlerRename") {
             @Override
             boolean getBooleanValue() {
                 return Booleans.parseBoolean(System.getProperty(this.property), super.getBooleanValue());
@@ -87,7 +87,7 @@ public abstract class MixinEnvironment {
          * Checks that all declared interface methods are implemented on a class
          * after mixin application.
          */
-        CHECK_IMPLEMENTS(Option.CHECK_ALL, "interfaces"),
+        CHECK_IMPLEMENTS(CompatibilityLevel.CHECK_ALL, "interfaces"),
         
         /**
          * Ignore all constraints on mixin annotations, output warnings instead
@@ -112,17 +112,17 @@ public abstract class MixinEnvironment {
         /**
          * Force refmap obf type when required 
          */
-        OBFUSCATION_TYPE(Option.ENVIRONMENT, "obf"),
+        OBFUSCATION_TYPE(CompatibilityLevel.ENVIRONMENT, "obf"),
         
         /**
          * Disable refmap when required 
          */
-        DISABLE_REFMAP(Option.ENVIRONMENT, "disableRefMap"),
+        DISABLE_REFMAP(CompatibilityLevel.ENVIRONMENT, "disableRefMap"),
         
         /**
          * Default compatibility level to operate at
          */
-        DEFAULT_COMPATIBILITY_LEVEL(Option.ENVIRONMENT, "compatLevel");
+        DEFAULT_COMPATIBILITY_LEVEL(CompatibilityLevel.ENVIRONMENT, "compatLevel");
 
         /**
          * Prefix for mixin options
@@ -133,7 +133,7 @@ public abstract class MixinEnvironment {
          * Parent option to this option, if non-null then this option is enabled
          * if 
          */
-        final Option parent;
+        final CompatibilityLevel parent;
         
         /**
          * Java property name
@@ -150,21 +150,21 @@ public abstract class MixinEnvironment {
          */
         final int depth;
 
-        private Option(String property) {
+        private CompatibilityLevel(String property) {
             this(null, property, true);
         }
         
-        private Option(String property, boolean flag) {
+        private CompatibilityLevel(String property, boolean flag) {
             this(null, property, flag);
         }
         
-        private Option(Option parent, String property) {
+        private CompatibilityLevel(CompatibilityLevel parent, String property) {
             this(parent, property, true);
         }
         
-        private Option(Option parent, String property, boolean flag) {
+        private CompatibilityLevel(CompatibilityLevel parent, String property, boolean flag) {
             this.parent = parent;
-            this.property = (parent != null ? parent.property : Option.PREFIX) + "." + property;
+            this.property = (parent != null ? parent.property : CompatibilityLevel.PREFIX) + "." + property;
             this.flag = flag;
             int depth = 0;
             for (; parent != null; depth++) {
@@ -173,7 +173,7 @@ public abstract class MixinEnvironment {
             this.depth = depth;
         }
         
-        Option getParent() {
+        CompatibilityLevel getParent() {
             return this.parent;
         }
         

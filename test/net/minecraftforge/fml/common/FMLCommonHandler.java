@@ -7,8 +7,7 @@ import com.blazeloader.bl.main.BLMain;
  */
 public class FMLCommonHandler {
 	
-	@SuppressWarnings("unused")
-	private static final FMLCommonHandler instance() {
+	public static final FMLCommonHandler instance() {
 		BLMain.LOGGER_FULL.logInfo("[FMLCommonHandler] A wild INSTANCE has appeared!");
 		return new FMLCommonHandler();
 	}

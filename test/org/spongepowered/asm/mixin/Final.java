@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
  *     be used in place of declaring the field as actually <tt>final</tt>. This
  *     is required since it is normally desirable to remove the <tt>final</tt>
  *     modifier from shadow fields to avoid unwanted field initialisers. If
- *     {@link Option#DEBUG_VERIFY} is <tt>true</tt>, then an
+ *     {@link CompatibilityLevel#DEBUG_VERIFY} is <tt>true</tt>, then an
  *     {@link InvalidMixinException} is thrown.
  *   </li>
  *   <li>

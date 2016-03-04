@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion":  "0.4.10",
+  "package": "com.blazeloader.event.mixin.client",
+  "refmap":  "mixins.blazeloader.client.refmap.json",
+  "mixins": [
+    "MClientBrandRetriever","MMinecraft",
+    "MEntityPlayerSP",
+    "MNetHandlerPlayerClient",
+    "MEffectRenderer",
+    "MBlockModelShapes","MRenderItem","MRenderVillager","MTileEntityRendererChestHelper",
+    "MModelBakery"
+  ]
+}

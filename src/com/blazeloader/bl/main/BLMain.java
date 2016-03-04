@@ -3,6 +3,8 @@ package com.blazeloader.bl.main;
 import java.util.Collections;
 import java.util.List;
 
+import org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel;
+
 import net.acomputerdog.core.logger.Logger;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
@@ -16,6 +18,7 @@ import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.api.CustomisationProvider;
 import com.mumfrey.liteloader.api.EnumeratorModule;
 import com.mumfrey.liteloader.api.InterfaceProvider;
+import com.mumfrey.liteloader.api.MixinConfigProvider;
 import com.mumfrey.liteloader.api.Observer;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -25,7 +28,7 @@ import com.mumfrey.liteloader.launch.LoaderProperties;
  *
  * Has odd structure like "getClient" because while this will always be running on a server instance, it may not be running on a client.
  */
-public class BLMain {
+public class BLMain implements MixinConfigProvider {
     private static BLMain instance;
 
     /**
@@ -40,7 +43,7 @@ public class BLMain {
      * Logger that does not log date or time
      */
     public static final Logger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
-
+    
     private static boolean isClient;
     
     /**
@@ -97,7 +100,7 @@ public class BLMain {
     public String[] getRequiredDownstreamTransformers() {
         return null;
     }
-    
+
     public List<EnumeratorModule> getEnumeratorModules() {
         return null;
     }
@@ -172,4 +175,19 @@ public class BLMain {
     public String getPluginChannelName() {
         return "BLAZELOADER";
     }
+
+	@Override
+	public CompatibilityLevel getCompatibilityLevel() {
+		return CompatibilityLevel.DEFAULT_COMPATIBILITY_LEVEL;
+	}
+
+	@Override
+	public String[] getMixinConfigs() {
+		return new String[] { "mixins.blazeloader.json" };
+	}
+
+	@Override
+	public String[] getErrorHandlers() {
+		return null;
+	}
 }

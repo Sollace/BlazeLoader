@@ -70,6 +70,10 @@ public class BlazeLoaderAPI implements LiteAPI {
     public String[] getRequiredTransformers() {
         return BLMain.instance().getRequiredTransformers();
     }
+    
+    public MixinConfigProvider getMixins() {
+    	return BLMain.instance();
+    }
 
     /**
      * Should return an array of required transformer names, these transformers will be injected DOWNSTREAM. Can return null.
