@@ -21,7 +21,7 @@ public interface ITileRenderer<T extends TileEntity> {
 	 * Get a tile entity instance to be used for rendering.
 	 * May also perform any needed setup.<p>
 	 * 
-	 * It's is generally encouraged to use a single static tile entity instance rather than creating a new one each time.
+	 * It is generally encouraged to use a single static tile entity instance rather than creating a new one each time.
 	 * @param stack		Itemstack currently being rendered.
 	 * @return A TileEntity
 	 */
