@@ -97,7 +97,7 @@ public class ApiClient {
      * The current instance of the Minecraft client
      */
     public static Minecraft getClient() {
-        return (Minecraft) BlazeLoaderCoreProvider.instance().getGameEngine().getClient();
+        return (Minecraft) BlazeLoaderCoreProvider.getGameEngine().getClient();
     }
     
 	/**

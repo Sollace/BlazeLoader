@@ -41,7 +41,7 @@ public class BLMain {
      */
     public static final Logger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
 
-    public static boolean isClient;
+    private static boolean isClient;
     
     /**
      * the partial render tick for the client
@@ -60,6 +60,10 @@ public class BLMain {
     
     public static BLMain instance() {
         return instance;
+    }
+    
+    public static boolean isClient() {
+    	return isClient;
     }
     
     public static float getPartialTicks() {
@@ -111,7 +115,7 @@ public class BLMain {
     }
     
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Collections.singletonList((CustomisationProvider)BlazeLoaderBrandingProvider.instance);
+        return Collections.singletonList(BlazeLoaderBrandingProvider.instance());
     }
 
     public List<Observer> getPreInitObservers() {

@@ -3,6 +3,7 @@ package com.blazeloader.bl.main;
 import com.blazeloader.api.client.render.ApiRenderClient;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.api.BrandingProvider;
+import com.mumfrey.liteloader.api.CustomisationProvider;
 import com.mumfrey.liteloader.client.api.LiteLoaderBrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
 import com.mumfrey.liteloader.util.render.Icon;
@@ -15,14 +16,18 @@ import java.net.URL;
  * BlazeLoader BrandingProvider
  */
 public class BlazeLoaderBrandingProvider implements BrandingProvider {
-    public static final BlazeLoaderBrandingProvider instance = new BlazeLoaderBrandingProvider();
+    private static final BlazeLoaderBrandingProvider instance = new BlazeLoaderBrandingProvider();
     
-    public static final ResourceLocation ABOUT_TEXTURE = new ResourceLocation("blazeloader", "textures/gui/about.png");
-	public static final IconAbsolute LOGO_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "logo", 128, 40, 0, 0, 256, 80);
+    private static final ResourceLocation ABOUT_TEXTURE = new ResourceLocation("blazeloader", "textures/gui/about.png");
+	private static final IconAbsolute LOGO_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "logo", 128, 40, 0, 0, 256, 80);
 	//public static final IconAbsolute ICON_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "blaze", 32, 45, 0, 80, 64, 170);
-	public static final IconAbsolute TWITTER_AVATAR_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "twitter_avatar", 32, 32, 192, 80, 256, 144);
+	private static final IconAbsolute TWITTER_AVATAR_COORDS = new IconAbsolute(LiteLoaderBrandingProvider.ABOUT_TEXTURE, "twitter_avatar", 32, 32, 192, 80, 256, 144);
 	
     private BlazeLoaderBrandingProvider() {
+    }
+    
+    protected static CustomisationProvider instance() {
+    	return instance;
     }
     
     @Override
@@ -62,7 +67,7 @@ public class BlazeLoaderBrandingProvider implements BrandingProvider {
     
     @Override
     public String getCopyrightText() {
-        return "Copyright (c) acomputerdog 2013-2015";
+        return "Copyright (c) acomputerdog 2013-2016";
     }
     
     @Override

@@ -54,6 +54,6 @@ public class ApiServer {
      * The current MinecraftServer instance
      */
 	public static MinecraftServer getServer() {
-		return BlazeLoaderCoreProvider.instance().getGameEngine().getServer();
+		return BlazeLoaderCoreProvider.getGameEngine().getServer();
 	}
 }
