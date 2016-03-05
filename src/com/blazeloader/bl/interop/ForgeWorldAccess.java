@@ -14,6 +14,10 @@ import com.google.common.collect.ImmutableSetMultimap;
 
 public interface ForgeWorldAccess {
 	
+	public default World asWorld() {
+		return (World)this;
+	}
+	
 	/**
 	 * Checks if the given side of a block is solid.
 	 * 
@@ -48,8 +52,8 @@ public interface ForgeWorldAccess {
 	 * Gets the amount of light a block will allow through
 	 */
 	public default int getBlockLightOpacity(BlockPos pos) {
-		if (!((World)this).isValid(pos)) return 0;
-        return ((World)this).getChunkFromBlockCoords(pos).getBlockLightOpacity(pos);
+		if (!asWorld().isValid(pos)) return 0;
+        return asWorld().getChunkFromBlockCoords(pos).getBlockLightOpacity(pos);
 	}
 	
 	/**
@@ -60,7 +64,7 @@ public interface ForgeWorldAccess {
 	 * @param forSpawnCount	True if we are checking for spawn count limits
 	 */
 	public default int countEntities(EnumCreatureType type, boolean forSpawnCount) {
-		return ((World)this).countEntities(type.getCreatureClass());
+		return asWorld().countEntities(type.getCreatureClass());
 	}
 	
 	/**
@@ -76,10 +80,10 @@ public interface ForgeWorldAccess {
      */
 	@Deprecated
 	public default boolean rotateBlock(BlockPos pos, EnumFacing axis) {
-		IBlockState state = ((World)this).getBlockState(pos);
+		IBlockState state = asWorld().getBlockState(pos);
 		for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
 			if (i.getName().contentEquals("facing")) {
-				((World)this).setBlockState(pos, state.cycleProperty(i));
+				asWorld().setBlockState(pos, state.cycleProperty(i));
 				return true;
 			}
 		}
@@ -90,7 +94,7 @@ public interface ForgeWorldAccess {
 	 * Gets the per-world map storage introduced by forge
 	 */
 	public default MapStorage getPerWorldStorage() {
-		return ((World)this).getMapStorage();
+		return asWorld().getMapStorage();
 	}
 	
 	/**

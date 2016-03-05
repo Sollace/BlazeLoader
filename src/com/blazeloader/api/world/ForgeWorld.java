@@ -85,6 +85,11 @@ public final class ForgeWorld {
 		}
 		
 		@Override
+		public World asWorld() {
+			return worldObj;
+		}
+		
+		@Override
 		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean def) {
 			return ForgeWorld.isSideSolid(worldObj, pos, side, def);
 		}

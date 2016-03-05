@@ -81,7 +81,7 @@ public class Func<I, T, R> extends Function {
 	 * @return lambda T
 	 * @throws Throwable if there is any error.
 	 */
-	public T getLambda(Object instance) throws Throwable {
+	public T getLambda(I instance) throws Throwable {
 		return (T)handle.factory.bindTo(instance).invoke();
 	}
 	

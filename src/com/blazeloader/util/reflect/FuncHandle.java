@@ -65,11 +65,14 @@ public class FuncHandle {
 		lookupMethod(interfaceType, contextC, methodName, getter);
 	}
 	
-	private final Lookup trustedLookup(Lookup caller) {
+	private static Lookup trusted = null;
+	private static final Lookup trustedLookup(Lookup caller) {
 		try {
-			Field privilaged = Lookup.class.getDeclaredField("IMPL_LOOKUP");
-			privilaged.setAccessible(true);
-			Lookup trusted = (Lookup)privilaged.get(caller);
+			if (trusted == null) {
+				Field privilaged = Lookup.class.getDeclaredField("IMPL_LOOKUP");
+				privilaged.setAccessible(true);
+				trusted = (Lookup)privilaged.get(caller);
+			}
 			return trusted.in(caller.lookupClass());
 		} catch (Throwable e) {}
 		return caller;

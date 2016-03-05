@@ -6,42 +6,34 @@ import com.blazeloader.util.reflect.SimpleFunc;
 import com.blazeloader.util.version.Versions;
 
 public final class ForgeModloader {
-	private static SimpleFunc _getInstance;
-	private static Func<?, ForgeMLAccess, Void> _exitJava;
+	private static boolean init = false;
+	private static ForgeMLAccess access;
 	
-	private static Object getFMLCommonHandler() {
-		if (Versions.isForgeInstalled()) {
-			//return net.minecraftforge.fml.common.FMLCommonHandler.instance();
-			if (_getInstance == null) {
-				_getInstance = Reflect.lookupStaticMethod("net.minecraftforge.fml.common.FMLCommonHandler.instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;");
-			}
-			if (_getInstance.valid()) {
+	private static ForgeMLAccess getAccess() {
+		if (Versions.isForgeInstalled() && !init) {
+			init = true;
+			/*access = new ForgeMLAccess() {
+				public void exitJava(int arg0) {
+					net.minecraftforge.fml.common.FMLCommonHandler.instance().exitJava(arg0);
+				}
+			}*/
+			SimpleFunc _getInstance = Reflect.lookupStaticMethod("net.minecraftforge.fml.common.FMLCommonHandler.instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;");
+			Func<Object, ForgeMLAccess, Void> _exitJava = Reflect.lookupMethod(ForgeMLAccess.class, "net.minecraftforge.fml.common.FMLCommonHandler.exitJava (IZ)V");
+			if (_getInstance.valid() && _exitJava.valid()) {
 				try {
-					return _getInstance.call();
+					access = _exitJava.getLambda(_getInstance.call());
 				} catch (Throwable e) {
-					_getInstance.invalidate();
+					access = null;
 				}
 			}
 		}
-		return null;
+		return access;
 	}
 	
 	public static void exitJVM(int exitCode) {
 		if (Versions.isForgeInstalled()) {
-			Object instance = getFMLCommonHandler();
-			if (instance != null) {
-				//instance.exitJava(exitCode, false);
-				if (_exitJava == null) {
-					_exitJava = Reflect.lookupMethod(ForgeMLAccess.class, "net.minecraftforge.fml.common.FMLCommonHandler.exitJava (IZ)V");
-				}
-				if (_exitJava.valid()) {
-					try {
-						_exitJava.getLambda(instance).exitJava(exitCode, false);
-					} catch (Throwable e) {
-						_exitJava.invalidate();
-					}
-				}
-			}
+			ForgeMLAccess access = getAccess();
+			if (access != null) access.exitJava(exitCode, false);
 		}
 		System.exit(exitCode);
 	}
