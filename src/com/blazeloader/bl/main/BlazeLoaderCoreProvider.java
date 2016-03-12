@@ -21,14 +21,14 @@ import net.minecraft.world.World;
 public class BlazeLoaderCoreProvider implements CoreProvider {
     private static final BlazeLoaderCoreProvider instance = new BlazeLoaderCoreProvider();
     
-    public static BlazeLoaderCoreProvider instance() {
+    protected static BlazeLoaderCoreProvider instance() {
     	return instance;
     }
     
     private GameEngine gameEngine;
     
-    public GameEngine getGameEngine() {
-        return gameEngine;
+    public static GameEngine getGameEngine() {
+        return instance.gameEngine;
     }
     
     private BlazeLoaderCoreProvider() {
