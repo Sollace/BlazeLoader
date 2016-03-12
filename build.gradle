@@ -1,0 +1,58 @@
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			name 'forge'
+			url 'http://files.minecraftforge.net/maven/'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+	}
+}
+apply plugin: 'net.minecraftforge.gradle.liteloader'
+
+// Basic project information
+version = "dev1.1.1"
+group = "com.blazeloader"
+archivesBaseName = 'blazeloader'
+ext.revision = "2"
+
+minecraft {
+	version = project.mcVersion
+	mappings = project.mcMappings
+	runDir = 'run'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs "src/main" + "src/client"
+		}
+		resources {
+			srcDirs "resources"
+		}
+	}
+}
+
+processResources{
+	// this will ensure that this task is redone when the versions change.
+	def props = [
+		version: version,
+		mcversion: minecraft.version,
+		revision: revision
+	]
+	inputs.properties props
+
+	// replace stuff in litemod.json, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include 'litemod.json'
+		// replace version and mcversion
+		expand props
+	}
+
+	// copy everything else, thats not the litemod.json
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'litemod.json'
+	}
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion":  "0.4.10",
+  "package": "com.blazeloader.event.mixin.common",
+  "refmap":  "mixins.blazeloader.refmap.json",
+  "mixins": [
+    "MEntity","MEntityLiving","MEntityPlayer","MEntityTracker","MEntityTrackerEntry","MEntityVillager",
+    "MContainer","MInventoryPlayer",
+    "MItemBlock",
+    "MProfiler",
+    "MIntegratedServer","MItemInWorldManager","MMinecraftServer","MS0DPacketCollectItem","MServerConfigurationManager",
+    "MTileEntityFurnace",
+    "MChunk","MWorld","MWorldServer"
+  ]
+}
