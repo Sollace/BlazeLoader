@@ -2,6 +2,7 @@ package com.blazeloader.api.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -82,7 +83,7 @@ public class ApiEntity {
      * @param o Original class
      * @param c Replacement class
      */
-    public static void swapEntityClass(Class<? extends Entity> o, Class<? extends Entity> c) {
+    public static void swapEntityClass(Class<? extends EntityLiving> o, Class<? extends EntityLiving> c) {
         if (EntityList.classToStringMapping.containsKey(o) && EntityList.classToIDMapping.containsKey(c)) {
             String name = (String) EntityList.classToStringMapping.get(o);
             int id = (Integer) EntityList.classToIDMapping.get(o);
@@ -105,7 +106,7 @@ public class ApiEntity {
      * @param c Replacement class
      * @param e CreatureType
      */
-    public static void swapEntitySpawn(Class<? extends Entity> o, Class<? extends Entity> c, EnumCreatureType e) {
+    public static void swapEntitySpawn(Class<? extends Entity> o, Class<? extends EntityLiving> c, EnumCreatureType e) {
         BiomeGenBase[] standardBiomes = BiomeGenBase.getBiomeGenArray();
 
         for (BiomeGenBase biome : standardBiomes) {
@@ -133,7 +134,7 @@ public class ApiEntity {
      * @param type     Type of spwning to be used by this entity
      * @param biomes   List of biomes this entity should spawn in
      */
-    public static void registerSpawn(Class<? extends Entity> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
+    public static void registerSpawn(Class<? extends EntityLiving> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
         if (biomes.length == 0) {
             biomes = BiomeGenBase.getBiomeGenArray();
         }

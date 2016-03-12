@@ -70,7 +70,6 @@ public class Cone implements IShape {
 			phi = MathHelper.getRandomDoubleInRange(rand, 0, phi);
 		}
 		
-		double radius = Math.tan(phi) * height;
 		double rho = MathHelper.getRandomDoubleInRange(rand, 0, height);
 		
 		double x = rho * Math.sin(phi) * Math.cos(pheta);

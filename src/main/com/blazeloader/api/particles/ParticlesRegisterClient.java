@@ -49,7 +49,6 @@ public class ParticlesRegisterClient extends ParticlesRegister<IParticleFactory>
 	public Map<Integer, IParticleFactory> init(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;
-			int injected = 0;
 			Iterator<IParticle> types = particlesRegistry.iterator();
 			for (int i = 0; types.hasNext();) {
 				if (mapping.containsKey(i)) {
@@ -156,7 +155,7 @@ public class ParticlesRegisterClient extends ParticlesRegister<IParticleFactory>
     
     @Override
 	protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {
-    	addEffectToRenderer(buildDiggingEffect(w, x, y, z, vX, vY, vZ, blockState).func_174846_a(new BlockPos((int)x, (int)y, (int)z)).multiplyVelocity(multScale).multipleParticleScaleBy(multVel));
+    	addEffectToRenderer(buildDiggingEffect(w, x, y, z, vX, vY, vZ, blockState).setBlockPos(new BlockPos((int)x, (int)y, (int)z)).multiplyVelocity(multScale).multipleParticleScaleBy(multVel));
     }
     
     protected EntityDiggingFX buildDiggingEffect(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState) {

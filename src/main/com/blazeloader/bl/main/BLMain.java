@@ -178,7 +178,7 @@ public class BLMain implements MixinConfigProvider {
 
 	@Override
 	public CompatibilityLevel getCompatibilityLevel() {
-		return CompatibilityLevel.DEFAULT_COMPATIBILITY_LEVEL;
+		return CompatibilityLevel.JAVA_8;
 	}
 
 	@Override

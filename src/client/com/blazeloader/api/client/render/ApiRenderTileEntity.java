@@ -22,7 +22,7 @@ public class ApiRenderTileEntity {
 	 * @return	True if there is a renderer, false otherwise.
 	 */
 	public static <T extends TileEntity> boolean hasSpecialRenderer(T tileEntity) {
-		return TileEntityRendererDispatcher.instance.hasSpecialRenderer(tileEntity);
+		return TileEntityRendererDispatcher.instance.getSpecialRenderer(tileEntity) != null;
 	}
 	
 	/**

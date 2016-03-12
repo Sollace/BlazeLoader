@@ -31,7 +31,7 @@ public class ModelPlane extends ModelUVMappedBox {
     }
     
     public void render(WorldRenderer renderer, float scale) {
-        for (int i = 0; i < this.quadList.length; i++) {
+        for (int i = 0; i < quadList.length; i++) {
         	if (!sidesHidden[i]) {
         		quadList[i].draw(renderer, scale);
         	}

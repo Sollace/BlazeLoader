@@ -9,6 +9,7 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S2APacketParticles;
@@ -89,7 +90,6 @@ public class ParticlesRegister<T> {
 			if (!particleNames.containsKey(i.getParticleName())) particleNames.put(i.getParticleName(), getParticle(i));
 		}
 		Set<Integer> registeredIds = EnumParticleTypes.PARTICLES.keySet();
-		int injected = 0;
 		Iterator<IParticle> types = particlesRegistry.iterator();
 		for (int i = 0; types.hasNext();) {
 			if (registeredIds.contains(i)) {
@@ -198,20 +198,20 @@ public class ParticlesRegister<T> {
     	if (particle.getType() == ParticleType.NONE) return;
     	if (EnumParticleTypes.PARTICLES.containsKey(particle.getType().getId())) {
     		Packet packet = new S2APacketParticles(EnumParticleTypes.getParticleFromId(particle.getType().getId()), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
-	        for (EntityPlayerMP player : (ArrayList<EntityPlayerMP>)(((WorldServer)world).playerEntities)) {
+	        for (EntityPlayer player : (ArrayList<EntityPlayer>)(((WorldServer)world).playerEntities)) {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
 	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
-	                player.playerNetServerHandler.sendPacket(packet);
+	                ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(packet);
 	            }
 	        }
     	} else {
     		BLPacketParticles.Message message = new BLPacketParticles.Message(particle.getType(), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
-    		for (EntityPlayerMP player : (ArrayList<EntityPlayerMP>)(((WorldServer)world).playerEntities)) {
+    		for (EntityPlayer player : (ArrayList<EntityPlayer>)(((WorldServer)world).playerEntities)) {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
 	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
-	            	BLPacketChannels.instance().sendToClient(message, player);
+	            	BLPacketChannels.instance().sendToClient(message, (EntityPlayerMP)player);
 	            }
 	        }
     	}

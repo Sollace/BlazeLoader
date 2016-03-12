@@ -47,14 +47,6 @@ public class ModWorldType extends WorldType {
     public String getPlainName() {
     	return plainName;
     }
-    
-    /**
-     * getTranslateInfoName()
-     * Gets the translation key for the information section of this world type.
-     */
-    public String func_151359_c() {
-        return super.func_151359_c();
-    }
 
     /**
      * Sets canBeCreated to the provided value, and returns this.

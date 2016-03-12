@@ -34,7 +34,7 @@ public class GameRule {
 	 * Gets a string value for this gamerule
 	 */
 	public String get() {
-		return parent.getGameRuleStringValue(key);
+		return parent.getString(key);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class GameRule {
 	 * Gets the value of this gamerule as a boolean
 	 */
 	public boolean getBool() {
-		return parent.getGameRuleBooleanValue(key);
+		return parent.getBoolean(key);
 	}
 	
 	/**

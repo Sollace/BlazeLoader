@@ -5,6 +5,7 @@ import com.blazeloader.api.client.ApiClient;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.item.Item;
 
 public class ApiRenderBlock {
@@ -53,7 +54,7 @@ public class ApiRenderBlock {
      * @param mapper	IStateMapper to provide the models
      */
     public static void registerBlockModelMapper(Block block, IStateMapper mapper) {
-    	ApiClient.getClient().modelManager.getBlockModelShapes().registerBlockWithStateMapper(block, mapper);
+    	getModelManager().getBlockModelShapes().registerBlockWithStateMapper(block, mapper);
     }
     
     /**
@@ -64,7 +65,7 @@ public class ApiRenderBlock {
      * @param blocks The blocks to register.
      */
     public static void registerBuiltInBlocks(Block... blocks) {
-    	ApiClient.getClient().modelManager.getBlockModelShapes().registerBuiltInBlocks(blocks);
+    	getModelManager().getBlockModelShapes().registerBuiltInBlocks(blocks);
     }
     
     /**
@@ -74,8 +75,12 @@ public class ApiRenderBlock {
      * @param block		Block to assign the models to
      */
     public static void swapoutBlockModels(Block original, Block block) {
-    	BlockModelShapes mapper = ApiClient.getClient().modelManager.getBlockModelShapes();
+    	BlockModelShapes mapper = getModelManager().getBlockModelShapes();
     	mapper.getBlockStateMapper().registerBlockStateMapper(block, (IStateMapper)mapper.getBlockStateMapper().blockStateMap.get(original));
     	mapper.reloadModels();
+    }
+    
+    private static ModelManager getModelManager() {
+    	return ApiClient.getClient().modelManager;
     }
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.blazeloader.api.client.ApiClient;
 
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -79,7 +80,7 @@ public class ApiRenderPlayer {
 	 * @return	A player renderer for the given player
 	 */
 	public static RenderPlayer getPlayerRenderer(EntityPlayer player) {
-		return (RenderPlayer)ApiClient.getRenderManager().getEntityRenderObject(player);
+		return (RenderPlayer)(Render)ApiClient.getRenderManager().getEntityRenderObject(player);
 	}
 	
 	/**

@@ -27,7 +27,7 @@ public class ApiAchievement {
 		StatisticsFile stats = player.getStatFile();
 		if (stats.hasAchievementUnlocked(achievement)) {
 				//setStatValue
-			stats.func_150873_a(player, achievement, 0);
+			stats.unlockAchievement(player, achievement, 0);
 			    //sendStatUpdate
 			stats.func_150876_a(player);
 		}
@@ -54,7 +54,7 @@ public class ApiAchievement {
      * @return New achievement ready to use
      */
     public static Achievement registerAchievement(String unlocalisedName, int gridX, int gridY, ItemStack displayedItem) {
-        return registerAchievement(new Achievement(unlocalisedName, unlocalisedName, gridX, gridY, displayedItem, null)).setIndependent();
+        return registerAchievement(new Achievement(unlocalisedName, unlocalisedName, gridX, gridY, displayedItem, null)).initIndependentStat();
     }
 
     /**
@@ -77,6 +77,6 @@ public class ApiAchievement {
      * @return New achievement ready to use
      */
     public static Achievement registerAchievement(Achievement achievement) {
-        return achievement.registerAchievement();
+        return achievement.registerStat();
     }
 }

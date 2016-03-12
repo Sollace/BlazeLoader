@@ -37,7 +37,6 @@ public abstract class CompoundCommand extends BLCommandBase {
 
 	public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
 		if (args.length > 0) {
-			String commandName = args[0];
 			String raw = "";
 			for (int i = 0; i < args.length; i++) {
 				if (raw != "") raw += " ";
@@ -66,7 +65,6 @@ public abstract class CompoundCommand extends BLCommandBase {
 	    	
     	}
     	
-		Map<String, ICommand> commands = getCommands();
 		ICommand command = getCommands().get(args[0].substring(1));
 		if (command != null && command.canCommandSenderUseCommand(sender)) {
 			return command.addTabCompletionOptions(sender, dropFirstString(args), pos);

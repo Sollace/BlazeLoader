@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.blazeloader.api.entity.profession.Professions;
-import com.blazeloader.event.mixin.common.Mix;
+import com.blazeloader.event.mixin.Mix;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityVillager;

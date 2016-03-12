@@ -21,7 +21,7 @@ import com.blazeloader.api.block.ApiBlock;
 import com.blazeloader.api.client.render.BlockRenderRegistry;
 import com.blazeloader.api.entity.IMousePickHandler;
 import com.blazeloader.event.handlers.EventHandler;
-import com.blazeloader.event.mixin.common.Mix;
+import com.blazeloader.event.mixin.Mix;
 
 /**
  * Event handler for events that are not passed to mods, but rather to BL itself

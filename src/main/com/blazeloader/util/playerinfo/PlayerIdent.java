@@ -77,7 +77,7 @@ public class PlayerIdent implements INBTWritable, IStringable<PlayerIdent> {
 	}
 	
 	private static UUID lookupUUID(String username) {
-		return UUID.fromString(PreYggdrasilConverter.func_152719_a(username));
+		return UUID.fromString(PreYggdrasilConverter.getStringUUIDFromName(username));
 	}
 	
 	/**

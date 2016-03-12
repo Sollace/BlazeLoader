@@ -432,7 +432,7 @@ public class ApiWorld {
 	        }
 	        
 			if (side == EnumFacing.UP) {
-				return w.doesBlockHaveSolidTopSurface(w, pos);
+				return World.doesBlockHaveSolidTopSurface(w, pos);
 			}
 			if (side == EnumFacing.DOWN) {
 				return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
@@ -489,7 +489,7 @@ public class ApiWorld {
     		return ((IRotateable)state.getBlock()).getBlockRotation(w, pos, state);
     	}
     	
-    	for (Entry<IProperty, ?> i : (ImmutableSet<Entry<IProperty, ?>>)state.getProperties().entrySet()) {
+    	for (Entry<IProperty, Comparable> i : state.getProperties().entrySet()) {
 			if (i.getKey().getName().contentEquals("facing") && i.getKey().getValueClass() == EnumFacing.class) {
 				return (EnumFacing)i.getValue();
 			}

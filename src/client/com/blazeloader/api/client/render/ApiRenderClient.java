@@ -166,7 +166,7 @@ public class ApiRenderClient {
             lastWidth = minecraft.displayWidth;
             lastHeight = minecraft.displayHeight;
             lastScale = minecraft.gameSettings.guiScale;
-            scale = new ScaledResolution(minecraft, lastWidth, lastHeight);
+            scale = new ScaledResolution(minecraft);
         }
         return scale;
     }

@@ -207,7 +207,6 @@ public class BlockStore extends ArrayList<BlockStore.Entry> implements INBTWrita
 
 	@Override
 	public boolean addAll(int index, Collection<? extends Entry> c) {
-		boolean result = false;
 		for (Entry i : c) {
 			if (isDefinedFor(i.position)) {
 				super.remove(i);
