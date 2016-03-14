@@ -10,14 +10,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.village.VillageCollection;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import com.blazeloader.api.ApiServer;
 
 import com.blazeloader.api.block.IBlock;
 import com.blazeloader.api.block.UpdateType;
@@ -148,7 +149,8 @@ public class ApiWorld {
      * @return	Closest player of null
      */
     public static EntityPlayer getClosestPlayer(World w, BlockPos pos, double distance) {
-    	return w.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), distance);
+    		  //.getClosestPlayer
+    	return w.func_184137_a(pos.getX(), pos.getY(), pos.getZ(), distance, false);
     }
     
 	/**
@@ -159,8 +161,10 @@ public class ApiWorld {
 	 * @param pos			The location
 	 */
 	public static BiomeGenBase.SpawnListEntry getSpawnListEntryForTypeAt(World w, EnumCreatureType creatureType, BlockPos pos) {
-		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
-        return possibleTypes != null && !possibleTypes.isEmpty() ? (BiomeGenBase.SpawnListEntry)WeightedRandom.getRandomItem(w.rand, possibleTypes) : null;
+		if (w instanceof WorldServer) {
+			return ((WorldServer)w).getSpawnListEntryForTypeAt(creatureType, pos);
+		}
+		return null;
 	}
 	
 	/**
@@ -183,8 +187,10 @@ public class ApiWorld {
 	 * @return	True if we can spawn here
 	 */
 	public static boolean canSpawnHere(World w, EnumCreatureType creatureType, BiomeGenBase.SpawnListEntry spawnListEntry, BlockPos pos) {
-		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
-        return possibleTypes != null && !possibleTypes.isEmpty() ? possibleTypes.contains(spawnListEntry) : false;
+		if (w instanceof WorldServer) {
+			return ((WorldServer)w).canCreatureTypeSpawnHere(creatureType, spawnListEntry, pos);
+		}
+		return false;
 	}
 
     /**
@@ -344,20 +350,10 @@ public class ApiWorld {
      */
     public static WorldServer getServerWorldForDimension(int dimension) {
     	WorldServer[] worldServers = null;
-    	if (Versions.isClient()) {
-	    	try {
-	    		if (net.minecraft.client.Minecraft.getMinecraft().isSingleplayer()) {
-	    			worldServers = net.minecraft.client.Minecraft.getMinecraft().getIntegratedServer().worldServers;
-	    		}
-	    	} catch (Exception e) {
-	    		BLMain.LOGGER_FULL.logError("Exception in fetching worldservers for side CLIENT. Please submit a bug report to Blazeloader devs.", e);
-	    	}
-    	} else {
-	    	try {
-	    		worldServers = net.minecraft.server.MinecraftServer.getServer().worldServers;
-	    	} catch (Throwable e) {
-	    		BLMain.LOGGER_FULL.logError("Exception in fetching worldservers for side SERVER. Please submit a bug report to Blazeloader devs.", e);
-	    	}
+    	try {
+    		worldServers = ApiServer.getServer().worldServers;
+    	} catch (Throwable e) {
+    		BLMain.LOGGER_FULL.logError("Exception in fetching worldservers for side SERVER. Please submit a bug report to Blazeloader devs.", e);
     	}
     	if (worldServers != null) {
     		dimension = getDimensionIndex(dimension);

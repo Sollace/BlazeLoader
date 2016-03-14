@@ -13,7 +13,7 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
@@ -143,7 +143,7 @@ public class ParticlesRegisterClient extends ParticlesRegister<IParticleFactory>
     }
     
     @Override
-    public void addEffectToRenderer(Entity fx) {
+    public void addEffectToRenderer(Object fx) {
     	if (fx != null && fx instanceof EntityFX) {
     		ApiClient.getEffectRenderer().addEffect((EntityFX)fx);
     	}

@@ -4,12 +4,11 @@ import net.minecraft.world.World;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.storage.MapStorage;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 
 public interface ForgeWorldAccess {
@@ -83,7 +82,7 @@ public interface ForgeWorldAccess {
 	@Deprecated
 	public default boolean rotateBlock(BlockPos pos, EnumFacing axis) {
 		IBlockState state = asWorld().getBlockState(pos);
-		for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
+		for (IProperty<?> i : state.getProperties().keySet()) {
 			if (i.getName().contentEquals("facing")) {
 				asWorld().setBlockState(pos, state.cycleProperty(i));
 				return true;

@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 
 /**
  * An interface for sending/recieving mod packets.
@@ -164,7 +164,7 @@ public class PacketChannel {
 	 */
 	public Packet getRawPacket(IMessage message) {
 		PacketBuffer data = getRawData(message);
-        return new S3FPacketCustomPayload(channelName, data);
+        return new SPacketCustomPayload(channelName, data);
 	}
 	
 	private class PacketEntry<P extends IMessage> {

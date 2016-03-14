@@ -140,7 +140,7 @@ public class BLMain implements MixinConfigProvider {
     }
     
     protected boolean initiateShutdown() {
-    	MinecraftServer server = MinecraftServer.getServer();
+    	MinecraftServer server = ApiServer.getServer();
     	if (server == null) return false;
     	LOGGER_FULL.logFatal("Shutting down server...");
     	server.initiateShutdown();
@@ -164,12 +164,12 @@ public class BLMain implements MixinConfigProvider {
         return false;
     }
 
-    public CommandHandler getCommandHandler() {
-        return commandHandler == null ? commandHandler = createCommandHandler() : commandHandler;
+    public CommandHandler getCommandHandler(MinecraftServer server) {
+        return commandHandler == null ? commandHandler = createCommandHandler(server) : commandHandler;
     }
 
-    protected CommandHandler createCommandHandler() {
-    	return new ServerCommandManager();
+    protected CommandHandler createCommandHandler(MinecraftServer server) {
+    	return new ServerCommandManager(server);
     }
 
     public String getPluginChannelName() {

@@ -8,8 +8,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * Server-side player events.
@@ -31,14 +31,14 @@ public interface PlayerListener extends BLMod {
      *
      * @param player The player logging in.
      */
-    public void onPlayerLoginMP(ServerConfigurationManager manager, EntityPlayerMP player);
+    public void onPlayerLoginMP(PlayerList manager, EntityPlayerMP player);
 
     /**
      * Called when a player logs out of the game.
      *
      * @param player The player logging out.
      */
-    public void onPlayerLogoutMP(ServerConfigurationManager manager, EntityPlayerMP player);
+    public void onPlayerLogoutMP(PlayerList manager, EntityPlayerMP player);
 
 
     /**
@@ -48,7 +48,7 @@ public interface PlayerListener extends BLMod {
      * @param dimension     The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
-    public void onPlayerRespawnMP(ServerConfigurationManager manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
+    public void onPlayerRespawnMP(PlayerList manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
     
     /**
      * Called when an entity collides with a player.

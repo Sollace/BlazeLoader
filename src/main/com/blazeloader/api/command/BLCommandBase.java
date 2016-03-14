@@ -2,7 +2,8 @@ package com.blazeloader.api.command;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -41,13 +42,13 @@ public abstract class BLCommandBase extends CommandBase {
         }
     }
     
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
     	if (getIgnorePermissionLevel()) {
     		//EntityPlayerMP is hard wired to return false for anyone that is not an OP for any command except for /help
     		//It's a terrible design
     		return sender.canCommandSenderUseCommand(getRequiredPermissionLevel(), "help");
     	}
-    	return super.canCommandSenderUseCommand(sender);
+    	return super.checkPermission(server, sender);
     }
 
     /**
@@ -78,7 +79,7 @@ public abstract class BLCommandBase extends CommandBase {
      * @param params		Optional objects to be inserted in place of variables in the string during localisation
      */
     protected void sendChatTranslation(ICommandSender target, String translate, Object params) {
-    	ApiChat.sendChat(target, new ChatComponentTranslation(translate, params));
+    	ApiChat.sendChat(target, new TextComponentTranslation(translate, params));
     }
     
     /**

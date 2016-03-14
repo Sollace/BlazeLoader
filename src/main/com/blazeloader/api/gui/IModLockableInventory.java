@@ -1,5 +1,7 @@
 package com.blazeloader.api.gui;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.ILockableContainer;
 
 public interface IModLockableInventory extends ILockableContainer {
@@ -17,6 +19,20 @@ public interface IModLockableInventory extends ILockableContainer {
 	 * <p>The default sound used by chests is "random.door_close"
 	 * 
 	 * @return String id of the sound
+	 * @deprecated Use getLockSound instead.
 	 */
+	@Deprecated
 	public String getLockSoundString();
+	
+	/**
+	 * Used to get the sound played when a player fails to open this gui.
+	 * <p>The default sound used by chests is "random.door_close"
+	 * 
+	 * @see SoundEvents
+	 * 
+	 * @return SoundEvent of the sound
+	 */
+	public default SoundEvent getLockSound() {
+		return SoundEvent.soundEventRegistry.getObject(new ResourceLocation(getLockSoundString()));
+	}
 }

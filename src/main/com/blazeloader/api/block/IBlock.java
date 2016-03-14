@@ -13,12 +13,11 @@ import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockSlab.EnumBlockHalf;
-import net.minecraft.block.BlockSnow;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -83,7 +82,7 @@ public interface IBlock extends IRotateable, ISided {
 	}
 	
 	public default EnumFacing getBlockRotation(World w, BlockPos pos, IBlockState state) {
-    	for (Entry<IProperty, Comparable> i : state.getProperties().entrySet()) {
+    	for (Entry<IProperty<?>, Comparable<?>> i : state.getProperties().entrySet()) {
 			if (i.getKey() instanceof PropertyEnum || i.getKey().getValueClass() == EnumFacing.class) {
 				return (EnumFacing)i.getValue();
 			}
@@ -99,15 +98,17 @@ public interface IBlock extends IRotateable, ISided {
 		IBlockState state = w.getBlockState(pos);
         Block block = (Block)this;
         
-        if (block.getMaterial().isOpaque() && block.isFullCube()) {
-        	return true;
-        }
-        
 		if (side == EnumFacing.UP) {
-			return this instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.TOP : (this instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.TOP : (this instanceof BlockHopper ? true : (this instanceof BlockSnow ? ((Integer)state.getValue(BlockSnow.LAYERS)).intValue() == 7 : def)));
+			return state.isFullyOpaque();
 		}
 		if (side == EnumFacing.DOWN) {
-			return this instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (this instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (this instanceof BlockHopper ? true : def));
+			if (block instanceof BlockStairs) {
+				return !state.isFullyOpaque();
+			}
+			if (block instanceof BlockSlab) {
+				return ((BlockSlab)state.getBlock()).isDouble() || !state.isFullyOpaque();
+			}
+			if (block instanceof BlockHopper) return true;
 		}
     	return def;
 	}

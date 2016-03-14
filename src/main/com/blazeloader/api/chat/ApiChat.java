@@ -1,14 +1,14 @@
 package com.blazeloader.api.chat;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentStyle;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 
 /**
  * API for chat-related functions.
@@ -22,7 +22,7 @@ public class ApiChat {
      * @param message 	The message to send.
      */
     public static void sendRawChat(ICommandSender user, String message) {
-        user.addChatMessage(new ChatComponentText(message));
+        user.addChatMessage(new TextComponentString(message));
     }
     
     /**
@@ -43,14 +43,14 @@ public class ApiChat {
      * @param args		An array of components to make up the message.
      */
     public static void sendChat(ICommandSender user, Object... args) {
-		ChatComponentText message = new ChatComponentText("");
-		ChatStyle style = null;
+		TextComponentString message = new TextComponentString("");
+		Style style = null;
 		for (Object o : args) {
-			if (o instanceof EnumChatFormatting || o instanceof ChatColor) {
-				EnumChatFormatting[] codes = ChatColor.getEnumChatColor(o);
-				for (EnumChatFormatting code : codes) {
+			if (o instanceof TextFormatting || o instanceof ChatColor) {
+				TextFormatting[] codes = ChatColor.getEnumChatColor(o);
+				for (TextFormatting code : codes) {
 					if (style == null) {
-						style = new ChatStyle();
+						style = new Style();
 					}
 					switch (code) {
 						case OBFUSCATED:
@@ -76,32 +76,26 @@ public class ApiChat {
 					}
 				}
 			} else if (o instanceof ClickEvent) {
-				if (style == null) {
-					style = new ChatStyle();
-				}
+				if (style == null) style = new Style();
 				style.setChatClickEvent((ClickEvent)o);
 			} else if (o instanceof HoverEvent) {
-				if (style == null) {
-					style = new ChatStyle();
-				}
+				if (style == null) style = new Style();
 				style.setChatHoverEvent((HoverEvent)o);
-			} else if (o instanceof IChatComponent) {
-				if (o instanceof ChatComponentStyle) {
-					if (style != null) {
-						((ChatComponentStyle)o).setChatStyle(style);
-						style = null;
-					}
+			} else if (o instanceof ITextComponent) {
+				if (style != null) {
+					((ITextComponent)o).setChatStyle(style);
+					style = null;
 				}
-				message.appendSibling((IChatComponent)o);
-			} else if (o instanceof ChatStyle) {
-				if (!((ChatStyle)o).isEmpty()) {
+				message.appendSibling((ITextComponent)o);
+			} else if (o instanceof Style) {
+				if (!((Style)o).isEmpty()) {
 					if (style != null) {
-						inheritFlat((ChatStyle)o, style);
+						inheritFlat((Style)o, style);
 					}
-					style = ((ChatStyle)o);
+					style = ((Style)o);
 				}
 			} else {
-				IChatComponent line = o instanceof String ? new ChatComponentTranslation((String)o) : new ChatComponentText(o.toString());
+				ITextComponent line = o instanceof String ? new TextComponentTranslation((String)o) : new TextComponentString(o.toString());
 				if (style != null) {
 					line.setChatStyle(style);
 					style = null;
@@ -119,7 +113,7 @@ public class ApiChat {
      * @param parent	The parent to inherit style information
      * @param child		The child style who's properties will override those in the parent
      */
-    public static void inheritFlat(ChatStyle parent, ChatStyle child) {
+    public static void inheritFlat(Style parent, Style child) {
 		if ((parent.getBold() != child.getBold()) && child.getBold()) {
 			parent.setBold(true);
 		}
@@ -138,7 +132,7 @@ public class ApiChat {
         
         Object temp;
         if ((temp = child.getColor()) != null) {
-        	parent.setColor((EnumChatFormatting)temp);
+        	parent.setColor((TextFormatting)temp);
         }
         if ((temp = child.getChatClickEvent()) != null) {
         	parent.setChatClickEvent((ClickEvent)temp);

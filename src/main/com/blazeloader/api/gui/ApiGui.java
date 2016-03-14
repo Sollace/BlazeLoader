@@ -7,10 +7,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S29PacketSoundEffect;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketSoundEffect;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * GUI functions
@@ -30,15 +31,15 @@ public class ApiGui {
         if (inventory instanceof IModLockableInventory) {
             IModLockableInventory lockable = (IModLockableInventory)inventory;
             if (lockable.isLocked() && !player.canOpen(lockable.getLockCode()) && !player.isSpectator()) {
-                player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentTranslation(lockable.getLockMessageString(), inventory.getDisplayName()), (byte) 2));
-                player.playerNetServerHandler.sendPacket(new S29PacketSoundEffect(lockable.getLockSoundString(), player.posX, player.posY, player.posZ, 1.0F, 1.0F));
+                player.playerNetServerHandler.sendPacket(new SPacketChat(new TextComponentTranslation(lockable.getLockMessageString(), inventory.getDisplayName()), (byte) 2));
+                player.playerNetServerHandler.sendPacket(new SPacketSoundEffect(lockable.getLockSound(), SoundCategory.BLOCKS, player.posX, player.posY, player.posZ, 1.0F, 1.0F));
                 return;
             }
         }
         
         player.getNextWindowId();
         Container container = inventory.createContainer(player.inventory, player);
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, inventory.getGuiID(), inventory.getDisplayName(), inventory.getSizeInventory()));
+        player.playerNetServerHandler.sendPacket(new SPacketOpenWindow(player.currentWindowId, inventory.getGuiID(), inventory.getDisplayName(), inventory.getSizeInventory()));
         player.openContainer = container;
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.onCraftGuiOpened(player);

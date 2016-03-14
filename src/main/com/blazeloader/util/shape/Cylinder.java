@@ -2,8 +2,8 @@ package com.blazeloader.util.shape;
 
 import java.util.Random;
 
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 public class Cylinder implements IShape {
 	
@@ -80,12 +80,12 @@ public class Cylinder implements IShape {
 		return 0;
 	}
 	
-	public Vec3 computePoint(Random rand) {
+	public Vec3d computePoint(Random rand) {
 		double y = MathHelper.getRandomDoubleInRange(rand, 0, height);
 		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
 		double rho = hollow && Math.abs(y) != height/2 ? rad : MathHelper.getRandomDoubleInRange(rand, 0, rad);
 		
-		return (new Vec3(rho * Math.cos(pheta) * stretchX, y, rho * Math.sin(pheta) * stretchZ)).rotateYaw(yaw).rotatePitch(pitch);
+		return (new Vec3d(rho * Math.cos(pheta) * stretchX, y, rho * Math.sin(pheta) * stretchZ)).rotateYaw(yaw).rotatePitch(pitch);
 	}
 	
 	public Cylinder setRotation(float u, float v) {
@@ -94,9 +94,9 @@ public class Cylinder implements IShape {
 		return this;
 	}
 	
-	public boolean isPointInside(Vec3 point) {
+	public boolean isPointInside(Vec3d point) {
 		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
-		point = new Vec3(point.xCoord / stretchX, point.yCoord, point.zCoord / stretchZ);
+		point = new Vec3d(point.xCoord / stretchX, point.yCoord, point.zCoord / stretchZ);
 		double y = Math.abs(point.yCoord);
 		if (y < height/2) {
 			double r = Math.sqrt((point.xCoord * point.xCoord) + (point.zCoord * point.zCoord));

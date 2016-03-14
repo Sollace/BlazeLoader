@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
@@ -16,8 +17,8 @@ public abstract class Tool extends ItemTool implements ITool {
 	
 	private final float damageValue;
 	
-	protected Tool(float attackDamage, ToolsetAttributes attributes, Set effectiveBlocks) {
-		super(attackDamage, ToolMaterial.WOOD, effectiveBlocks);
+	protected Tool(float attackDamage, float speed, ToolsetAttributes attributes, Set effectiveBlocks) {
+		super(speed, attackDamage, ToolMaterial.WOOD, effectiveBlocks);
 		this.attributes = attributes;
 		this.damageValue = attackDamage;
 	}
@@ -42,7 +43,7 @@ public abstract class Tool extends ItemTool implements ITool {
     }
 
     @Override
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
-        return getToolAttributes().getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot slot) {
+        return getToolAttributes().getAttributeModifiers(slot, super.getItemAttributeModifiers(slot), ATTACK_DAMAGE_MODIFIER, ATTACK_SPEED_MODIFIER, damageValue, attackSpeed, "Tool modifier");
     }
 }

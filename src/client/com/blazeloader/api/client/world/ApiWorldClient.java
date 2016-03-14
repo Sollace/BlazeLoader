@@ -1,9 +1,9 @@
 package com.blazeloader.api.client.world;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 
 import com.blazeloader.api.ApiGeneral;
+import com.blazeloader.api.ApiServer;
 
 public class ApiWorldClient {
     /**
@@ -28,7 +28,7 @@ public class ApiWorldClient {
                 return null; //Client with no game open
             }
         } else {
-            return MinecraftServer.getServer().getWorldName(); //Server with open world
+            return ApiServer.getServer().getWorldName(); //Server with open world
         }
     }
 }

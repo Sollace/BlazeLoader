@@ -1,7 +1,9 @@
 package com.blazeloader.api.entity;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -39,6 +41,22 @@ public class ApiProjectile {
 		if (throwable instanceof EntityFireball) return ((EntityFireball)throwable).shootingEntity;
 		if (throwable instanceof EntityFishHook) return ((EntityFishHook)throwable).angler;
 		return null;
+	}
+	
+	/**
+	 * Sets the thrower for a projectile.
+	 */
+	public static void setThrowingEntity(Entity throwable, Entity thrower) {
+		if (throwable instanceof EntityThrowable) {
+			((EntityThrowable)throwable).throwerName = null;
+			((EntityThrowable)throwable).thrower = (EntityLivingBase)thrower;
+		} else if (throwable instanceof EntityArrow) {
+			((EntityArrow)throwable).shootingEntity = thrower;
+		} else if (throwable instanceof EntityFireball) {
+			((EntityFireball)throwable).shootingEntity = (EntityLivingBase)thrower;
+		} else if (throwable instanceof EntityFishHook) {
+			((EntityFishHook)throwable).angler = (EntityPlayer)thrower;
+		}
 	}
 	
 	/**

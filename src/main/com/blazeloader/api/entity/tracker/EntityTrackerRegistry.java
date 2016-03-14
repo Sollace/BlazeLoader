@@ -46,10 +46,11 @@ public class EntityTrackerRegistry {
 	
 	public Packet getSpawnPacket(EntityTrackerEntry trackerEntry) {
 		if (trackerEntry != null) {
-			if (trackerEntry.trackedEntity instanceof ITrackable) {
-				return BLPacketChannels.instance().getRawPacket(new BLPacketSpawnObject.Message(trackerEntry.trackedEntity, 1));
+			Entity tracked = trackerEntry.getTrackedEntity();
+			if (tracked instanceof ITrackable) {
+				return BLPacketChannels.instance().getRawPacket(new BLPacketSpawnObject.Message(tracked, 1));
 			}
-			ITrack entry = mappings.get(trackerEntry.trackedEntity.getClass());
+			ITrack entry = mappings.get(tracked.getClass());
 			if (entry != null) {
 				return entry.getEntitySpawnPacket(trackerEntry);
 			}

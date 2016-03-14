@@ -2,15 +2,15 @@ package com.blazeloader.util.shape;
 
 import java.util.Random;
 
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Pointy
  */
 public class Cone implements IShape {
 	
-	private final Vec3 stretch;
+	private final Vec3d stretch;
 	
 	private final boolean hollow;
 	private final double height;
@@ -42,7 +42,7 @@ public class Cone implements IShape {
 		this.hollow = hollow;
 		this.height = height;
 		rad = baseRadius;
-		stretch = new Vec3(stretchX, stretchY, stretchZ);
+		stretch = new Vec3d(stretchX, stretchY, stretchZ);
 	}
 	
 	public double getVolumeOfSpawnableSpace() {
@@ -62,7 +62,7 @@ public class Cone implements IShape {
 		return 0;
 	}
 	
-	public Vec3 computePoint(Random rand) {
+	public Vec3d computePoint(Random rand) {
 		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI * 2);
 		double phi = Math.abs(Math.atan(rad / height));
 		
@@ -76,7 +76,7 @@ public class Cone implements IShape {
 		double y = rho * Math.sin(phi) * Math.sin(pheta);
 		double z = rho * Math.cos(phi);
 		
-		return (new Vec3(x * stretch.xCoord, y * stretch.yCoord, z * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
+		return (new Vec3d(x * stretch.xCoord, y * stretch.yCoord, z * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
 	}
 	
 	public Cone setRotation(float u, float v) {
@@ -86,9 +86,9 @@ public class Cone implements IShape {
 	}
 
 	@Override
-	public boolean isPointInside(Vec3 point) {
+	public boolean isPointInside(Vec3d point) {
 		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
-		point = new Vec3(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
+		point = new Vec3d(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
 		if (Math.abs(point.yCoord) < height/2) {
 			double phi = Math.acos(point.zCoord / point.lengthVector());
 			double maxphi = Math.atan(rad / height);

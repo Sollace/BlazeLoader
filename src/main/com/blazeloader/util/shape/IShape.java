@@ -2,7 +2,7 @@ package com.blazeloader.util.shape;
 
 import java.util.Random;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * 
@@ -51,11 +51,11 @@ public interface IShape {
 	/**
 	 * Computes a random coordinate that falls within this shape's designated area.
 	 */
-	public Vec3 computePoint(Random rand);
+	public Vec3d computePoint(Random rand);
 	
 	/**
 	 * Checks if the given point is on the edge, or if not hollow the inside, of this shape.
 	 * @return
 	 */
-	public boolean isPointInside(Vec3 point);
+	public boolean isPointInside(Vec3d point);
 }

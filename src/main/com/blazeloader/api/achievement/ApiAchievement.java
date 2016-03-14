@@ -14,7 +14,7 @@ public class ApiAchievement {
      * @param achievement What the player has achieved
      */
     public static void unlockAchievement(EntityPlayer player, Achievement achievement) {
-        player.triggerAchievement(achievement);
+        player.addStat(achievement);
     }
     
     /**

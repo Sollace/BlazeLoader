@@ -2,8 +2,8 @@ package com.blazeloader.util.shape;
 
 import java.util.Random;
 
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * A rectangle.
@@ -61,11 +61,11 @@ public class Rect implements IShape {
 		return -depth/2;
 	}
 	
-	public Vec3 computePoint(Random rand) {
+	public Vec3d computePoint(Random rand) {
 		double x = MathHelper.getRandomDoubleInRange(rand, 0, width);
 		double y = MathHelper.getRandomDoubleInRange(rand, 0, depth);
 		double z = MathHelper.getRandomDoubleInRange(rand, 0, height);
-		return (new Vec3(x, y, z)).rotateYaw(yaw).rotatePitch(pitch);
+		return (new Vec3d(x, y, z)).rotateYaw(yaw).rotatePitch(pitch);
 	}
 	
 	public Rect setRotation(float u, float v) {
@@ -74,7 +74,7 @@ public class Rect implements IShape {
 		return this;
 	}
 	
-	public boolean isPointInside(Vec3 point) {
+	public boolean isPointInside(Vec3d point) {
 		point = point.rotateYaw(-yaw).rotatePitch(-pitch);
 		double x = Math.abs(point.xCoord);
 		double y = Math.abs(point.yCoord);

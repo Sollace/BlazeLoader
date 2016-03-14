@@ -16,7 +16,7 @@ import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.DifficultyInstance;
 
@@ -79,7 +79,7 @@ public abstract class MEntityVillager extends EntityAgeable implements IMerchant
 	}
 	
 	@Inject(method = "getDisplayName()Lnet/minecraft/util/IChatComponent;", at = @At("HEAD"), cancellable = true)
-	private void onGetDisplayName(CallbackInfoReturnable<IChatComponent> info) {
+	private void onGetDisplayName(CallbackInfoReturnable<ITextComponent> info) {
 		VillagerEventHandler.eventGetDisplayName((EntityVillager)(Object)this, info);
 	}
 	

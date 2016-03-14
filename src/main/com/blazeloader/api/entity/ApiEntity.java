@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
 import com.blazeloader.api.entity.tracker.ITrack;
+import com.google.common.collect.Lists;
 
 /**
  * Api for entity-related functions
@@ -48,11 +49,11 @@ public class ApiEntity {
     /**
      * Registers a spawn egg for a given entity type.
      *
-     * @param entityId The entityID for this egg.
+     * @param entityName The entity name for this egg.
      * @param eggInfo  The EntityEggInfo to register.
      */
-    public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo) {
-        EntityList.entityEggs.put(entityId, eggInfo);
+    public static void registerEntityEggInfo(String entityName, EntityList.EntityEggInfo eggInfo) {
+        EntityList.entityEggs.put(entityName, eggInfo);
     }
     
     /**
@@ -107,8 +108,8 @@ public class ApiEntity {
      * @param e CreatureType
      */
     public static void swapEntitySpawn(Class<? extends Entity> o, Class<? extends EntityLiving> c, EnumCreatureType e) {
-        BiomeGenBase[] standardBiomes = BiomeGenBase.getBiomeGenArray();
-
+    	Iterable<BiomeGenBase> standardBiomes = BiomeGenBase.biomeRegistry;
+    	
         for (BiomeGenBase biome : standardBiomes) {
             if (biome != null) {
                 List<SpawnListEntry> spawnableList = biome.getSpawnableList(e);
@@ -135,11 +136,15 @@ public class ApiEntity {
      * @param biomes   List of biomes this entity should spawn in
      */
     public static void registerSpawn(Class<? extends EntityLiving> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
-        if (biomes.length == 0) {
-            biomes = BiomeGenBase.getBiomeGenArray();
+    	Iterable<BiomeGenBase> biomeList = null;
+    	
+    	if (biomes.length == 0) {
+            biomeList = BiomeGenBase.biomeRegistry;
+        } else {
+        	biomeList = Lists.newArrayList(biomes);
         }
-
-        for (BiomeGenBase biome : biomes) {
+        
+        for (BiomeGenBase biome : biomeList) {
             if (biome != null) {
                 List<SpawnListEntry> spawnableList = biome.getSpawnableList(type);
                 Iterator<SpawnListEntry> iter = spawnableList.iterator();
@@ -214,7 +219,7 @@ public class ApiEntity {
      * @return Return the type of the entity.
      */
     public static String getEntityTypeFromID(int id) {
-        return EntityList.getStringFromID(id);
+        return EntityList.func_188430_a(EntityList.getClassFromID(id));
     }
 
     /**
@@ -224,7 +229,7 @@ public class ApiEntity {
      * @return Return then ID of the entity.
      */
     public static int getEntityIDFromType(String type) {
-        return (Integer) EntityList.stringToIDMapping.get(type);
+        return EntityList.getIDFromString(type);
     }
 
     /**

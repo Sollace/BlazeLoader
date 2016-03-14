@@ -59,16 +59,14 @@ public class ApiWindowClient {
     }
     
     private static ByteBuffer getIcon(File par1File) throws IOException {
-        BufferedImage var2 = ImageIO.read(par1File);
-        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
-        ByteBuffer var4 = ByteBuffer.allocate(4 * var3.length);
-
-        for (int var8 : var3) {
-            var4.putInt(var8 << 8 | var8 >> 24 & 255);
+        BufferedImage img = ImageIO.read(par1File);
+        int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
+        ByteBuffer result = ByteBuffer.allocate(4 * pixels.length);
+        for (int i : pixels) {
+            result.putInt(i << 8 | i >> 24 & 255);
         }
-
-        var4.flip();
-        return var4;
+        result.flip();
+        return result;
     }
     
     /**

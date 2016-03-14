@@ -30,12 +30,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ItemInWorldManager;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -127,7 +127,7 @@ public class EventHandler {
     	}
     }
     
-    public static void eventTryHarvestBlock(ItemInWorldManager sender, CallbackInfoReturnable<Boolean> info, BlockPos pos) {
+    public static void eventTryHarvestBlock(PlayerInteractionManager sender, CallbackInfoReturnable<Boolean> info, BlockPos pos) {
     	if (info.getReturnValue() && blockEventHandlers.size() > 0) {
     		World w = sender.theWorld;
     		IBlockState state = w.getBlockState(pos);
@@ -141,15 +141,15 @@ public class EventHandler {
     	}
     }
     
-    public static void eventPlayerLoggedIn(ServerConfigurationManager sender, EntityPlayerMP player) {
+    public static void eventPlayerLoggedIn(PlayerList sender, EntityPlayerMP player) {
         playerEventHandlers.all().onPlayerLoginMP(sender, player);
     }
 
-    public static void eventPlayerLoggedOut(ServerConfigurationManager sender, EntityPlayerMP player) {
+    public static void eventPlayerLoggedOut(PlayerList sender, EntityPlayerMP player) {
         playerEventHandlers.all().onPlayerLogoutMP(sender, player);
     }
 
-    public static <ReturnType> void eventRecreatePlayerEntity(ServerConfigurationManager sender, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
+    public static <ReturnType> void eventRecreatePlayerEntity(PlayerList sender, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
         playerEventHandlers.all().onPlayerRespawnMP(sender, oldPlayer, dimension, !didWin);
     }
     
@@ -383,10 +383,11 @@ public class EventHandler {
     }
     
     public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet> info) {
-    	if (!sender.trackedEntity.isDead) {
-    		S0EPacketSpawnObject packet = null;
+    	Entity track = sender.getTrackedEntity();
+    	if (!track.isDead) {
+    		SPacketSpawnObject packet = null;
             for (EntityTrackingListener mod : entityTrackings) {
-                S0EPacketSpawnObject modPacket = mod.onCreateSpawnPacket(sender.trackedEntity, packet != null);
+                SPacketSpawnObject modPacket = mod.onCreateSpawnPacket(track, packet != null);
                 if (modPacket != null) packet = modPacket;
             }
             if (packet != null) {

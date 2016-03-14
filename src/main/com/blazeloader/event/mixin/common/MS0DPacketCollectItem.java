@@ -7,12 +7,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.blazeloader.event.handlers.EventHandler;
 
-import net.minecraft.network.play.server.S0DPacketCollectItem;
+import net.minecraft.network.play.server.SPacketCollectItem;
 
-@Mixin(S0DPacketCollectItem.class)
+@Mixin(SPacketCollectItem.class)
 public abstract class MS0DPacketCollectItem {
 	@Inject(method = "<init>(II)V", at = @At("RETURN"))
-	private void initS0DPacketCollectItem(int itemId, int entityId, CallbackInfo info) {
+	private void initSPacketCollectItem(int itemId, int entityId, CallbackInfo info) {
 		EventHandler.initS0DPacketCollectItem(itemId, entityId);
 	}
 }

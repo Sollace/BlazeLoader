@@ -9,24 +9,24 @@ import com.blazeloader.event.handlers.client.EventHandlerClient;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S09PacketHeldItemChange;
-import net.minecraft.network.play.server.S0DPacketCollectItem;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketHeldItemChange;
+import net.minecraft.network.play.server.SPacketCollectItem;
+import net.minecraft.network.play.server.SPacketOpenWindow;
 
 @Mixin(NetHandlerPlayClient.class)
 public abstract class MNetHandlerPlayClient implements INetHandlerPlayClient {
-	@Inject(method = "handleOpenWindow(Lnet/minecraft/network/play/server/S2DPacketOpenWindow;)V", at = @At("HEAD"), cancellable = true)
-	private void onHandleOpenWindow(S2DPacketOpenWindow packet, CallbackInfo info) {
+	@Inject(method = "handleOpenWindow(Lnet/minecraft/network/play/server/SPacketOpenWindow;)V", at = @At("HEAD"), cancellable = true)
+	private void onHandleOpenWindow(SPacketOpenWindow packet, CallbackInfo info) {
 		EventHandlerClient.eventHandleOpenWindow(this, info, packet);
 	}
 	
-	@Inject(method = "handleHeldItemChange(Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V", at = @At("HEAD"))
-	private void onHandleHeldItemChange(S09PacketHeldItemChange packet, CallbackInfo info) {
+	@Inject(method = "handleHeldItemChange(Lnet/minecraft/network/play/server/SPacketHeldItemChange;)V", at = @At("HEAD"))
+	private void onHandleHeldItemChange(SPacketHeldItemChange packet, CallbackInfo info) {
 		EventHandlerClient.eventHandleHeldItemChange(info, packet);
 	}
 	
-	@Inject(method = "handleCollectItem(Lnet/minecraft/network/play/server/S0DPacketCollectItem;)V", at = @At("HEAD"))
-	private void onHandleCollectItem(S0DPacketCollectItem packet, CallbackInfo info) {
+	@Inject(method = "handleCollectItem(Lnet/minecraft/network/play/server/SPacketCollectItem;)V", at = @At("HEAD"))
+	private void onHandleCollectItem(SPacketCollectItem packet, CallbackInfo info) {
 		EventHandlerClient.eventHandleCollectItem(packet);
 	}
 }

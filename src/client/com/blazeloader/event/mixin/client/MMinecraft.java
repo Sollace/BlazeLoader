@@ -11,11 +11,11 @@ import com.blazeloader.event.handlers.client.InternalEventHandlerClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.profiler.IPlayerUsage;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.IThreadListener;
 
 @Mixin(Minecraft.class)
-public abstract class MMinecraft implements IThreadListener, IPlayerUsage {
+public abstract class MMinecraft implements IThreadListener, ISnooperInfo {
 	@Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
 	private void onLoadWorld(WorldClient world, String message, CallbackInfo info) {
 		EventHandlerClient.eventLoadWorld((Minecraft)(Object)this, world, message);

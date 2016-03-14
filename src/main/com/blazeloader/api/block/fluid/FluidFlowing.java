@@ -3,8 +3,8 @@ package com.blazeloader.api.block.fluid;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -29,7 +29,7 @@ public abstract class FluidFlowing extends BlockDynamicLiquid implements Fluid {
 	 * Gets the direction in which this fluid is flowing.
 	 */
 	@Override
-	public Vec3 getFlowVector(IBlockAccess worldIn, BlockPos pos) {
+	public Vec3d getFlowVector(IBlockAccess worldIn, BlockPos pos) {
 		return super.getFlowVector(worldIn, pos);
 	}
 }

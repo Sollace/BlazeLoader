@@ -1,7 +1,7 @@
 package com.blazeloader.api.particles;
 
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Used to store information about a particle.
@@ -104,7 +104,7 @@ public final class ParticleData {
 	 * 
 	 * @return this ParticleData
 	 */
-	public ParticleData setPos(Vec3 pos) {
+	public ParticleData setPos(Vec3d pos) {
 		return setPos(pos.xCoord, pos.yCoord, pos.zCoord);
 	}
 	
@@ -127,8 +127,8 @@ public final class ParticleData {
 	 * Gets the position of the particle represented by the ParticleData
 	 * @return Vec3 position
 	 */
-	public Vec3 getPos() {
-		return new Vec3(posX, posY, posZ);
+	public Vec3d getPos() {
+		return new Vec3d(posX, posY, posZ);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class ParticleData {
 	 * @param vel	Vec3 velocity
 	 * @return	this ParticleData
 	 */
-	public ParticleData setVel(Vec3 vel) {
+	public ParticleData setVel(Vec3d vel) {
 		return setVel(vel.xCoord, vel.yCoord, vel.zCoord);
 	}
 	
@@ -160,8 +160,8 @@ public final class ParticleData {
 	 * Gets the velocity of the particle represented by the ParticleData
 	 * @return Vec3 velocity
 	 */
-	public Vec3 getVel() {
-		return new Vec3(velX, velY, velZ);
+	public Vec3d getVel() {
+		return new Vec3d(velX, velY, velZ);
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public final class ParticleData {
 	 * 
 	 * @return this ParticleData
 	 */
-	public ParticleData withPos(Vec3 pos) {
+	public ParticleData withPos(Vec3d pos) {
 		return setPos(pos.xCoord, pos.yCoord, pos.zCoord);
 	}
 	
@@ -195,7 +195,7 @@ public final class ParticleData {
 	 * @param vel	Vec3 velocity
 	 * @return	this ParticleData
 	 */
-	public ParticleData withVel(Vec3 vel) {
+	public ParticleData withVel(Vec3d vel) {
 		return withVel(vel.xCoord, vel.yCoord, vel.zCoord);
 	}
 	

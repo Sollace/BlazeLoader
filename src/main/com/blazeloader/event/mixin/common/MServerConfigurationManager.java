@@ -12,24 +12,24 @@ import com.blazeloader.event.handlers.EventHandler;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 
-@Mixin(ServerConfigurationManager.class)
+@Mixin(PlayerList.class)
 public abstract class MServerConfigurationManager {
 	
 	@Inject(method = "playerLoggedIn(Lnet/minecraft/entity/player/EntityPlayerMP;)V", at = @At("HEAD"))
 	private void onPlayerLoggedIn(EntityPlayerMP player, CallbackInfo info) {
-		EventHandler.eventPlayerLoggedIn((ServerConfigurationManager)(Object)this, player);
+		EventHandler.eventPlayerLoggedIn((PlayerList)(Object)this, player);
 	}
 	
 	@Inject(method = "playerLoggedOut(Lnet/minecraft/entity/player/EntityPlayerMP;)V", at = @At("HEAD"))
 	private void onPlayerLoggedOut(EntityPlayerMP player, CallbackInfo info) {
-		EventHandler.eventPlayerLoggedOut((ServerConfigurationManager)(Object)this, player);
+		EventHandler.eventPlayerLoggedOut((PlayerList)(Object)this, player);
 	}
 	
 	@Inject(method = "recreatePlayerEntity(Lnet/minecraft/entity/player/EntityPlayerMP;IZ)Lnet/minecraft/entity/player/EntityPlayerMP;", at = @At(value = "RETURN", shift = Shift.BEFORE))
 	private void onRecreatePlayerEntity(EntityPlayerMP oldPlayer, int dimension, boolean didWin, CallbackInfoReturnable<EntityPlayerMP> info) {
-		EventHandler.eventRecreatePlayerEntity((ServerConfigurationManager)(Object)this, oldPlayer, dimension, didWin);
+		EventHandler.eventRecreatePlayerEntity((PlayerList)(Object)this, oldPlayer, dimension, didWin);
 	}
 	
 	@Inject(method = "allowUserToConnect(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Ljava/lang/String;", at = @At(value = "RETURN", shift = Shift.BEFORE), cancellable = true)

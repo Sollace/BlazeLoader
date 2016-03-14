@@ -12,11 +12,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketParticles;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -184,7 +184,7 @@ public class ParticlesRegister<T> {
 	public void spawnParticleShape(ParticleData particle, World world, double x, double y, double z, IShape shape, int total) {
 		total *= shape.getVolumeOfSpawnableSpace();
 		for (int i = 0; i < total; i++) {
-			Vec3 point = shape.computePoint(world.rand);
+			Vec3d point = shape.computePoint(world.rand);
 			spawnParticle(particle.setPos(x + shape.getXOffset() + point.xCoord, y + shape.getYOffset() + point.yCoord, z + shape.getZOffset() + point.zCoord), world);
 		}
 	}
@@ -197,7 +197,7 @@ public class ParticlesRegister<T> {
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;
     	if (EnumParticleTypes.PARTICLES.containsKey(particle.getType().getId())) {
-    		Packet packet = new S2APacketParticles(EnumParticleTypes.getParticleFromId(particle.getType().getId()), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
+    		Packet packet = new SPacketParticles(EnumParticleTypes.getParticleFromId(particle.getType().getId()), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
 	        for (EntityPlayer player : (ArrayList<EntityPlayer>)(((WorldServer)world).playerEntities)) {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
@@ -220,7 +220,7 @@ public class ParticlesRegister<T> {
     //Do nothing. Since we're on the server.
     public void handleParticleSpawn(World w, BLPacketParticles.Message p) { }
     
-    public void addEffectToRenderer(Entity fx) { }
+    public void addEffectToRenderer(Object fx) { }
     //
     
     protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {

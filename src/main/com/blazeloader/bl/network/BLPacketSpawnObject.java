@@ -2,6 +2,7 @@ package com.blazeloader.bl.network;
 
 import java.io.IOException;
 
+import com.blazeloader.api.entity.ApiProjectile;
 import com.blazeloader.api.network.IMessage;
 import com.blazeloader.api.network.IMessageHandler;
 
@@ -10,9 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityTracker;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraft.world.World;
 
 public class BLPacketSpawnObject implements IMessageHandler<BLPacketSpawnObject.Message, IMessage, INetHandler> {
@@ -26,11 +29,9 @@ public class BLPacketSpawnObject implements IMessageHandler<BLPacketSpawnObject.
         
         if (entity != null) {
         	entity.setPosition(x, y, z);
-        	entity.serverPosX = message.wrapped.getX();
-            entity.serverPosY = message.wrapped.getY();
-            entity.serverPosZ = message.wrapped.getZ();
-            entity.rotationPitch = (float)(message.wrapped.getPitch() * 360) / 256.0F;
-            entity.rotationYaw = (float)(message.wrapped.getYaw() * 360) / 256.0F;
+        	EntityTracker.func_187254_a(entity, message.wrapped.getX(), message.wrapped.getY(), message.wrapped.getZ());
+            entity.rotationPitch = (float)(message.wrapped.getPitch() * 360) / 256f;
+            entity.rotationYaw = (float)(message.wrapped.getYaw() * 360) / 256f;
             Entity[] parts = entity.getParts();
 
             if (parts != null) {
@@ -42,9 +43,16 @@ public class BLPacketSpawnObject implements IMessageHandler<BLPacketSpawnObject.
             }
 
             entity.setEntityId(message.wrapped.getEntityID());
+            entity.setUniqueId(message.wrapped.getUniqueId());
             ((WorldClient)world).addEntityToWorld(message.wrapped.getEntityID(), entity);
 
-            if (message.wrapped.func_149009_m() > 0) {
+            if (message.wrapped.getData() > 0) {
+            	if (ApiProjectile.isProjectile(entity)) {
+            		Entity thrower = ((WorldClient)world).getEntityByID(message.wrapped.getData() - 1);
+            		if (thrower instanceof EntityLivingBase) {
+            			ApiProjectile.setThrowingEntity(entity, thrower);
+            		}
+            	}
                 entity.setVelocity((double)message.wrapped.getSpeedX() / 8000.0D, (double)message.wrapped.getSpeedY() / 8000.0D, (double)message.wrapped.getSpeedZ() / 8000.0D);
             }
         }
@@ -53,18 +61,18 @@ public class BLPacketSpawnObject implements IMessageHandler<BLPacketSpawnObject.
 	
 	public static class Message implements IMessage {
 		
-		private S0EPacketSpawnObject wrapped;
+		private SPacketSpawnObject wrapped;
 		
 		public Message() {
 			
 		}
 		
 		public Message(Entity e, int unknown) {
-			wrapped = new S0EPacketSpawnObject(e, EntityList.getEntityID(e));
+			wrapped = new SPacketSpawnObject(e, EntityList.getEntityID(e));
 		}
 		
 		public void fromBytes(ByteBuf buf) {
-			wrapped = new S0EPacketSpawnObject();
+			wrapped = new SPacketSpawnObject();
 			try {
 				wrapped.readPacketData(new PacketBuffer(buf));
 			} catch (IOException e) {

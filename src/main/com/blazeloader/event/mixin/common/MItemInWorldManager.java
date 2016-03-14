@@ -7,13 +7,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.blazeloader.event.handlers.EventHandler;
 
-import net.minecraft.server.management.ItemInWorldManager;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.util.math.BlockPos;
 
-@Mixin(ItemInWorldManager.class)
+@Mixin(PlayerInteractionManager.class)
 public abstract class MItemInWorldManager {
 	@Inject(method = "tryHarvestBlock(Lnet/minecraft/util/BlockPos;)Z", at = @At("RETURN"))
 	private void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-		EventHandler.eventTryHarvestBlock((ItemInWorldManager)(Object)this, info, pos);
+		EventHandler.eventTryHarvestBlock((PlayerInteractionManager)(Object)this, info, pos);
 	}
 }

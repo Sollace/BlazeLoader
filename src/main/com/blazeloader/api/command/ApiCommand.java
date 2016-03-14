@@ -21,7 +21,7 @@ public class ApiCommand {
      * @return Return the command manager, or a temporary replacement.
      */
     public static CommandHandler getCommandManager() {
-        return BLMain.instance().getCommandHandler();
+        return BLMain.instance().getCommandHandler(null);
     }
     
     /**

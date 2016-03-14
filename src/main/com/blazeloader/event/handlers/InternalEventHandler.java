@@ -17,7 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
@@ -44,8 +45,8 @@ import com.blazeloader.util.version.Versions;
  * Event handler for events that are not passed to mods, but rather to BL itself
  */
 public class InternalEventHandler {
-    public static void eventCreateNewCommandManager(CallbackInfoReturnable<CommandHandler> info) {
-        info.setReturnValue(BLMain.instance().getCommandHandler());
+    public static void eventCreateNewCommandManager(MinecraftServer sender, CallbackInfoReturnable<CommandHandler> info) {
+        info.setReturnValue(BLMain.instance().getCommandHandler(sender));
     }
     
 	public static void eventGetModName(CallbackInfoReturnable<String> info) {

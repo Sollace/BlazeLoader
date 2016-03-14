@@ -8,7 +8,7 @@ import com.blazeloader.event.mixin.Mix;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 
 public class VillagerEventHandler {
@@ -48,7 +48,7 @@ public class VillagerEventHandler {
     	Mix.intercept(Professions.instance().setAdditionalAITasks(sender), info);
     }
     
-    public static void eventGetDisplayName(EntityVillager sender, CallbackInfoReturnable<IChatComponent> info) {
+    public static void eventGetDisplayName(EntityVillager sender, CallbackInfoReturnable<ITextComponent> info) {
     	Mix.intercept(Professions.instance().getDisplayName(sender), info);
     }
     
