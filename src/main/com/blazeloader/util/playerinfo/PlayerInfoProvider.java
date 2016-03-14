@@ -1,5 +1,7 @@
 package com.blazeloader.util.playerinfo;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.blazeloader.util.config.JsonUtils;
@@ -7,6 +9,7 @@ import com.blazeloader.util.http.Downloader;
 import com.blazeloader.util.http.JsonDownload;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 /**
  * PlayerInfo class for getting details about a player from mojang's servers.
@@ -18,31 +21,44 @@ class PlayerInfoProvider {
 	
 	protected UUID uuid;
 	
-	protected String urlSkin;
-	protected String urlCape;
+	protected Map<Type, String> skinUrls = new HashMap<Type, String>();
 	
-	protected String skinType;
+	private String skinType;
 	
-	protected boolean hasSkin;
-	protected boolean hasCape;
-	
-	protected boolean hasLoaded = false;
+	private boolean hasLoaded = false;
 	
 	protected PlayerInfoProvider(UUID uuid) {
 		this.uuid = uuid;
 	}
 	
-	public boolean hasSkin() {
+	protected String popUrl(Type type) {
 		if (!hasLoaded) loadPlayerInfo();
-		return hasSkin;
+		return skinUrls.remove(type);
+	}
+	
+	public String getSkinType() {
+		if (!hasLoaded) loadPlayerInfo();
+		return skinType;
+	}
+	
+	public boolean hasSkin() {
+		return hasTexture(Type.SKIN);
 	}
 	
 	public boolean hasCape() {
-		if (!hasLoaded) loadPlayerInfo();
-		return hasCape;
+		return hasTexture(Type.CAPE);
 	}
 	
-    protected void loadPlayerInfo() {
+	public boolean hasElytra() {
+		return hasTexture(Type.ELYTRA);
+	}
+	
+	private boolean hasTexture(Type type) {
+		if (!hasLoaded) loadPlayerInfo();
+		return skinUrls.containsKey(type);
+	}
+	
+    private void loadPlayerInfo() {
     	if (hasLoaded) return;
     	hasLoaded = true;
     	(new Downloader("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", ""))).download(new JsonDownload() {
@@ -57,8 +73,7 @@ class PlayerInfoProvider {
 	            			obj = obj.getAsJsonObject("textures");
 	            			if (obj.has("SKIN")) {
 	            				JsonObject skin = obj.getAsJsonObject("SKIN");
-	            				urlSkin = skin.get("url").getAsString();
-	            				hasSkin = true;
+	            				skinUrls.put(Type.SKIN, skin.get("url").getAsString());
 	            				if (skin.has("metadata")) {
 	            					skin = skin.getAsJsonObject("metadata");
 	            					skinType = skin.get("model").getAsString();
@@ -67,8 +82,10 @@ class PlayerInfoProvider {
 	            				}
 	            			}
 	            			if (obj.has("CAPE")) {
-	            				urlCape = obj.getAsJsonObject("CAPE").get("url").getAsString();
-	            				hasCape = true;
+	            				skinUrls.put(Type.CAPE, obj.getAsJsonObject("CAPE").get("url").getAsString());
+	            			}
+	            			if (obj.has("ELYTRA")) {
+	            				skinUrls.put(Type.ELYTRA, obj.getAsJsonObject("ELYTRA").get("url").getAsString());
 	            			}
 	            		}
 	            	}
