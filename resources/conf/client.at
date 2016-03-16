@@ -76,7 +76,7 @@
 :net.minecraft.world
 	are:WorldType
 #Make the WorldType constructor accessible to child classes
-		protected!<init> (ILjava/lang/String;I)
+		protected!<init> (ILjava/lang/String;I)V
 #Make WorldType.worldTypes non-final
 		public!a:77139_a:worldTypes
 	aqu:World

@@ -45,21 +45,29 @@ public class ONFTransformer implements IClassTransformer {
 	}
 	
 	private void loadTransformation(DetectedTransformation transform) {
-		BLOBF obf = BLOBF.getOBF(transform.mcpTarget, transform.targetType, OBFLevel.MCP);
-		String name = obf.getValue();
-		int lastDot = name.lastIndexOf('.');
-        String clName = name.substring(0, lastDot);
-        name = name.substring(lastDot + 1, name.length());
+		String name;
+		String clName;
+		if (transform.isGlobal) {
+			BLOBF obf = BLOBF.getOBF(transform.mcpTarget, TargetType.CLASS, OBFLevel.MCP);
+			name = "*";
+			clName = obf.getValue();
+		} else {
+			BLOBF obf = BLOBF.getOBF(transform.mcpTarget, transform.targetType, OBFLevel.MCP);
+			name = obf.getValue();
+			int lastDot = name.lastIndexOf('.');
+	        clName = name.substring(0, lastDot);
+	        name = name.substring(lastDot + 1, name.length());
+		}
 		switch (transform.targetType) {
-		case FIELD:
-			getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.FIELD);
-			break;
-		case CONSTRUCTOR:
-		case METHOD:
-			name = name.replace('/', '.');
-			getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.METHOD);
-			break;
-		default:
+			case FIELD:
+				getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.FIELD);
+				break;
+			case CONSTRUCTOR:
+			case METHOD:
+				name = name.replace('/', '.');
+				getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.METHOD);
+				break;
+			default:
 		}
 	}
 	
