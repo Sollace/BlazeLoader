@@ -17,6 +17,7 @@ import java.io.IOException;
 /**
  * Allows changing field and method publicity levels and final values.
  */
+@Deprecated
 public class BLAccessTransformer implements IClassTransformer {
     private static BLAccessTransformer instance;
 

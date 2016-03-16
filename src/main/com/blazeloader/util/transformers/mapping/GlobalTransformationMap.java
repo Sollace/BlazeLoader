@@ -6,25 +6,25 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GlobalTransformationMap extends TransformationMap {
-    private final List<Transformation> transformations = new LinkedList<Transformation>();
-
+@Deprecated
+public class GlobalTransformationMap extends LinkedList<Transformation> implements TransformationMap {
+	
     @Override
     public List<Transformation> getTransformations(String className) {
         return getTransformations();
     }
 
     public List<Transformation> getTransformations() {
-        return Collections.unmodifiableList(transformations);
+        return Collections.unmodifiableList(this);
     }
 
     @Override
     public int getNumTransformations(String className) {
-        return getNumTransformations();
+        return size();
     }
 
     public int getNumTransformations() {
-        return transformations.size();
+        return size();
     }
 
     @Override
@@ -36,6 +36,6 @@ public class GlobalTransformationMap extends TransformationMap {
         if (transformation == null) {
             throw new IllegalArgumentException("Cannot have a null transformation!");
         }
-        transformations.add(transformation);
+        add(transformation);
     }
 }

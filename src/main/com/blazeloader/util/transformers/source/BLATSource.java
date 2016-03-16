@@ -16,7 +16,8 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BLATSource extends TransformationSource {
+@Deprecated
+public class BLATSource implements TransformationSource {
 
     private final List<Transformation> transformations;
 
@@ -75,19 +76,20 @@ public class BLATSource extends TransformationSource {
         String clName = name.substring(0, lastDot);
         String mName = name.substring(lastDot + 1, name.length()).replace('/', '.');
         String[] changeArr = changes.split(Patterns.COMMA);
+        TargetSelector selector = new MethodSelector(mName);
         for (String change : changeArr) {
             if ("f".equalsIgnoreCase(change)) {
-                transformations.add(new MethodFinalTransformation(clName, mName, true));
+                transformations.add(new FinalityTransformation(selector, clName, true));
             } else if ("-f".equalsIgnoreCase(change)) {
-                transformations.add(new MethodFinalTransformation(clName, mName, false));
+                transformations.add(new FinalityTransformation(selector, clName, false));
             } else if ("public".equalsIgnoreCase(change)) {
-                transformations.add(new MethodPublicTransformation(clName, mName, AccessLevel.PUBLIC));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PUBLIC));
             } else if ("private".equalsIgnoreCase(change)) {
-                transformations.add(new MethodPublicTransformation(clName, mName, AccessLevel.PRIVATE));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PRIVATE));
             } else if ("protected".equalsIgnoreCase(change)) {
-                transformations.add(new MethodPublicTransformation(clName, mName, AccessLevel.PROTECTED));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PROTECTED));
             } else if ("package".equalsIgnoreCase(change)) {
-                transformations.add(new MethodPublicTransformation(clName, mName, AccessLevel.PACKAGE));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PACKAGE));
             } else {
                 System.err.println("Invalid transformation: ".concat(change));
             }
@@ -101,19 +103,20 @@ public class BLATSource extends TransformationSource {
         String clName = name.substring(0, lastDot);
         String fName = name.substring(lastDot + 1, name.length());
         String[] changeArr = changes.split(Patterns.COMMA);
+        TargetSelector selector = new MethodSelector(fName);
         for (String change : changeArr) {
-            if ("f".equalsIgnoreCase(change)) {
-                transformations.add(new FieldFinalTransformation(clName, fName, true));
+        	if ("f".equalsIgnoreCase(change)) {
+                transformations.add(new FinalityTransformation(selector, clName, true));
             } else if ("-f".equalsIgnoreCase(change)) {
-                transformations.add(new FieldFinalTransformation(clName, fName, false));
+                transformations.add(new FinalityTransformation(selector, clName, false));
             } else if ("public".equalsIgnoreCase(change)) {
-                transformations.add(new FieldPublicTransformation(clName, fName, AccessLevel.PUBLIC));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PUBLIC));
             } else if ("private".equalsIgnoreCase(change)) {
-                transformations.add(new FieldPublicTransformation(clName, fName, AccessLevel.PRIVATE));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PRIVATE));
             } else if ("protected".equalsIgnoreCase(change)) {
-                transformations.add(new FieldPublicTransformation(clName, fName, AccessLevel.PROTECTED));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PROTECTED));
             } else if ("package".equalsIgnoreCase(change)) {
-                transformations.add(new FieldPublicTransformation(clName, fName, AccessLevel.PACKAGE));
+                transformations.add(new PublicityTransformation(selector, clName, AccessLevel.PACKAGE));
             } else {
                 System.err.println("Invalid transformation: ".concat(change));
             }
@@ -168,11 +171,11 @@ public class BLATSource extends TransformationSource {
     @Override
     public void provideTransformations(BLAccessTransformer transformer) {
         for (Transformation trans : transformations) {
-            if (trans.isGlobal) {
-                transformer.addGlobalTransformation(trans);
-            } else {
+            //if (trans.isGlobal()) {
+            //    transformer.addGlobalTransformation(trans);
+            //} else {
                 transformer.addTransformation(trans);
-            }
+            //}
         }
     }
 
