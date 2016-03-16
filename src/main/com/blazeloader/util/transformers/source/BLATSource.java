@@ -139,14 +139,7 @@ public class BLATSource implements TransformationSource {
         } catch (Throwable e) {
         	throw new IllegalArgumentException("Unknown OBF type: " + obfType);
         }
-        BLOBF blobf;
-        if (type == TargetType.CONSTRUCTOR) {
-        	String className = obfName[0].split(" ")[0];
-        	String[] splitten = obfName[0].replace(className, "").trim().split(" ");
-        	blobf = BLOBF.getConstructor(className, obfuscationLevel, splitten);
-        } else {
-        	blobf = BLOBF.getOBF(obfName[0], obfName.length > 1 ? TargetType.CLASS : type, obfuscationLevel);
-        }
+        BLOBF blobf = BLOBF.getOBF(obfName[0], obfName.length > 1 ? TargetType.CLASS : type, obfuscationLevel);
         if (blobf == null) {
             throw new IllegalArgumentException("Undefined " + type.name() + " mapping: \"" + obfName[0] + "\",\"" + ((obfName.length >= 2) ? obfName[1] : "NULL") + "\"");
         }
