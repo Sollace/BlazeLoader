@@ -94,7 +94,7 @@ public class BLMain implements MixinConfigProvider {
     }
 
     public String[] getRequiredTransformers() {
-        return null;
+    	return new String[]{ "com.blazeloader.util.transformers.ONFTransformer" };
     }
 
     public String[] getRequiredDownstreamTransformers() {
