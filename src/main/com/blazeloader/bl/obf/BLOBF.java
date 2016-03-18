@@ -1,13 +1,11 @@
 package com.blazeloader.bl.obf;
 
-import java.io.InputStream;
 import java.net.URL;
 
 import com.blazeloader.util.transformers.ONFTransformer;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 
-import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
 import net.acomputerdog.OBFUtil.parse.types.ONFParser;
 import net.acomputerdog.OBFUtil.util.ObfMapSrg;
 import net.acomputerdog.OBFUtil.util.TargetType;
@@ -81,33 +79,9 @@ public class BLOBF extends Obf implements ObfMapSrg.Entry {
         BLOBFTable obf = new BLOBFTable();
         //BLOBFParser parser = new BLOBFParser(false);
         ONFParser parser = new ONFParser();
-        if (Versions.isClient()) {
-        	loadEntries(parser, "client", obf, true);
-        } else {
-            //TODO: Add server obfuscation mappings
-        	if (!loadEntries(parser, "server", obf, false)) { //Try load the server obfuscation table. If it does not exist or is empty fall back to the client table
-        		loadEntries(parser, "client", obf, true);
-        	}
-        }
+        loadEntries(parser, "client", obf, true);
         ONFTransformer.setONFS(parser.getDetectedTransformations());
         return obf;
-    }
-    
-    @SuppressWarnings("unused")
-	private static boolean loadEntries(BLOBFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
-    	try {
-    		int oldSize = obf.size();
-    		InputStream stream = BLOBF.class.getResourceAsStream("/conf/minecraft_" + filename + ".obf");
-    		parser.loadEntries(stream, obf, true);
-    		return obf.size() > oldSize;
-    	} catch (Exception e) {
-    		if (mustThrow) {
-    			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
-    		} else {
-    			e.printStackTrace();
-    		}
-    		return false;
-    	}
     }
     
     private static boolean loadEntries(ONFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
