@@ -58,24 +58,18 @@ public class ONFTransformer implements IClassTransformer {
 	        clName = name.substring(0, lastDot);
 	        name = name.substring(lastDot + 1, name.length());
 		}
-		switch (transform.targetType) {
-			case FIELD:
-				getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.FIELD);
-				break;
-			case CONSTRUCTOR:
-			case METHOD:
-				name = name.replace('/', '.');
-				getTransformation(transform.directives.split(Patterns.COMMA), clName, name, TargetType.METHOD);
-				break;
-			default:
+		TargetType type = transform.targetType.getBaseType();
+		if (type == TargetType.METHOD) {
+			name = name.replace('/', '.');
 		}
+		getTransformation(transform.directives.split(Patterns.COMMA), clName, name, type);
 	}
 	
-	private void getTransformation(String[] changes, String clName, String mName, TargetType type) {
+	private void getTransformation(String[] changes, String clName, String name, TargetType type) {
         for (String change : changes) {
-        	TargetSelector selector = type == TargetType.METHOD ? new MethodSelector(mName) : new FieldSelector(mName);
+        	TargetSelector selector = type == TargetType.METHOD ? new MethodSelector(name) : new FieldSelector(name);
         	Transformation t = getTransformation(selector, change, clName);
-            if (t != null) transformations.addTransformation(t.targetClass, t);
+            if (t != null) transformations.addTransformation(t);
         }
     }
     
@@ -88,7 +82,7 @@ public class ONFTransformer implements IClassTransformer {
 			case "private": return new PublicityTransformation(selector, clName, AccessLevel.PRIVATE);
 			case "protected": return new PublicityTransformation(selector, clName, AccessLevel.PROTECTED);
 			case "package": return new PublicityTransformation(selector, clName, AccessLevel.PACKAGE);
-	        default: System.err.println("Invalid transformation: ".concat(change));
+	        default: System.err.println("Invalid transformation: " + change);
 		}
     	return null;
     }
@@ -96,17 +90,11 @@ public class ONFTransformer implements IClassTransformer {
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
         ClassNode classNode = new ClassNode();
         new ClassReader(bytes).accept(classNode, 0);
-        boolean didTransform = false;
-        for (Transformation trans : transformations.getTransformations(transformedName)) {
-            didTransform |= trans.apply(classNode);
-        }
-        
-        if (didTransform) {
+        if (transformations.applyAll(transformedName, classNode)) {
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             classNode.accept(writer);
             return writer.toByteArray();
         }
-        
         return bytes; //return original class if it was not transformed
     }
 

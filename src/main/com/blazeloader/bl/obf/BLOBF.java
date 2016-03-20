@@ -77,26 +77,22 @@ public class BLOBF extends Obf implements ObfMapSrg.Entry {
     
     private static BLOBFTable loadOBF() {
         BLOBFTable obf = new BLOBFTable();
-        //BLOBFParser parser = new BLOBFParser(false);
         ONFParser parser = new ONFParser();
-        loadEntries(parser, "client", obf, true);
+        loadEntries(parser, "blazeloader", obf, true);
         ONFTransformer.setONFS(parser.getDetectedTransformations());
         return obf;
     }
     
-    private static boolean loadEntries(ONFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
+    private static void loadEntries(ONFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
     	try {
-    		int oldSize = obf.size();
     		URL stream = BLOBF.class.getResource("/conf/" + filename + ".onf");
     		parser.loadEntries(stream, obf, true);
-    		return obf.size() > oldSize;
     	} catch (Exception e) {
     		if (mustThrow) {
     			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
     		} else {
     			e.printStackTrace();
     		}
-    		return false;
     	}
     }
     

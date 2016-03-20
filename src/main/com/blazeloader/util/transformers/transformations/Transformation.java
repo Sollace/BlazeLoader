@@ -1,12 +1,8 @@
 package com.blazeloader.util.transformers.transformations;
 
-import com.blazeloader.bl.obf.AccessLevel;
-
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import static org.objectweb.asm.Opcodes.*;
 
 public abstract class Transformation {
 	private final TargetSelector targeter;
@@ -17,43 +13,8 @@ public abstract class Transformation {
         targetClass = target;
     }
     
-    protected final int setPublicity(int currAccess, AccessLevel publicity) {
-        int pubValue = publicity.getValue();
-        int ret = (currAccess & ~7);
-        switch (currAccess & 7) {
-            case ACC_PRIVATE:
-                ret |= pubValue;
-                break;
-            case 0:
-                ret |= (pubValue != ACC_PRIVATE ? pubValue : 0);
-                break;
-            case ACC_PROTECTED:
-                ret |= (pubValue != ACC_PRIVATE && pubValue != 0 ? pubValue : ACC_PROTECTED);
-                break;
-            case ACC_PUBLIC:
-                ret |= (pubValue != ACC_PRIVATE && pubValue != 0 && pubValue != ACC_PROTECTED ? pubValue : ACC_PUBLIC);
-                break;
-            default:
-                throw new IllegalArgumentException("Non-existent access mode!");
-        }
-        return ret;
-    }
-    
-    protected final int setFinality(int currAccess, boolean finalValue) {
-    	if (finalValue) {
-    		currAccess |= ACC_FINAL;
-        } else {
-        	currAccess &= ~ACC_FINAL;
-        }
-    	return currAccess;
-    }
-
-    public static String getDotName(String slashName) {
-        return slashName.replace('/', '.');
-    }
-    
     public boolean apply(ClassNode cls) {
-    	String dotName = Transformation.getDotName(cls.name);
+    	String dotName = getDotName(cls.name);
     	if (dotName.equals(targetClass)) return targeter.match(cls);
     	return false;
     }
@@ -61,4 +22,8 @@ public abstract class Transformation {
     public abstract void transformField(FieldNode node);
     
     public abstract void transformMethod(MethodNode node);
+    
+    public static String getDotName(String slashName) {
+        return slashName.replace('/', '.');
+    }
 }
