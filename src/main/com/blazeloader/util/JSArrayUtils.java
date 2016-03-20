@@ -2,17 +2,16 @@ package com.blazeloader.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.blazeloader.util.data.Tuple;
 import com.blazeloader.util.data.Tuple.Tuple2;
-import com.google.common.collect.Lists;
 
 /**
  * Javascript array methods re-implemented in Java. Any ones not found here are probably already in (@code ArrayUtils}.
@@ -24,14 +23,25 @@ public class JSArrayUtils {
 	 */
 	public static <T> Tuple2<Optional<T>, T[]> pop(T... array) {
 		if (array.length == 0) return Tuple.create(Optional.empty(), array);
-		return Tuple.create(Optional.of(array[array.length - 1]), ArrayUtils.subarray(array, 0, array.length - 1));
+		return Tuple.create(Optional.of(array[array.length - 1]), subarray(array, 0, array.length - 1));
+	}
+	
+	private static <T> T[] subarray(T[] arr, int start, int end) {
+		int size = end - start;
+		if (size < 0) size = 0;
+		T[] result = newArray(arr, size);
+		if (size > 0) System.arraycopy(arr, start, result, 0, size);
+		return result;
 	}
 	
 	/**
 	 * Adds one or more elements to the end of an array and returns the result.
 	 */
     public static <T> T[] push(T[] array, T... added) {
-    	return ArrayUtils.addAll(array, added);
+    	T[] result = newArray(array, array.length + added.length);
+    	System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(added, 0, result, array.length, added.length);
+    	return result;
     }
     
     /**
@@ -39,14 +49,14 @@ public class JSArrayUtils {
 	 */
 	public static <T> Tuple2<Optional<T>, T[]> shift(T... array) {
 		if (array.length == 0) return Tuple.create(Optional.empty(), array);
-		return Tuple.create(Optional.of(array[0]), ArrayUtils.subarray(array, 1, array.length));
+		return Tuple.create(Optional.of(array[0]), subarray(array, 1, array.length));
 	}
     
 	/**
 	 * Adds one or more elements to the beginning of an array and returns the result.
 	 */
     public static <T> T[] unshift(T[] array, T... added) {
-    	return ArrayUtils.addAll(added, array);
+    	return push(added, array);
     }
     
     /**
@@ -56,9 +66,9 @@ public class JSArrayUtils {
     	T[] result = array;
     	for (int i = 0; i < concatted.length; i++) {
     		if (concatted[i].getClass() == array.getClass()) {
-    			result = ArrayUtils.addAll(result, (T[])concatted[i]);
+    			result = push(result, (T[])concatted[i]);
     		} else if (concatted[i].getClass() == array.getClass().getComponentType()) {
-    			result = ArrayUtils.add(result, (T)concatted[i]);
+    			result = push(result, (T)concatted[i]);
     		}
     	}
     	return result;
@@ -107,7 +117,7 @@ public class JSArrayUtils {
     		start = end;
     		end = tmp;
     	}
-    	return ArrayUtils.subarray(array, start, end);
+    	return subarray(array, start, end);
     }
     
     /**
@@ -131,10 +141,7 @@ public class JSArrayUtils {
      * Converts the given array to a list.
      */
     public static <T> List<T> toList(T... arr) {
-    	if (arr.length > 0) {
-			return Lists.asList(arr[0], ArrayUtils.subarray(arr, 1, arr.length));
-    	}
-    	return new ArrayList<T>();
+    	return Arrays.asList(arr);
     }
     
     /**
@@ -154,13 +161,20 @@ public class JSArrayUtils {
     /**
      * Concatenates the items of an array to a string using the optional separator value. Default separator is a ",".
      */
-    public static <T> String join(T[] arr, Object... separator) {
-    	String sep = separator.length > 0 && separator[0] != null ? separator[0].toString() : ",";
+    public static <T> String join(T[] arr) {
+    	return join(arr, ",");
+    }
+    
+    /**
+     * Concatenates the items of an array to a string using the optional separator value. Default separator is a ",".
+     */
+    public static <T> String join(T[] arr, Object separator) {
+    	String sep = separator.toString();
     	String result = "";
     	for (T i : arr) {
     		if (result.length() > 0) result += sep;
     		if (isArray(i)) {
-    			result += join(asArray(i), separator);
+    			result += join(asArray(i), sep);
     		} else {
     			result += i.toString();
     		}
@@ -200,17 +214,13 @@ public class JSArrayUtils {
      * Converts a given primitive array or string to an object type array.
      */
     public static <T> T[] asArray(Object o) {
-    	if (o instanceof int[]) return (T[])ArrayUtils.toObject((int[])o);
-    	if (o instanceof boolean[]) return (T[])ArrayUtils.toObject((boolean[])o);
-    	if (o instanceof float[]) return (T[])ArrayUtils.toObject((float[])o);
-    	if (o instanceof double[]) return (T[])ArrayUtils.toObject((double[])o);
-    	if (o instanceof byte[]) return (T[])ArrayUtils.toObject((byte[])o);
-    	if (o instanceof char[]) return (T[])ArrayUtils.toObject((char[])o);
-    	if (o instanceof long[]) return (T[])ArrayUtils.toObject((long[])o);
-    	if (o instanceof short[]) return (T[])ArrayUtils.toObject((short[])o);
+    	if (o == null) return null;
     	if (o instanceof Object[]) return (T[])o;
-    	if (o instanceof String) return (T[])ArrayUtils.toObject(((String)o).toCharArray());
-    	throw new IllegalArgumentException("Given value is not an array");
+    	if (o instanceof String) o = ((String)o).toCharArray();
+    	int n = Array.getLength(o);
+    	T[] result = (T[])Array.newInstance(o.getClass().getComponentType(), n);
+    	for (int i = 0; i < n; i++) result[n] = (T)Array.get(o, i);
+    	return result;
     }
     
     /**
@@ -256,12 +266,7 @@ public class JSArrayUtils {
     			return initial[0];
     		}
     	}
-    	Object ini;
-    	if (initial.length > 0) {
-    		ini = initial[0];
-    	} else {
-    		ini = arr[1];
-    	}
+    	Object ini = initial.length > 0 ? initial[0] :  arr[1];
     	for (int i = 0; i < arr.length; i ++) {
     		ini = callback.apply(new Folds(arr, i, ini));
     	}
@@ -297,7 +302,7 @@ public class JSArrayUtils {
      * Returns an array of items that pass the test defined by the given Predicate function. 
      */
     public static <T> T[] filter(T[] arr, Predicate<T> test) {
-    	if (ArrayUtils.isEmpty(arr)) {
+    	if (arr == null || arr.length == 0) {
     		return arr;
     	}
     	List<T> result = new ArrayList<T>();
