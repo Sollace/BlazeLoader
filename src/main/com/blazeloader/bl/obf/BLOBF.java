@@ -1,26 +1,28 @@
 package com.blazeloader.bl.obf;
 
-import java.io.InputStream;
+import java.net.URL;
 
+import com.blazeloader.util.transformers.ONFTransformer;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 
-import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
+import net.acomputerdog.OBFUtil.parse.types.ONFParser;
+import net.acomputerdog.OBFUtil.util.ObfMapSrg;
 import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;
 
 /**
  * BlazeLoader extension of LL's Obf class
  */
-public class BLOBF extends Obf {
-
+public class BLOBF extends Obf implements ObfMapSrg.Entry {
+	
     /**
      * The simple (mcp, no package) name of this BLOBF
      */
     public final String simpleMcp;
     public final String simpleObf;
     public final String simpleSrg;
-
+    
     /**
      * Creates a new BLOBF.
      *
@@ -28,14 +30,14 @@ public class BLOBF extends Obf {
      * @param seargeName The searge name of the class
      * @param mcpName    The deobfuscated (mcp) name of the class
      */
-    public BLOBF(String obfName, String seargeName, String mcpName) {
+    protected BLOBF(String obfName, String seargeName, String mcpName) {
         super(seargeName, obfName, mcpName);
         simpleMcp = splitPackageOff(mcpName);
         simpleObf = splitPackageOff(obfName);
         simpleSrg = splitPackageOff(seargeName);
     }
     
-    public static String splitPackageOff(String string) {
+    private String splitPackageOff(String string) {
     	String[] nameParts = string.split(Patterns.PERIOD);
     	return nameParts.length > 0 ? nameParts[nameParts.length - 1] : string;
     }
@@ -47,13 +49,13 @@ public class BLOBF extends Obf {
      */
     public String getValue() {
         if (!Versions.isGameObfuscated()) {
-            return super.name;
+            return name;
         }
         if (Versions.isForgeInstalled()) {
-            return super.srg;
+            return srg;
         }
         
-        return super.obf;
+        return obf;
     }
     
     /**
@@ -75,31 +77,22 @@ public class BLOBF extends Obf {
     
     private static BLOBFTable loadOBF() {
         BLOBFTable obf = new BLOBFTable();
-        BLOBFParser parser = new BLOBFParser(false);
-        if (Versions.isClient()) {
-        	loadEntries(parser, "client", obf, true);
-        } else {
-            //TODO: Add server obfuscation mappings
-        	if (!loadEntries(parser, "server", obf, false)) { //Try load the server obfuscation table. If it does not exist or is empty fall back to the client table
-        		loadEntries(parser, "client", obf, true);
-        	}
-        }
+        ONFParser parser = new ONFParser();
+        loadEntries(parser, "blazeloader", obf, true);
+        ONFTransformer.setONFS(parser.getDetectedTransformations());
         return obf;
     }
     
-    private static boolean loadEntries(BLOBFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
+    private static void loadEntries(ONFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
     	try {
-    		int oldSize = obf.size();
-    		InputStream stream = BLOBF.class.getResourceAsStream("/conf/minecraft_" + filename + ".obf");
+    		URL stream = BLOBF.class.getResource("/conf/" + filename + ".onf");
     		parser.loadEntries(stream, obf, true);
-    		return obf.size() > oldSize;
     	} catch (Exception e) {
     		if (mustThrow) {
     			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
     		} else {
     			e.printStackTrace();
     		}
-    		return false;
     	}
     }
     
@@ -114,60 +107,16 @@ public class BLOBF extends Obf {
     public static BLOBF getOBF(String obfName, TargetType type, OBFLevel level) {
         return OBF.getBLOBF(obfName, type, level);
     }
-
-    /**
-     * Gets a BLOBF from an obfuscated class name
-     *
-     * @param obfName The obfuscated name.
-     * @param level	  The obfuscation level MCP/SRG/OBF
-     * @return Return a BLOBF representing obfName
-     */
-    public static BLOBF getClass(String obfName, OBFLevel level) {
-        return getOBF(obfName, TargetType.CLASS, level);
-    }
     
-    /**
-     * Gets a BLOBF constructor descriptor, creating one if necessary.
-     * 
-     * @param className	Class owner name
-     * @param level		Obfuscation level
-     * @param params	Parameter classes, qualified with L; when needed.
-     * @return
-     */
-    public static BLOBF getConstructor(String className, OBFLevel level, String... params) {
-    	return OBF.getConstructor(className, level, params);
-    }
-
-    /**
-     * Gets a BLOBF from an obfuscated package name
-     *
-     * @param obfName The obfuscated name.
-     * @param level	  The obfuscation level MCP/SRG/OBF
-     * @return Return a BLOBF representing obfName
-     */
-    public static BLOBF getPackage(String obfName, OBFLevel level) {
-        return getOBF(obfName, TargetType.PACKAGE, level);
-    }
-
-    /**
-     * Gets a BLOBF from an obfuscated method name
-     *
-     * @param obfName The obfuscated name.
-     * @param level	  The obfuscation level MCP/SRG/OBF
-     * @return Return a BLOBF representing obfName
-     */
-    public static BLOBF getMethod(String obfName, OBFLevel level) {
-        return getOBF(obfName, TargetType.METHOD, level);
-    }
-
-    /**
-     * Gets a BLOBF from an obfuscated field name
-     *
-     * @param obfName The obfuscated name.
-     * @param level	  The obfuscation level MCP/SRG/OBF
-     * @return Return a BLOBF representing obfName
-     */
-    public static BLOBF getField(String obfName, OBFLevel level) {
-        return getOBF(obfName, TargetType.FIELD, level);
-    }
+	public String obf() {
+		return obf;
+	}
+	
+	public String deObf() {
+		return name;
+	}
+	
+	public String srg() {
+		return srg;
+	}
 }

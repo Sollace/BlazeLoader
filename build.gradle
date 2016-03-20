@@ -27,7 +27,8 @@ minecraft {
 sourceSets {
 	main {
 		java {
-			srcDirs "src/main" + "src/client"
+			srcDir "src/main"
+			srcDir "src/client"
 		}
 		resources {
 			srcDirs "resources"
