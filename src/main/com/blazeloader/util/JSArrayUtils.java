@@ -134,7 +134,7 @@ public class JSArrayUtils {
 	 */
     public static <T> T[] toArray(List<T> newa) {
     	if (newa.size() == 0) throw new IllegalArgumentException("List cannot be empty");
-    	return toArray(newa, getBaseClass(newa.get(0).getClass()));
+    	return (T[])toArray(newa, getBaseClass(newa.get(0).getClass())); //Shut-up, gradle >.>
     }
     
     /**
