@@ -21,17 +21,13 @@ import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.DifficultyInstance;
 
 @Mixin(EntityVillager.class)
-public abstract class MEntityVillager extends EntityAgeable implements INpc, IMerchant, IEntityVillager {
+public abstract class MEntityVillager extends EntityAgeable implements IMerchant, INpc, IEntityVillager {
 	private MEntityVillager() {super(null);}
 	
 	@Shadow
-	private boolean areAdditionalTasksSet;
-	public boolean areAdditionalTasksSet() {return areAdditionalTasksSet;}
-	
-	@Shadow
-	private int careerLevel;
-	public int getCareerLevel() {return careerLevel;}
-	public void setCareerLevel(int level) {careerLevel = level;}
+	private MerchantRecipeList buyingList;
+	public MerchantRecipeList getMerchentRecipes() {return buyingList;}
+	public void setMerchentRecipes(MerchantRecipeList list) {buyingList = list;}
 	
 	@Shadow
 	private int careerId;
@@ -39,9 +35,13 @@ public abstract class MEntityVillager extends EntityAgeable implements INpc, IMe
 	public void setCareer(int career) {careerId = career;}
 	
 	@Shadow
-	private MerchantRecipeList buyingList;
-	public MerchantRecipeList getMerchentRecipes() {return buyingList;}
-	public void setMerchentRecipes(MerchantRecipeList list) {buyingList = list;}
+	private int careerLevel;
+	public int getCareerLevel() {return careerLevel;}
+	public void setCareerLevel(int level) {careerLevel = level;}
+	
+	@Shadow
+	private boolean areAdditionalTasksSet;
+	public boolean areAdditionalTasksSet() {return areAdditionalTasksSet;}
 	
 	@Inject(method = "onInitialSpawn(Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/entity/IEntityLivingData;)Lnet/minecraft/entity/IEntityLivingData;", at = @At("HEAD"), cancellable = true)
 	private void onOnInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata, CallbackInfoReturnable<IEntityLivingData> info) {

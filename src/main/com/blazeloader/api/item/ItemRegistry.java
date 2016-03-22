@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ItemRegistry {
@@ -19,7 +20,7 @@ public class ItemRegistry {
 		variantNames.put(item, variants);
 	}
 	
-	public void insertItemVariantNames(Map<Item, ArrayList<String>> mapping) {
+	public void insertItemVariantNames(Map<Item, List<String>> mapping) {
 		mapping.putAll(variantNames);
 	}
 }
