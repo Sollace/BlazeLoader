@@ -31,7 +31,7 @@
 :net.minecraft.creativetab
 	akf:CreativeTabs
 #Allow new creative tab types
-		public!a:78032_a:creativeTabArray
+		-f!a:78032_a:creativeTabArray
 :net.minecraft.entity
 	wv:Entity
 	xb:EntityList
@@ -41,13 +41,13 @@
 		public!e:75623_d:idToClassMapping
 		public!f:75624_e:classToIDMapping
 		public!g:180126_g:stringToIDMapping
+	xn:EntityLiving
+		public!i:70714_bg:tasks
+		public!bg:70715_bh:targetTasks
 :net.minecraft.entity.player
 	qw:EntityPlayerMP
 		public!bT:71139_cq:currentWindowId
 		public!cr:71117_bO:getNextWindowId ()V
-	xn:EntityLiving
-		public!i:70714_bg:tasks
-		public!bg:70715_bh:targetTasks
 :net.minecraft.entity.projectile
 	ahr:EntityThrowable
 #Throwables
@@ -71,13 +71,15 @@
 		public!U:179365_U:PARTICLES
 	bvt:Timer
 		public!a:74282_a:ticksPerSecond
-:net.minecraft.util
 	dt:BlockPos
 :net.minecraft.world
 	are:WorldType
 #Make the WorldType constructor accessible to child classes
 		protected!<init> (ILjava/lang/String;I)V
 #Make WorldType.worldTypes non-final
-		public!a:77139_a:worldTypes
+		-f!a:77139_a:worldTypes
 	aqu:World
 		public!a:175701_a:isValid (Lnet/minecraft/util/BlockPos;)Z
+:net.minecraft.server.management
+	lx:ServerConfigurationManager
+		public!i:72404_b:playerEntityList
