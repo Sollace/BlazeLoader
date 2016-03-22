@@ -60,7 +60,7 @@ public class ONFTransformer implements IClassTransformer {
 		}
 		TargetType type = transform.targetType.getBaseType();
 		if (type == TargetType.METHOD) {
-			name = name.replace('/', '.');
+			name = name.split(" ")[0].replace('/', '.') + " " + name.split(" ")[1];
 		}
 		getTransformation(transform.directives.split(Patterns.COMMA), clName, name, type);
 	}
@@ -97,5 +97,4 @@ public class ONFTransformer implements IClassTransformer {
         }
         return bytes; //return original class if it was not transformed
     }
-
 }

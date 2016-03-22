@@ -33,7 +33,7 @@ public class DefaultTransformationMap extends HashMap<String, List<Transformatio
     }
     
     public boolean applyAll(String className, ClassNode node) {
-    	boolean result = true;
+    	boolean result = false;
     	for (Transformation trans : getClassMap(className)) {
             result |= trans.apply(node);
         }

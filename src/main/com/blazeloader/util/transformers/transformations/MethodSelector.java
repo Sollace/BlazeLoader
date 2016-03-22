@@ -1,17 +1,20 @@
 package com.blazeloader.util.transformers.transformations;
 
+import java.util.List;
+
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class MethodSelector implements TargetSelector {
 	private Transformation transformation;
-	
+	private final String methodDesc;
 	private final String methodName;
 	private final boolean global;
 	
 	public MethodSelector(String name) {
 		global = "*".equals(name);
-		methodName = name;
+		methodDesc = name.split(" ")[1];
+		methodName = name.split(" ")[0];
 	}
 	
 	public TargetSelector initWith(Transformation transformation) {
@@ -21,8 +24,8 @@ public class MethodSelector implements TargetSelector {
 	
 	public boolean match(ClassNode cls) {
         boolean didApply = false;
-        for (MethodNode method : cls.methods) {
-            if (global || method.name.equals(methodName)) {
+        for (MethodNode method : (List<MethodNode>)cls.methods) {
+            if (global || (method.name.equals(methodName) && method.desc.equals(methodDesc))) {
             	transformation.transformMethod(method);
                 didApply = true;
             }

@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.StatisticsFile;
 import net.minecraft.world.WorldServer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ApiPlayer {
@@ -58,12 +57,12 @@ public class ApiPlayer {
      * Gets an array of all players currently present in the game.
      */
     public static EntityPlayer[] getAllPlayers() {
-        List<EntityPlayer> result = new ArrayList<EntityPlayer>();
         MinecraftServer server = MinecraftServer.getServer();
         if (server != null) {
-            result.addAll(server.getConfigurationManager().playerEntityList);
+        	List<EntityPlayerMP> result = server.getConfigurationManager().playerEntityList;
+        	return result.toArray(new EntityPlayer[result.size()]);
         }
-        return result.toArray(new EntityPlayer[result.size()]);
+        return new EntityPlayer[0];
     }
 
     public static StatisticsFile getPlayerStatsFile(EntityPlayer player) {

@@ -12,7 +12,7 @@ import net.minecraft.network.Packet;
 
 @Mixin(EntityTrackerEntry.class)
 public abstract class MEntityTrackerEntry {
-	@Inject(method = "func_151260_c ()Lnet/minecraft/network/Packet;", at = @At("HEAD"))
+	@Inject(method = "createSpawnPacket ()Lnet/minecraft/network/Packet;", at = @At("HEAD"))
 	private void onGetSpawnPacket(CallbackInfoReturnable<Packet> info) {
 		InternalEventHandler.eventGetSpawnPacket((EntityTrackerEntry)(Object)this, info);
 	}

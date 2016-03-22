@@ -10,8 +10,9 @@ public interface ISubscription<T> {
 	/**
 	 * Event triggered when the values subscribed to on the wall is about to be changed.
 	 * 
+	 * @param key				Key identifier for the value being changed
 	 * @param originalValue		The value currently present
-	 * @param newValue			The new value that will be assinged
+	 * @param newValue			The new value that will be assigned
 	 * 
 	 * @return true to accept the value, false to reject it.
 	 */

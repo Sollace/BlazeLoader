@@ -14,12 +14,13 @@ import com.blazeloader.event.handlers.client.EventHandlerClient;
 
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.IParticleFactory;
 
 @Mixin(EffectRenderer.class)
 public abstract class MEffectRenderer {
 	
 	@Shadow
-	private Map particleTypes;
+	private Map<Integer, IParticleFactory> particleTypes;
 	
 	@Inject(method = "spawnEffectParticle(IDDDDDD[I)Lnet/minecraft/client/particle/EntityFX;", at = @At("HEAD"), cancellable = true)
 	private void onSPawnEffectParticle(int particleId, double x, double y, double z, double xOffset, double yOffset, double zOffset, int[] args, CallbackInfoReturnable<EntityFX> info) {

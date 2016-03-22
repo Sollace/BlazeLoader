@@ -4,7 +4,7 @@ package com.blazeloader.api.compatibility;
  * A shortcut reference to an item on the wall.
  * Allows for most functionality of the Wall applied directly to the underlying item.
  */
-public class WallItem<T> {
+public class WallItem<T> implements IUnwatchable<T> {
 	
 	private final Wall.Entry<T> item;
 	
@@ -30,27 +30,16 @@ public class WallItem<T> {
 		item.setValue(value);
 	}
 	
-    /**
-     * Subscribes to this item to be notified when it changes.
-     * @param subscriptionObject	Handler to receive the event
-     */
-	public void subscribeTo(ISubscription<T> subscriptionObject) {
+	public WallItem watch(ISubscription<T> subscriptionObject) {
 		item.subscribe(subscriptionObject);
+		return this;
 	}
 	
-	/**
-	 * Unsubscribes from this item.
-	 * @param subscriptionObject	Handler previously registered to the item
-	 */
-	public void unsubscribeFrom(ISubscription<T> subscriptionObject) {
+	public WallItem unwatch(ISubscription<T> subscriptionObject) {
 		item.unsubscribe(subscriptionObject);
+		return this;
 	}
 	
-    /**
-     * Gets the type of this item.
-     * <br>The type is the name of the class for values accepted by this item.
-     * @return The type of the item.
-     */
 	public String getType() {
 		return item.getType();
 	}

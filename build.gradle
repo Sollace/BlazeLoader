@@ -5,18 +5,29 @@ buildscript {
 			name 'forge'
 			url 'http://files.minecraftforge.net/maven/'
 		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			name = 'sponge'
+			url = 'http://repo.spongepowered.org/maven'
+		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
+		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 }
 apply plugin: 'net.minecraftforge.gradle.liteloader'
+apply plugin: 'org.spongepowered.mixin'
 
 // Basic project information
-version = "dev1.1.1"
+version = "beta1.0"
 group = "com.blazeloader"
 archivesBaseName = 'blazeloader'
-ext.revision = "2"
+ext.revision = "0"
 
 minecraft {
 	version = project.mcVersion
@@ -24,6 +35,8 @@ minecraft {
 	runDir = 'run'
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 sourceSets {
 	main {
 		java {
@@ -33,6 +46,7 @@ sourceSets {
 		resources {
 			srcDirs "resources"
 		}
+		refMap = "mixins.blazeloader.refmap.json"
 	}
 }
 
@@ -55,5 +69,12 @@ processResources{
 	// copy everything else, thats not the litemod.json
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'litemod.json'
+	}
+}
+
+//Apply the at, so gradle doesn't pull any 5#!7
+jar {
+	manifest {
+		attributes 'FMLAT': 'blat.cfg'
 	}
 }
