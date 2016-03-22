@@ -1,11 +1,13 @@
 package com.blazeloader.util.config;
 
+import com.blazeloader.api.compatibility.IValue;
+
 /**
  * Container object of a value-key pair in a config file.
  *
  * @param <T> the type of value it contains
  */
-public interface IProperty<T> {
+public interface IProperty<T> extends IValue<T> {
 	/**
 	 * Sets the default value
 	 */
@@ -22,25 +24,14 @@ public interface IProperty<T> {
 	public void reset();
 	
 	/**
-	 * Gets the current value.
-	 * @return
-	 */
-	public T get();
-	
-	/**
-	 * Sets the current value to the given value.
-	 */
-	public void set(T val);
-	
-	/**
 	 * Sets a description/comment to be stored with this property.
 	 */
 	public IProperty<T> setDescription(String... desc);
 	
 	/**
-	 * Gets a string representation of the type this property takes.
+	 * Gets the type this property takes as a class object.
 	 */
-	public Class<T> getType();
+	public Class<T> getTypeClass();
 	
 	/**
 	 * The name of this property. Is also the key this property is registered under in config files and categories.

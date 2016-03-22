@@ -2,12 +2,17 @@ package com.blazeloader.util.config;
 
 import java.util.List;
 
-public class Prop<T> implements IProperty<T> {
+import com.blazeloader.api.compatibility.ISubscription;
+import com.blazeloader.api.compatibility.IWatchable;
+
+public class Prop<T> implements IProperty<T>, IWatchable<T> {
 	private final IConfig cfg;
 	
 	private Class typeClass;
 	private IWrapObject<T> currentValue;
 	private IWrapObject<T> defaultValue;
+	
+	private ISubscription<T> subscriber = null;
 	
 	private final String propertyName;
 	
@@ -76,7 +81,7 @@ public class Prop<T> implements IProperty<T> {
 	}
 	
 	public void reset() {
-		currentValue.set(defaultValue.get());
+		set(defaultValue.get());
 	}
 	
 	public T get() {
@@ -84,11 +89,16 @@ public class Prop<T> implements IProperty<T> {
 	}
 	
 	public void set(T val) {
-		currentValue.set(val);
+		T old = currentValue.get();
+		if (change(old, val)) currentValue.set(val);
 	}
 	
-	public Class<T> getType() {
+	public Class<T> getTypeClass() {
 		return typeClass;
+	}
+	
+	public String getType() {
+		return typeClass.getName();
 	}
 	
 	public T[] getPossibleValues() {
@@ -98,6 +108,18 @@ public class Prop<T> implements IProperty<T> {
 			return (T[])typeClass.getEnumConstants();
 		}
 		return null;
+	}
+	
+	public Prop watch(ISubscription<T> subscriber) {
+		this.subscriber = subscriber;
+		return this;
+	}
+	
+	public boolean change(T old, T neu) {
+		if (subscriber != null) {
+			return subscriber.valueChanged(this.propertyName, old, neu);
+		}
+		return true;
 	}
 	
 	public Prop<T> setDescription(String... desc) {
