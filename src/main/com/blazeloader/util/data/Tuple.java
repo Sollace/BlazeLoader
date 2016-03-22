@@ -68,23 +68,16 @@ public interface Tuple {
 			return create(one, two, three, four, five, six, seven, create(n[0],n[1],n[2],n[3],n[4],n[5],n[6], ArrayUtils.subarray(n, 7, n.length)));
 		} else {
 			switch (n.length) {
-			case 1: return create(one, two, three, four, five, six, seven, new Tuple1(n[0]));
-			case 2: return create(one, two, three, four, five, six, seven, new Tuple2(n[0],n[1]));
-			case 3: return create(one, two, three, four, five, six, seven, new Tuple3(n[0],n[1],n[2]));
-			case 4: return create(one, two, three, four, five, six, seven, new Tuple4(n[0],n[1],n[2],n[3]));
-			case 5: return create(one, two, three, four, five, six, seven, new Tuple5(n[0],n[1],n[2],n[3],n[4]));
-			case 6: return create(one, two, three, four, five, six, seven, new Tuple6(n[0],n[1],n[2],n[3],n[4],n[5]));
-			case 7: return create(one, two, three, four, five, six, seven, new Tuple7(n[0],n[1],n[2],n[3],n[4],n[5],n[6]));
+			case 1: return TupleN.create(one, two, three, four, five, six, seven, new Tuple1(n[0]));
+			case 2: return TupleN.create(one, two, three, four, five, six, seven, new Tuple2(n[0],n[1]));
+			case 3: return TupleN.create(one, two, three, four, five, six, seven, new Tuple3(n[0],n[1],n[2]));
+			case 4: return TupleN.create(one, two, three, four, five, six, seven, new Tuple4(n[0],n[1],n[2],n[3]));
+			case 5: return TupleN.create(one, two, three, four, five, six, seven, new Tuple5(n[0],n[1],n[2],n[3],n[4]));
+			case 6: return TupleN.create(one, two, three, four, five, six, seven, new Tuple6(n[0],n[1],n[2],n[3],n[4],n[5]));
+			case 7: return TupleN.create(one, two, three, four, five, six, seven, new Tuple7(n[0],n[1],n[2],n[3],n[4],n[5],n[6]));
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * Factory method to create a Tuple with more than seven items.
-	 */
-	public static <T, U, V, W, X, Y, Z, N extends Tuple> TupleN<T, U, V, W, X, Y, Z, N> create(T one, U two, V three, W four, X five, Y six, Z seven, N n) {
-		return new TupleN(one, two, three, four, five, six, seven, n);
 	}
 	
 	public static class Tuple1<T> implements Tuple {
@@ -248,6 +241,10 @@ public interface Tuple {
 		
 		public boolean contentEquals(Tuple other) {
 			return super.contentEquals(other) && extended.contentEquals(((TupleN)other).extended);
+		}
+		
+		protected static <T, U, V, W, X, Y, Z, N extends Tuple> TupleN<T, U, V, W, X, Y, Z, N> create(T one, U two, V three, W four, X five, Y six, Z seven, Tuple n) {
+			return new TupleN(one, two, three, four, five, six, seven, n);
 		}
 	}
 }
