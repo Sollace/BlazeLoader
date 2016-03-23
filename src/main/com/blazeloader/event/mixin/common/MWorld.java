@@ -46,7 +46,7 @@ public abstract class MWorld implements ForgeWorldAccess {
 		InternalEventHandler.eventDoesBlockHaveSolidTopSurface(info, access, pos);
 	}
 	
-	@Inject(method = "onEntityRemoved (Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
+	@Inject(method = "onEntityRemoved(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
 	private void onOnEntityRemoved(Entity entity, CallbackInfo info) {
 		InternalEventHandler.eventOnEntityRemoved(entity);
 	}

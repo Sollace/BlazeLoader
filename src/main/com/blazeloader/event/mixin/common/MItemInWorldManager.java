@@ -12,7 +12,7 @@ import net.minecraft.util.BlockPos;
 
 @Mixin(ItemInWorldManager.class)
 public abstract class MItemInWorldManager {
-	@Inject(method = "tryHarvestBlock (Lnet/minecraft/util/BlockPos;)Z", at = @At("RETURN"))
+	@Inject(method = "tryHarvestBlock(Lnet/minecraft/util/BlockPos;)Z", at = @At("RETURN"))
 	private void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> info) {
 		EventHandler.eventTryHarvestBlock((ItemInWorldManager)(Object)this, info, pos);
 	}

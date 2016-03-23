@@ -39,7 +39,7 @@ public abstract class MEntity implements ICommandSender {
 		EntityPropertyManager.instance().copyToEntity(old, (Entity)(Object)this);
 	}
 	
-	@Inject(method = "addEntityCrashInfo (Lnet/minecraft/crash/CrashReportCategory;)V", at = @At("RETURN"))
+	@Inject(method = "addEntityCrashInfo(Lnet/minecraft/crash/CrashReportCategory;)V", at = @At("RETURN"))
 	private void onAddEntityCrashInfo(CrashReportCategory section, CallbackInfo info) {
     	EntityPropertyManager.instance().addEntityCrashInfo((Entity)(Object)this, section);
     }

@@ -35,6 +35,11 @@ minecraft {
 	runDir = 'run'
 }
 
+
+mixin {
+    defaultObfuscationEnv notch
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 sourceSets {
