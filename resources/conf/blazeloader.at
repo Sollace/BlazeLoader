@@ -1,84 +1,85 @@
 #uses .onf format
 :net.minecraft.client
-	bsu:Minecraft
-		public!aL:175617_aL:modelManager
-		public!X:175621_X:renderItem
-		public!U:71428_T:timer
+	ave:Minecraft
+		public!aP:71467_ac:modelManager
+		public!ab:175621_X:renderItem
+		public!Y:71428_T:timer
+:net.minecraft.client.particle
+	bec:EffectRenderer
+		public!d:178933_d:particleEmitters
 :net.minecraft.client.model
-	cdt:ModelBox
+	bcr:ModelBox
 #Allow access to internals of model box
 		public!h:78253_h:vertexPositions
 		public!i:78254_i:quadList
-:net.minecraft.client.particle
-	cgx:EffectRenderer
-		public!d:178933_d:particleEmitters
 :net.minecraft.client.renderer.block.statemap
-	cnd:BlockStateMapper
+	bgv:BlockStateMapper
 		public!a:178450_a:blockStateMap
-:net.minecraft.client.renderer.entity
-	cpu:Render
-		public!c:180548_c:bindEntityTexture (Lnet/minecraft/entity/Entity;)Z
-	cpt:RenderManager
-		public!l:178636_l:skinMap
-	cqv:RendererLivingEntity
-		public!h:177097_h:layerRenderers
 :net.minecraft.client.renderer.tileentity
-	cno:TileEntityRendererDispatcher
+	bhc:TileEntityRendererDispatcher
 		public!m:147559_m:mapSpecialRenderers
+:net.minecraft.client.renderer.entity
+	biu:RenderManager
+		public!l:178636_l:skinMap
+	biv:Render
+		public!c:180548_c:bindEntityTexture (Lnet/minecraft/entity/Entity;)Z
+	bjl:RendererLivingEntity
+		public!h:177097_h:layerRenderers
 :net.minecraft.client.resources.model
-	cxh:ModelBakery
+	bot:ModelBakery
 		public!b:177602_b:LOCATIONS_BUILTIN_TEXTURES
 :net.minecraft.creativetab
-	akf:CreativeTabs
+	yz:CreativeTabs
 #Allow new creative tab types
 		-f!a:78032_a:creativeTabArray
 :net.minecraft.entity
-	wv:Entity
-	xb:EntityList
-		public!a:75618_a:addMapping (Ljava/lang/Class;Ljava/lang/String;I)V
+	pk:Entity
+	pm:EntityList
+		public!a:90035_a:addMapping (Ljava/lang/Class;Ljava/lang/String;I)V
 		public!c:75625_b:stringToClassMapping
 		public!d:75626_c:classToStringMapping
 		public!e:75623_d:idToClassMapping
 		public!f:75624_e:classToIDMapping
 		public!g:180126_g:stringToIDMapping
-	xn:EntityLiving
+	ps:EntityLiving
 		public!i:70714_bg:tasks
-		public!bg:70715_bh:targetTasks
+		public!bi:70715_bh:targetTasks
 :net.minecraft.entity.player
-	qw:EntityPlayerMP
-		public!bT:71139_cq:currentWindowId
-		public!cr:71117_bO:getNextWindowId ()V
+	lf:EntityPlayerMP
+		public!bV:71139_cq:currentWindowId
+		public!cs:71117_bO:getNextWindowId ()V
 :net.minecraft.entity.projectile
-	ahr:EntityThrowable
+	wy:EntityThrowable
 #Throwables
 		public!g:70192_c:thrower
 		public!h:85053_h:throwerName
 :net.minecraft.init
-	-ff!aty:Blocks
-	-ff!amk:Items
+	-ff!afi:Blocks
+	-ff!zy:Items
 :net.minecraft.item
-	alq:Item
+	zw:Item
 		public!a:179220_a:BLOCK_TO_ITEM
 :net.minecraft.item.crafting
-	aov:RecipesTools
+	aby:RecipesTools
 		public!a:77588_a:recipePatterns
+
 :net.minecraft.tileentity
-	bcm:TileEntity
+	akw:TileEntity
 		public!f:145855_i:nameToClassMap
 		public!g:145853_j:classToNameMap
 :net.minecraft.util
-	ew:EnumParticleTypes
+	cy:EnumParticleTypes
 		public!U:179365_U:PARTICLES
-	bvt:Timer
+	avl:Timer
 		public!a:74282_a:ticksPerSecond
-	dt:BlockPos
+	cj:BlockPos
 :net.minecraft.world
-	are:WorldType
+	adr:WorldType
 #Make the WorldType constructor accessible to child classes
 		protected!<init> (ILjava/lang/String;I)V
 #Make WorldType.worldTypes non-final
 		-f!a:77139_a:worldTypes
-	aqu:World
+	adm:World
 		public!a:175701_a:isValid (Lnet/minecraft/util/BlockPos;)Z
 :net.minecraft.server.management
 	lx:ServerConfigurationManager
