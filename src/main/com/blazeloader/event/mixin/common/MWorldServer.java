@@ -12,7 +12,7 @@ import net.minecraft.world.WorldServer;
 
 @Mixin(WorldServer.class)
 public abstract class MWorldServer {
-	@Inject(method = "init ()Lnet/minecraft/world/World;", at = @At(value = "RETURN"))
+	@Inject(method = "init()Lnet/minecraft/world/World;", at = @At(value = "RETURN"))
 	private void onInit(CallbackInfoReturnable<World> info) {
 		EventHandler.eventInit((WorldServer)(Object)this);
 	}
