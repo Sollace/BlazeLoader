@@ -3,7 +3,7 @@ package com.blazeloader.util.config;
 /**
  * Container grouping numerous properties together in a config file.
  */
-public interface IPropertyGroup {
+public interface IPropertyGroup extends Iterable<IProperty> {
 	
 	/**
 	 * Returns the name attached to the section.

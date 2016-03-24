@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Wrapper object for a config file. Allows loading and saving of properties.
  */
-public interface IConfig {
+public interface IConfig extends Iterable<IPropertyGroup> {
 	
 	/**
 	 * Loads the the contents from the given file if it exists.

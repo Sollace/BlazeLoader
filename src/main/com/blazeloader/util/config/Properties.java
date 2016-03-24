@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -27,7 +28,7 @@ public class Properties implements IConfig {
 	private boolean writeDefaults = true;
 	
 	public Properties(File file) {
-		load(file);
+		if (file != null) load(file);
 	}
 	
 	public void load(File file) {
@@ -226,5 +227,9 @@ public class Properties implements IConfig {
 			result += (result.isEmpty() ? "" : "\n") + next;
 		} while (lines.size() > 0 && (result.trim().isEmpty() || quote_type > -1 || arrays_open > 0 || objects_open > 0));
 		return result.trim();
+	}
+	
+	public Iterator<IPropertyGroup> iterator() {
+		return (Iterator<IPropertyGroup>)(Object)sections.values().iterator();
 	}
 }

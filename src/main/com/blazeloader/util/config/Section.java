@@ -1,6 +1,7 @@
 package com.blazeloader.util.config;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -97,5 +98,9 @@ public class Section implements IPropertyGroup {
 			builder.append("\r\n");
 		}
 		builder.append("}");
+	}
+	
+	public Iterator<IProperty> iterator() {
+		return (Iterator<IProperty>)(Object)properties.values().iterator();
 	}
 }
