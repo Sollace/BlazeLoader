@@ -98,7 +98,7 @@ public class Prop<T> implements IProperty<T>, IWatchable<T> {
 	}
 	
 	public String getType() {
-		return typeClass.getName();
+		return typeClass.getSimpleName();
 	}
 	
 	public T[] getPossibleValues() {

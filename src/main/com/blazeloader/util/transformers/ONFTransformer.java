@@ -88,6 +88,9 @@ public class ONFTransformer implements IClassTransformer {
     }
 	
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
+		if (name == null || transformedName == null || bytes == null) {
+			return bytes;
+		}
         ClassNode classNode = new ClassNode();
         new ClassReader(bytes).accept(classNode, 0);
         if (transformations.applyAll(transformedName, classNode)) {

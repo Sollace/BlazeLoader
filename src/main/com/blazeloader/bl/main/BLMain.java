@@ -106,7 +106,7 @@ public class BLMain implements MixinConfigProvider {
     }
 
     public List<CoreProvider> getCoreProviders() {
-        return Collections.singletonList((CoreProvider)BlazeLoaderCoreProvider.instance());
+        return Collections.singletonList(BlazeLoaderCoreProvider.instance());
     }
     
     public List<InterfaceProvider> getInterfaceProviders() {
@@ -183,7 +183,10 @@ public class BLMain implements MixinConfigProvider {
 
 	@Override
 	public String[] getMixinConfigs() {
-		return new String[] { "mixins.blazeloader.json" };
+		return new String[] {
+				"mixins.blazeloader.json",
+				"mixins.blazeloader.client.json"
+		};
 	}
 
 	@Override

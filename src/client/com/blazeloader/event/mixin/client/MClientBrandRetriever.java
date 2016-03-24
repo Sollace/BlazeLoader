@@ -12,7 +12,7 @@ import net.minecraft.client.ClientBrandRetriever;
 @Mixin(ClientBrandRetriever.class)
 public abstract class MClientBrandRetriever {
 	@Inject(method = "getClientModName()Ljava/lang/String;", at = @At("HEAD"), cancellable = true)
-	public void onGetClientBrandName(CallbackInfoReturnable<String> info) {
+	private static void onGetClientBrandName(CallbackInfoReturnable<String> info) {
 		InternalEventHandler.eventGetModName(info);
 	}
 }

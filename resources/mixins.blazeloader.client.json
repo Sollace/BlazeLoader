@@ -6,9 +6,9 @@
   "mixins": [
     "MClientBrandRetriever","MMinecraft",
     "MEntityPlayerSP",
-    "MNetHandlerPlayerClient",
+    "MNetHandlerPlayClient",
     "MEffectRenderer",
-    "MBlockModelShapes","MRenderItem","MRenderVillager","MTileEntityRendererChestHelper",
+    "MBlockModelShapes","MRenderItem","MRenderVillager","MTileEntityItemStackRenderer",
     "MModelBakery"
   ]
 }
