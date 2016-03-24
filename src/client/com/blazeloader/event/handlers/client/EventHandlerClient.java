@@ -45,6 +45,13 @@ public class EventHandlerClient extends EventHandler {
     
     private static boolean eventDisplayGuiScreen = false;
     public static void eventDisplayGuiScreen(Minecraft sender, CallbackInfo info, GuiScreen gui) {
+    	GuiScreen replacement = getCreativeGui(sender, gui);
+        if (replacement != gui) {
+        	info.cancel();
+        	sender.displayGuiScreen(replacement);
+        	return;
+        }
+    	
     	if (!eventDisplayGuiScreen) {
 	        eventDisplayGuiScreen = true;
 	        guiEventClients.all().onGuiOpen(sender, sender.currentScreen, gui);
