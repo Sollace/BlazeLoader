@@ -1,10 +1,12 @@
 package com.blazeloader.api.toolset;
 
 import com.google.common.collect.Multimap;
+
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-public class ToolSword extends ItemSword implements Tool {
+public class ToolSword extends ItemSword implements ITool {
     private final ToolsetAttributes attributes;
 
     private float damageValue = 4;
@@ -42,7 +44,7 @@ public class ToolSword extends ItemSword implements Tool {
     }
 
     @Override
-    public Multimap getItemAttributeModifiers() {
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
         return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Weapon modifier");
     }
 }

@@ -2,7 +2,7 @@ package com.blazeloader.api.toolset;
 
 import net.minecraft.item.ItemHoe;
 
-public class ToolHoe extends ItemHoe implements Tool {
+public class ToolHoe extends ItemHoe implements ITool {
     private final ToolsetAttributes attributes;
 
     public ToolHoe(ToolsetAttributes material) {

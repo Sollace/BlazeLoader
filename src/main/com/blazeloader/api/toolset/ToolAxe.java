@@ -1,11 +1,13 @@
 package com.blazeloader.api.toolset;
 
 import com.google.common.collect.Multimap;
+
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 
 
-public class ToolAxe extends ItemAxe implements Tool {
+public class ToolAxe extends ItemAxe implements ITool {
     private final ToolsetAttributes attributes;
 
     private float damageValue = 3;
@@ -27,19 +29,19 @@ public class ToolAxe extends ItemAxe implements Tool {
     public int getItemEnchantability() {
         return attributes.getEnchantability();
     }
-
+    
     @Override
     public String getToolMaterialName() {
         return attributes.toString();
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return attributes.getIsRepairable(par2ItemStack);
+    public boolean getIsRepairable(ItemStack repaired, ItemStack repairMaterial) {
+        return attributes.getIsRepairable(repairMaterial);
     }
 
     @Override
-    public Multimap getItemAttributeModifiers() {
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
         return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
     }
 }
