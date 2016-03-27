@@ -1,4 +1,9 @@
 #uses .onf format
+:net.minecraft.block
+	agl:BlockDynamicLiquid
+		protected!f:180690_f:placeStaticBlock (Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)V
+:net.minecraft.block.state
+	alz:IBlockState
 :net.minecraft.client
 	ave:Minecraft
 		public!aP:71467_ac:modelManager
