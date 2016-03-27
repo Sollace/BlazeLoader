@@ -1,17 +1,11 @@
 package com.blazeloader.api.world;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
@@ -25,15 +19,13 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
-import com.blazeloader.api.block.IRotateable;
-import com.blazeloader.api.block.ISided;
+import com.blazeloader.api.block.IBlock;
 import com.blazeloader.api.block.UpdateType;
 import com.blazeloader.api.world.gen.IChunkGenerator;
 import com.blazeloader.api.world.gen.WorldSavedDataCollection;
+import com.blazeloader.bl.interop.ForgeWorldAccess;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.util.version.Versions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 
 /**
  * A collection of useful functions relating to worlds.
@@ -418,25 +410,10 @@ public class ApiWorld {
     	if (w.isValid(pos)) {
 			IBlockState state = w.getBlockState(pos);
 	        Block block = state.getBlock();
-	    	
 	        if (Versions.isForgeInstalled()) {
-	    		return ForgeWorld.isSideSolid(w, pos, side, def);
+	    		def = ((ForgeWorldAccess)w).isSideSolid(pos, side, def);
 			}
-	        
-	        if (block instanceof ISided) {
-	        	return ((ISided)block).isSideSolid(w, pos, side);
-	        }
-	        
-	        if (block.getMaterial().isOpaque() && block.isFullCube()) {
-	        	return true;
-	        }
-	        
-			if (side == EnumFacing.UP) {
-				return World.doesBlockHaveSolidTopSurface(w, pos);
-			}
-			if (side == EnumFacing.DOWN) {
-				return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
-			}
+	        return def || ((IBlock)block).isSideSolid(w, pos, side, def);
     	}
     	return def;
     }
@@ -452,27 +429,7 @@ public class ApiWorld {
 	 */
     public static boolean rotateBlockTo(World w, BlockPos pos, EnumFacing facing) {
     	IBlockState state = w.getBlockState(pos);
-    	if (state.getBlock() instanceof IRotateable) {
-    		return ((IRotateable)state.getBlock()).rotateBlockTo(w, pos, state, facing);
-    	}
-    	
-    	for (IProperty i : (ImmutableSet<IProperty>)state.getProperties().keySet()) {
-			if (i.getName().contentEquals("facing") && i.getValueClass() == EnumFacing.class) {
-				Collection allowedValues = null;
-		    	if (Versions.isForgeInstalled()) {
-		    		EnumFacing[] facings = ForgeWorld.getValidRotations(state.getBlock(), w, pos);
-		    		if (facings != null) allowedValues = Lists.newArrayList(facings);
-		    	} else {
-		    		allowedValues = i.getAllowedValues();
-		    	}
-				if (allowedValues.contains(facing)) {
-					w.setBlockState(pos, state.withProperty(i, facing));
-					return true;
-				}
-				return false;
-			}
-		}
-    	return false;
+    	return ((IBlock)state.getBlock()).rotateBlockTo(w, pos, state, facing);
     }
     
     /**
@@ -485,15 +442,6 @@ public class ApiWorld {
 	 */
     public static EnumFacing getBlockRotation(World w, BlockPos pos) {
     	IBlockState state = w.getBlockState(pos);
-    	if (state.getBlock() instanceof IRotateable) {
-    		return ((IRotateable)state.getBlock()).getBlockRotation(w, pos, state);
-    	}
-    	
-    	for (Entry<IProperty, Comparable> i : state.getProperties().entrySet()) {
-			if (i.getKey().getName().contentEquals("facing") && i.getKey().getValueClass() == EnumFacing.class) {
-				return (EnumFacing)i.getValue();
-			}
-		}
-    	return null;
+    	return ((IBlock)state.getBlock()).getBlockRotation(w, pos, state);
     }
 }
