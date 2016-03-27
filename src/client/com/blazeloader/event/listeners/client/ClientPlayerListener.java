@@ -3,7 +3,7 @@ package com.blazeloader.event.listeners.client;
 import com.blazeloader.bl.mod.BLMod;
 
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.SPacketJoinGame;
 
 /**
  * Interface for mods that handle player events
@@ -21,5 +21,5 @@ public interface ClientPlayerListener extends BLMod {
      * @param netHandler  The network handler processing loginPacket
      * @param loginPacket The login packet for this login
      */
-    public void onClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket);
+    public void onClientJoinGame(INetHandler netHandler, SPacketJoinGame loginPacket);
 }

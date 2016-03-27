@@ -13,6 +13,7 @@ import com.mumfrey.liteloader.resources.InternalResourcePack;
 
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.SPacketJoinGame;
 import net.minecraft.world.World;
 
 /**
@@ -57,8 +58,13 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     	BLPacketChannels.instance().register();
     }
     
+    //TODO: Update to 1.9
     @Override
     public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
+    	this.onJoinGame(netHandler, loginPacket);
+    }
+    
+    public void onJoinGame(INetHandler netHandler, SPacketJoinGame loginPacket) {
     	if (Versions.isClient()) {
     		EventHandlerClient.overrideClientJoinGame(netHandler, loginPacket);
     	}

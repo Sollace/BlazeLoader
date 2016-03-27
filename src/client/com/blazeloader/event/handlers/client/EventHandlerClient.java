@@ -14,7 +14,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.SPacketJoinGame;
 import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.network.play.server.SPacketHeldItemChange;
 import net.minecraft.network.play.server.SPacketOpenWindow;
@@ -106,7 +106,7 @@ public class EventHandlerClient extends EventHandler {
         return entity;
     }
     
-    public static void overrideClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
+    public static void overrideClientJoinGame(INetHandler netHandler, SPacketJoinGame loginPacket) {
         playerEventClients.all().onClientJoinGame(netHandler, loginPacket);
     }
     
