@@ -4,7 +4,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 
-public class ToolSpade extends ItemSpade implements Tool {
+public class ToolSpade extends ItemSpade implements ITool {
     private final ToolsetAttributes attributes;
 
     private float damageValue = 4;

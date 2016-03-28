@@ -47,7 +47,12 @@ public abstract class MWorld implements ForgeWorldAccess {
 	}
 	
 	@Inject(method = "onEntityRemoved(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
-	private void onOnEntityRemoved(Entity entity, CallbackInfo info) {
+	private void internalOnEntityRemoved(Entity entity, CallbackInfo info) {
 		InternalEventHandler.eventOnEntityRemoved(entity);
+	}
+	
+	@Inject(method = "canBlockFreeze(Lnet/minecraft/util/BlockPos;Z)Z", at = @At("HEAD"), cancellable = true)
+	private void internalCanBlockFreeze(BlockPos pos, boolean noWaterAdj, CallbackInfoReturnable<Boolean> info) {
+		InternalEventHandler.eventCanBlockFreeze((World)(Object)this, pos, noWaterAdj, info);
 	}
 }

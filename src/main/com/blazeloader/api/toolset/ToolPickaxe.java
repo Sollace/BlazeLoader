@@ -3,11 +3,12 @@ package com.blazeloader.api.toolset;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 
-public class ToolPickaxe extends ItemPickaxe implements Tool {
+public class ToolPickaxe extends ItemPickaxe implements ITool {
     private final ToolsetAttributes attributes;
 
     private float damageValue = 4;
@@ -41,7 +42,7 @@ public class ToolPickaxe extends ItemPickaxe implements Tool {
     }
 
     @Override
-    public Multimap getItemAttributeModifiers() {
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
         return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
     }
 

@@ -36,7 +36,9 @@ public interface ForgeWorldAccess {
 	 * @param pos	The location
 	 * @param side	The face
 	 */
-	public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean def);
+	public default boolean isSideSolid(BlockPos pos, EnumFacing side, boolean def) {
+		return def;
+	}
 	
 	/**
 	 * Gets the set of chunks persisted by Forge Modloader.

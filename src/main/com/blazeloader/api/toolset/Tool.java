@@ -1,34 +1,48 @@
 package com.blazeloader.api.toolset;
 
+import java.util.Set;
+
 import com.google.common.collect.Multimap;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
-public interface Tool {
+/**
+ * Base class for a tool. Can be used by mods to add their own types of tools.
+ */
+public abstract class Tool extends ItemTool implements ITool {
+	private final ToolsetAttributes attributes;
 	
-	public static boolean isTool(Item item) {
-		return item != null && (item instanceof Tool || item instanceof ItemTool);
+	private final float damageValue;
+	
+	protected Tool(float attackDamage, ToolsetAttributes attributes, Set effectiveBlocks) {
+		super(attackDamage, ToolMaterial.WOOD, effectiveBlocks);
+		this.attributes = attributes;
+		this.damageValue = attackDamage;
 	}
 	
-	public static boolean isTool(ItemStack stack) {
-		return stack != null && isTool(stack.getItem());
+	public ToolsetAttributes getToolAttributes() {
+		return attributes;
 	}
 	
-	public static boolean isTool(Entity entity) {
-		return entity instanceof EntityItem && isTool(((EntityItem)entity).getEntityItem());
-	}
-	
-	public ToolsetAttributes getToolAttributes();
-    
-    public int getItemEnchantability();
-    
-    public String getToolMaterialName();
-    
-    public boolean getIsRepairable(ItemStack repaired, ItemStack repairMaterial);
-    
-    public Multimap getItemAttributeModifiers();
+    @Override
+    public int getItemEnchantability() {
+        return getToolAttributes().getEnchantability();
+    }
+
+    @Override
+    public String getToolMaterialName() {
+        return getToolAttributes().toString();
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack repaired, ItemStack repairMaterial) {
+        return getToolAttributes().getIsRepairable(repairMaterial);
+    }
+
+    @Override
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
+        return getToolAttributes().getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
+    }
 }
