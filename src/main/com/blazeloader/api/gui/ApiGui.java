@@ -16,6 +16,8 @@ import net.minecraft.util.ChatComponentTranslation;
  * GUI functions
  */
 public class ApiGui {
+	protected static final CreativeTabs[] originalCreativeTabsArray = CreativeTabs.creativeTabArray;
+	
 	/**
 	 * Opens a mod added container.
 	 * 
