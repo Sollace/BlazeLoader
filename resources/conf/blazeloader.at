@@ -67,7 +67,6 @@
 :net.minecraft.item.crafting
 	aby:RecipesTools
 		public!a:77588_a:recipePatterns
-
 :net.minecraft.tileentity
 	akw:TileEntity
 		public!f:145855_i:nameToClassMap
