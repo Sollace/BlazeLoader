@@ -6,9 +6,9 @@ import com.blazeloader.util.transformers.ONFTransformer;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 
+import net.acomputerdog.OBFUtil.map.ObfMapSrg;
+import net.acomputerdog.OBFUtil.map.TargetType;
 import net.acomputerdog.OBFUtil.parse.types.ONFParser;
-import net.acomputerdog.OBFUtil.util.ObfMapSrg;
-import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;
 
 /**

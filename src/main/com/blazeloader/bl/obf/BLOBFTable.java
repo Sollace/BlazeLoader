@@ -1,9 +1,9 @@
 package com.blazeloader.bl.obf;
 
+import net.acomputerdog.OBFUtil.map.ObfMapSrg;
+import net.acomputerdog.OBFUtil.map.TargetType;
+import net.acomputerdog.OBFUtil.map.ObfMapSrg.Entry;
 import net.acomputerdog.OBFUtil.table.DirectOBFTableSRG;
-import net.acomputerdog.OBFUtil.util.ObfMapSrg;
-import net.acomputerdog.OBFUtil.util.ObfMapSrg.Entry;
-import net.acomputerdog.OBFUtil.util.TargetType;
 
 /**
  * BlazeLoader OBFTable that allows converting stored data into BLOBFs.
