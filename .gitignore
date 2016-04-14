@@ -9,6 +9,8 @@ build/
 jars/
 tmp/
 lib/*/
+jart
+jarjar*
 *.tmp
 *.bak
 *.swp
