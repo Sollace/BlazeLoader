@@ -1,6 +1,8 @@
-[submodule "CompCore"]
-    path = lib/CompCore
-    url = https://github.com/warriordog/CompCore.git
-[submodule "OBFUtil"]
-    path = lib/OBFUtil
-    url = https://github.com/BlazeLoader/OBFUtil.git
+[submodule "lib/CompCore"]
+	path = lib/CompCore
+	url = https://github.com/warriordog/CompCore.git
+	branch = master
+[submodule "lib/OBFUtil"]
+	path = lib/OBFUtil
+	url = https://github.com/BlazeLoader/OBFUtil.git
+	branch = master
