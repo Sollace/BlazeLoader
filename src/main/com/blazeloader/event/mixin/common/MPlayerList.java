@@ -15,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 
 @Mixin(PlayerList.class)
-public abstract class MServerConfigurationManager {
+public abstract class MPlayerList {
 	
 	@Inject(method = "playerLoggedIn(Lnet/minecraft/entity/player/EntityPlayerMP;)V", at = @At("HEAD"))
 	private void onPlayerLoggedIn(EntityPlayerMP player, CallbackInfo info) {

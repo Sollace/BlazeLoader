@@ -30,7 +30,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
 import com.blazeloader.api.ApiGeneral;
-import com.blazeloader.api.block.ISided;
 import com.blazeloader.api.block.fluid.Fluid;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
@@ -61,7 +60,7 @@ public class InternalEventHandler {
 		return brand;
 	}
 
-	public static void eventPopulateChunk(Chunk sender, IChunkProvider providerOne, IChunkProvider providerTwo, int chunkX, int chunkZ) {
+	public static void eventPopulateChunk(Chunk sender, IChunkProvider providerOne, net.minecraft.world.chunk.IChunkGenerator providerTwo) {
 		if (UnpopulatedChunksQ.instance().pop(sender)) {
 			Random random = new Random(sender.getWorld().getSeed());
 			long seedX = random.nextLong() >> 2 + 1l;
@@ -72,7 +71,7 @@ public class InternalEventHandler {
 			for (IChunkGenerator i : generators) {
 				random.setSeed(chunkSeed);
 				try {
-					i.populateChunk(sender, providerOne, providerTwo, chunkX, chunkZ, random);
+					i.populateChunk(sender, providerOne, providerTwo, sender.xPosition, sender.zPosition, random);
 				} catch (Throwable e) {
 					throw new ReportedException(CrashReport.makeCrashReport(e, "Exception during mod chunk populating"));
 				}
@@ -112,10 +111,6 @@ public class InternalEventHandler {
     	}
     }
     
-    public static void eventDoesBlockHaveSolidTopSurface(CallbackInfoReturnable<Boolean> info, IBlockAccess access, BlockPos pos) {
-    	info.setReturnValue(((ISided)access.getBlockState(pos).getBlock()).isSideSolid(access, pos, EnumFacing.UP));
-    }
-    
     public static void eventCanBlockFreeze(World sender, BlockPos pos, boolean noWaterAdj, CallbackInfoReturnable<Boolean> info) {
     	if (sender.isValid(pos.add(-pos.getX(), 0, -pos.getZ()))) {
     		BiomeGenBase biomegenbase = sender.getBiomeGenForCoords(pos);
@@ -142,11 +137,11 @@ public class InternalEventHandler {
     	}
     }
     
-    public static void eventGetFlowDirection(IBlockAccess w, BlockPos pos, CallbackInfoReturnable<Double> info) {
+    public static void eventGetFlowDirection(IBlockAccess w, BlockPos pos, CallbackInfoReturnable<Float> info) {
     	Block block = w.getBlockState(pos).getBlock();
     	if (!(block instanceof Fluid)) return;
     	Vec3d vec3 = ((Fluid)block).getFlowingBlock().getFlowVector(w, pos);
-        info.setReturnValue(vec3.xCoord == 0 && vec3.zCoord == 0 ? -1000 : MathHelper.atan2(vec3.zCoord, vec3.xCoord) - (Math.PI / 2));
+        info.setReturnValue((float)(vec3.xCoord == 0 && vec3.zCoord == 0 ? -1000 : MathHelper.atan2(vec3.zCoord, vec3.xCoord) - (Math.PI / 2)));
     }
     
     public static IBlockState getFluidFrozenState(World sender, BlockPos pos, IBlockState state) {

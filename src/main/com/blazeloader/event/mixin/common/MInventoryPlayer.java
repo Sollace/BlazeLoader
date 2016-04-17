@@ -9,7 +9,7 @@ import com.blazeloader.event.handlers.EventHandler;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 @Mixin(InventoryPlayer.class)
 public abstract class MInventoryPlayer implements IInventory {
@@ -18,8 +18,8 @@ public abstract class MInventoryPlayer implements IInventory {
 		EventHandler.eventChangeCurrentItem((InventoryPlayer)(Object)this, info, increment);
 	}
 	
-	@Inject(method = "setCurrentItem(Lnet/minecraft/item/Item;IZZ)V", at = @At("RETURN"))
-	private void onSetCurrentItem(Item itemIn, int targetEntityId, boolean hasSubTypes, boolean isCreativeMode, CallbackInfo info) {
-		EventHandler.eventSetCurrentItem((InventoryPlayer)(Object)this, itemIn, targetEntityId, hasSubTypes, isCreativeMode);
+	@Inject(method = "func_184434_a(Lnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
+	private void onSetCurrentItem(ItemStack stack, CallbackInfo info) {
+		EventHandler.eventSetCurrentItem((InventoryPlayer)(Object)this, stack);
 	}
 }

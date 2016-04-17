@@ -78,7 +78,7 @@ public abstract class MEntityVillager extends EntityAgeable implements IMerchant
 		VillagerEventHandler.eventCheckMatingConditions((EntityVillager)(Object)this, info, false, 1);
 	}
 	
-	@Inject(method = "getDisplayName()Lnet/minecraft/util/IChatComponent;", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "getDisplayName()Lnet/minecraft/util/text/ITextComponent;", at = @At("HEAD"), cancellable = true)
 	private void onGetDisplayName(CallbackInfoReturnable<ITextComponent> info) {
 		VillagerEventHandler.eventGetDisplayName((EntityVillager)(Object)this, info);
 	}

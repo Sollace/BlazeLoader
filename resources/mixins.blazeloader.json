@@ -9,7 +9,7 @@
     "MContainer","MInventoryPlayer",
     "MItemBlock",
     "MProfiler",
-    "MIntegratedServer","MItemInWorldManager","MMinecraftServer","MS0DPacketCollectItem","MServerConfigurationManager",
+    "MIntegratedServer","MPlayerInteractionManager","MMinecraftServer","MS0DPacketCollectItem","MPlayerList",
     "MTileEntityFurnace",
     "MChunk","MChunkProviderGenerate","MWorld","MWorldServer"
   ]

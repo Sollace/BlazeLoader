@@ -11,8 +11,8 @@ import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.math.BlockPos;
 
 @Mixin(PlayerInteractionManager.class)
-public abstract class MItemInWorldManager {
-	@Inject(method = "tryHarvestBlock(Lnet/minecraft/util/BlockPos;)Z", at = @At("RETURN"))
+public abstract class MPlayerInteractionManager {
+	@Inject(method = "tryHarvestBlock(Lnet/minecraft/util/math/BlockPos;)Z", at = @At("RETURN"))
 	private void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> info) {
 		EventHandler.eventTryHarvestBlock((PlayerInteractionManager)(Object)this, info, pos);
 	}

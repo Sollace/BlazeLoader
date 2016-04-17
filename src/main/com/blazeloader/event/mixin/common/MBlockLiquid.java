@@ -14,8 +14,8 @@ import net.minecraft.world.IBlockAccess;
 
 @Mixin(BlockLiquid.class)
 public abstract class MBlockLiquid {
-	@Inject(method = "getFlowDirection(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/material/Material;)D", at = @At("HEAD"))
-	private static void iternalGetFlowDirection(IBlockAccess w, BlockPos pos, Material material, CallbackInfoReturnable<Double> info) {
+	@Inject(method = "getFlowDirection(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/material/Material;)F", at = @At("HEAD"))
+	private static void iternalGetFlowDirection(IBlockAccess w, BlockPos pos, Material material, CallbackInfoReturnable<Float> info) {
 		InternalEventHandler.eventGetFlowDirection(w, pos, info);
 	}
 }

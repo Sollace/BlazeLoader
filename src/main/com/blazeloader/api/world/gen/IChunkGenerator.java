@@ -13,11 +13,11 @@ public interface IChunkGenerator {
      * Generate foliage, ores, structures, etc in the chunk.
      *
      * @param chunk        The chunk
-     * @param primary    The chunk provider that owns the given chunk
-     * @param secondary    The chunk provider used to populate this chunk. Usually the same as primary but not always.
+     * @param provider    The chunk provider that owns the given chunk
+     * @param generator    The vanilla chunk generator used to populate this chunk. Usually the same as primary but not always.
      * @param chunkX    X coordinate of the chunk
      * @param chunkZ    Z coordinate of the chunk
      * @param seed        Random generator set to the chunk specific seed
      */
-    public void populateChunk(Chunk chunk, IChunkProvider primary, IChunkProvider secondary, int chunkX, int chunkZ, Random seed);
+    public void populateChunk(Chunk chunk, IChunkProvider provider, net.minecraft.world.chunk.IChunkGenerator generator, int chunkX, int chunkZ, Random seed);
 }

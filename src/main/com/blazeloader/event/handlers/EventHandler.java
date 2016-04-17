@@ -27,7 +27,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketSpawnObject;
@@ -35,6 +34,9 @@ import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -131,13 +133,13 @@ public class EventHandler {
     	if (info.getReturnValue() && blockEventHandlers.size() > 0) {
     		World w = sender.theWorld;
     		IBlockState state = w.getBlockState(pos);
-    		blockEventHandlers.all().onBreakBlock(sender.thisPlayerMP, w, state, pos);
+    		blockEventHandlers.all().onBreakBlock(sender.thisPlayerMP, w, state, pos, EnumHand.MAIN_HAND);
     	}
     }
     
-    public static void eventOnItemUse(CallbackInfoReturnable<Boolean> info, EntityPlayer player, World world, BlockPos pos) {
-    	if (info.getReturnValue() && blockEventHandlers.size() > 0) {
-    		blockEventHandlers.all().onPlaceBlock(player, world, world.getBlockState(pos), pos);
+    public static void eventOnItemUse(CallbackInfoReturnable<EnumActionResult> info, EntityPlayer player, World world, BlockPos pos, EnumFacing side, EnumHand hand) {
+    	if (info.getReturnValue() == EnumActionResult.SUCCESS && blockEventHandlers.size() > 0) {
+    		blockEventHandlers.all().onPlaceBlock(player, world, world.getBlockState(pos), pos, side, hand);
     	}
     }
     
@@ -223,11 +225,11 @@ public class EventHandler {
     }
     
     private static boolean inEvent = false;
-    public static void eventSetCurrentItem(InventoryPlayer sender, Item itemIn, int targetEntityId, boolean hasSubTypes, boolean isCreativeMode) {
+    public static void eventSetCurrentItem(InventoryPlayer sender, ItemStack stack) {
     	if (inventoryEventHandlers.size() > 0) {
     		if (!inEvent) {
     			inEvent = true;
-				inventoryEventHandlers.all().onSlotSelectionChanged(sender.player, sender.getCurrentItem(), sender.currentItem);
+				inventoryEventHandlers.all().onSlotSelectionChanged(sender.player, stack, sender.currentItem);
 				inEvent = false;
     		}
     	}
