@@ -24,7 +24,7 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
 // Basic project information
-version = "beta1.0"
+version = "beta1.1"
 group = "com.blazeloader"
 archivesBaseName = 'blazeloader'
 ext.revision = "0"

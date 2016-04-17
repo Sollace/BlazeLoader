@@ -4,7 +4,7 @@ import com.blazeloader.api.item.ApiItem;
 import com.blazeloader.util.version.Versions;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.mumfrey.liteloader.util.ModUtilities;
+import com.mumfrey.liteloader.client.ducks.IMutableRegistry;
 
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
@@ -15,6 +15,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.util.ResourceLocation;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,11 +223,18 @@ public class ApiBlock {
      */
     public static void injectBlock(int id, ResourceLocation name, Block block) {
     	boolean exists = Block.blockRegistry.containsKey(name);
-    	ModUtilities.addBlock(id, name, block, true);
-    	if (!exists) {
-    		Blocks.air = getBlockByName("air");
+    	if (exists) {
+    		Block existing = Block.blockRegistry.getObject(name);
+    		((IMutableRegistry<ResourceLocation, Block>)Block.blockRegistry).removeObjectFromRegistry(name);
+    		try {
+	    		for (Field field : Blocks.class.getDeclaredFields()) {
+	                if (field.get(null).equals(existing)) {
+	                    field.set(null, block);
+	                }
+	            }
+    		} catch (Exception e) {}
     	}
-    	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
+    	Block.blockRegistry.register(id, name, block);
     }
     
     private static void applyPostRegisterConditions(Block block) {

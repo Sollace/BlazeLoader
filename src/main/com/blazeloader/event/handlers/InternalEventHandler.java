@@ -20,9 +20,9 @@ import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -145,7 +145,7 @@ public class InternalEventHandler {
     public static void eventGetFlowDirection(IBlockAccess w, BlockPos pos, CallbackInfoReturnable<Double> info) {
     	Block block = w.getBlockState(pos).getBlock();
     	if (!(block instanceof Fluid)) return;
-    	Vec3 vec3 = ((Fluid)block).getFlowingBlock().getFlowVector(w, pos);
+    	Vec3d vec3 = ((Fluid)block).getFlowingBlock().getFlowVector(w, pos);
         info.setReturnValue(vec3.xCoord == 0 && vec3.zCoord == 0 ? -1000 : MathHelper.atan2(vec3.zCoord, vec3.xCoord) - (Math.PI / 2));
     }
     
