@@ -62,7 +62,7 @@ public class ApiItem {
     	boolean exists = Item.itemRegistry.containsKey(name);
     	if (exists) {
     		Item existing = Item.itemRegistry.getObject(name);
-    		((IMutableRegistry<ResourceLocation, Block>)Item.itemRegistry).removeObjectFromRegistry(name);
+    		((IMutableRegistry<ResourceLocation, Item>)Item.itemRegistry).removeObjectFromRegistry(name);
     		try {
 	    		for (Field field : Items.class.getDeclaredFields()) {
 	                if (field.get(null).equals(existing)) {
