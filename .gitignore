@@ -3,17 +3,23 @@
 #################
 
 *.pydevproject
-.project
 .metadata
 bin/
+build/
+jars/
 tmp/
+jart
+jarjar*
 *.tmp
 *.bak
 *.swp
 *~.nib
+*.launch
 local.properties
+.project
 .classpath
 .settings/
+.gradle/
 .loadpath
 
 # External tool builders

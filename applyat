@@ -1,0 +1,26 @@
+#!/usr/bin/env bash ##########################
+
+onf=resources/conf/blazeloader.onf
+mcp_version=snapshot/20160204
+mc_version=1.8.9
+
+##############################################
+PRG="$0"
+# Need this for relative symlinks.
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`"/$link"
+    fi
+done
+SAVED="`pwd`"
+cd "`dirname \"$PRG\"`/" >&-
+DIR="`pwd -P`"
+cd "$SAVED" >&-
+
+jar=$HOME/.gradle/caches/minecraft/net/minecraft/minecraft/$mc_version/$mcp_version/minecraftSrc-$mc_version.jar
+
+jarjar "$DIR$onf" "$jar" MCP 1

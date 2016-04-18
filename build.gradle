@@ -1,0 +1,78 @@
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			name 'forge'
+			url 'http://files.minecraftforge.net/maven/'
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			name = 'sponge'
+			url = 'http://repo.spongepowered.org/maven'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
+		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+	}
+}
+apply plugin: 'net.minecraftforge.gradle.liteloader'
+apply plugin: 'org.spongepowered.mixin'
+
+// Basic project information
+version = "beta1.0"
+group = "com.blazeloader"
+archivesBaseName = 'blazeloader'
+ext.revision = "0"
+
+minecraft {
+	version = project.mcVersion
+	mappings = project.mcMappings
+	runDir = 'jars'
+}
+
+mixin {
+    defaultObfuscationEnv notch
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+sourceSets {
+	main {
+		java {
+			srcDir "lib/OBFUtil/src"
+			srcDir "lib/CompCore/source/main"
+			srcDir "src/main"
+			srcDir "src/client"
+		}
+		resources {
+			srcDirs "resources"
+		}
+		refMap = "mixins.blazeloader.refmap.json"
+	}	
+}
+
+processResources{
+	// this will ensure that this task is redone when the versions change.
+	def props = [
+		version: version,
+		mcversion: minecraft.version,
+		revision: revision
+	]
+	inputs.properties props
+	// replace stuff in litemod.json, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include 'litemod.json'
+		// replace version and mcversion
+		expand props
+	}
+	
+	// copy everything else, thats not the litemod.json
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'litemod.json'
+	}
+}
