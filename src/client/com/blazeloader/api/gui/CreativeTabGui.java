@@ -1,13 +1,19 @@
 package com.blazeloader.api.gui;
 
 import java.io.IOException;
+import java.util.Iterator;
+
+import com.blazeloader.util.version.Versions;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+
+import com.blazeloader.api.privileged.ICreativeMenuForge;
 
 /**
  * Override for the vanilla Creative menu to add support for additional pages of tabs.
@@ -28,6 +34,19 @@ public class CreativeTabGui extends GuiContainerCreative {
 	
 	public CreativeTabGui(EntityPlayer player) {
 		super(player);
+	}
+	
+	public void initGui() {
+		super.initGui();
+		if (Versions.isForgeInstalled()) {
+			//Disable forge gui stuff
+			((ICreativeMenuForge)this).setPages(0);
+			Iterator<GuiButton> iter = buttonList.iterator();
+			while (iter.hasNext()) {
+				GuiButton i = iter.next();
+				if (i.id == 101 || i.id == 102) iter.remove();
+			}
+		}
 	}
 	
 	public void nextPage() {

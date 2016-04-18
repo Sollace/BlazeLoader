@@ -18,8 +18,8 @@ import com.blazeloader.util.transformers.transformations.PublicityTransformation
 import com.blazeloader.util.transformers.transformations.TargetSelector;
 import com.blazeloader.util.transformers.transformations.Transformation;
 
+import net.acomputerdog.OBFUtil.map.TargetType;
 import net.acomputerdog.OBFUtil.parse.types.ONFParser.DetectedTransformation;
-import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;
 import net.minecraft.launchwrapper.IClassTransformer;
 

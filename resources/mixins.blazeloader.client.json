@@ -4,7 +4,7 @@
   "package": "com.blazeloader.event.mixin.client",
   "refmap":  "mixins.blazeloader.client.refmap.json",
   "mixins": [
-    "MClientBrandRetriever","MMinecraft",
+    "MClientBrandRetriever","MMinecraft","MGuiContainerCreative",
     "MEntityPlayerSP",
     "MNetHandlerPlayClient",
     "MEffectRenderer",

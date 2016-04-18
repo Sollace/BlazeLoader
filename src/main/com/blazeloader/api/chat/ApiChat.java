@@ -5,6 +5,7 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentStyle;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -100,7 +101,7 @@ public class ApiChat {
 					style = ((ChatStyle)o);
 				}
 			} else {
-				ChatComponentText line = new ChatComponentText(o.toString());
+				IChatComponent line = o instanceof String ? new ChatComponentTranslation((String)o) : new ChatComponentText(o.toString());
 				if (style != null) {
 					line.setChatStyle(style);
 					style = null;
