@@ -23,7 +23,7 @@ public abstract class MChunkProviderGenerate implements IChunkGenerator {
 		index = 1,
 		at = @At(
 			value = "INVOKE",
-			target = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"
+			target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"
 		)
 	)
 	private IBlockState internalSetBlockState(BlockPos pos, IBlockState state, int flag) {

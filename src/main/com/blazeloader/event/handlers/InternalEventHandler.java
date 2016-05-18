@@ -102,7 +102,7 @@ public class InternalEventHandler {
     	}
     }
     
-    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet> info) {
+    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet<?>> info) {
     	Packet result = EntityTrackerRegistry.instance().getSpawnPacket(sender);
     	if (result != null) {
     		info.setReturnValue(result);

@@ -384,7 +384,7 @@ public class EventHandler {
     	}
     }
     
-    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet> info) {
+    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet<?>> info) {
     	Entity track = sender.getTrackedEntity();
     	if (!track.isDead) {
     		SPacketSpawnObject packet = null;
