@@ -35,6 +35,10 @@ minecraft {
 	runDir = 'jars'
 }
 
+mixin {
+    defaultObfuscationEnv notch
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 sourceSets {
