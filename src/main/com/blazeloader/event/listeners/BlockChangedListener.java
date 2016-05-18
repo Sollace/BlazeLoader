@@ -2,7 +2,9 @@ package com.blazeloader.event.listeners;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import com.blazeloader.bl.mod.BLMod;
@@ -30,8 +32,9 @@ public interface BlockChangedListener extends BLMod {
      * @param world		The world being changed
      * @param state		New block state
      * @param pos		Location of change
+     * @param hand		The hand used to place the block
      */
-    public void onBreakBlock(EntityPlayer player, World world, IBlockState state, BlockPos pos);
+    public void onBreakBlock(EntityPlayer player, World world, IBlockState state, BlockPos pos, EnumHand hand);
     
     /**
      * Called when a player places a block.
@@ -40,6 +43,8 @@ public interface BlockChangedListener extends BLMod {
      * @param world		The world being changed
      * @param state		New block state
      * @param pos		Location of change
+     * @param side		The side that the block was placed against
+     * @param hand		The hand used to place the block
      */
-    public void onPlaceBlock(EntityPlayer player, World world, IBlockState state, BlockPos pos);
+    public void onPlaceBlock(EntityPlayer player, World world, IBlockState state, BlockPos pos, EnumFacing side, EnumHand hand);
 }

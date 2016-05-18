@@ -13,7 +13,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -258,7 +258,7 @@ public class BlockStore extends ArrayList<BlockStore.Entry> implements INBTWrita
 		}
 		
 		public void restore(World w, boolean overwrite) {
-			if (overwrite || w.getBlockState(position).getBlock().getMaterial() == Material.air) {
+			if (overwrite || w.getBlockState(position).getMaterial() == Material.air) {
 				w.setBlockState(position, blockState, 2);
 				if (blockEntity != null) {
 					w.setTileEntity(position, blockEntity);

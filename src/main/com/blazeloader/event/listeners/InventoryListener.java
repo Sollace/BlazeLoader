@@ -56,7 +56,7 @@ public interface InventoryListener extends BLMod {
 	/**
 	 * Occurs when the player changes the selected slot in their hotbar
 	 * @param player			The player
-	 * @param item				The item placed in teh current slot
+	 * @param item				The item placed in the current slot
 	 * @param selectedSlot		The slot being selected.
 	 * @return True to allow the slot to change, otherwise false to cancel the event.
 	 */

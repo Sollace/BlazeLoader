@@ -10,15 +10,15 @@ import com.blazeloader.event.handlers.InternalEventHandler;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
 
-import net.minecraft.profiler.IPlayerUsage;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IThreadListener;
 
 @Mixin(MinecraftServer.class)
-public abstract class MMinecraftServer implements ICommandSender, Runnable, IThreadListener, IPlayerUsage {
+public abstract class MMinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo {
 	@Inject(method = "createNewCommandManager()Lnet/minecraft/command/ServerCommandManager;", at = @At("RETURN"), cancellable = true)
 	private void onCreateNewCommandManager(CallbackInfoReturnable<CommandHandler> info) {
-		InternalEventHandler.eventCreateNewCommandManager(info);
+		InternalEventHandler.eventCreateNewCommandManager((MinecraftServer)(Object)this, info);
 	}
 	
 	@Inject(method = "getServerModName()Ljava/lang/String;", at = @At("RETURN"), cancellable = true)

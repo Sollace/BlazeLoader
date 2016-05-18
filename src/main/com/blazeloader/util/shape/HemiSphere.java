@@ -1,6 +1,6 @@
 package com.blazeloader.util.shape;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Random;
 
@@ -57,21 +57,21 @@ public class HemiSphere extends Sphere {
 		return result;
 	}
 	
-	public Vec3 computePoint(Random rand) {
-		Vec3 result = super.computePoint(rand);
+	public Vec3d computePoint(Random rand) {
+		Vec3d result = super.computePoint(rand);
 		if (quadrants.length > 0 && quadrants[0] != null) {
 			if ((quadrants[0] && result.xCoord < 0) || (!quadrants[0] && result.xCoord > 0)) {
-				result = new Vec3(-result.xCoord, result.yCoord, result.zCoord);
+				result = new Vec3d(-result.xCoord, result.yCoord, result.zCoord);
 			}
 		}
 		if (quadrants.length > 1 && quadrants[1] != null) {
 			if ((quadrants[1] && result.yCoord < 0) || (!quadrants[1] && result.yCoord > 0)) {
-				result = new Vec3(result.xCoord, -result.yCoord, result.zCoord);
+				result = new Vec3d(result.xCoord, -result.yCoord, result.zCoord);
 			}
 		}
 		if (quadrants.length > 2 && quadrants[2] != null) {
 			if ((quadrants[2] && result.zCoord < 0) || (!quadrants[2] && result.zCoord > 0)) {
-				result = new Vec3(result.xCoord, result.yCoord, -result.zCoord);
+				result = new Vec3d(result.xCoord, result.yCoord, -result.zCoord);
 			}
 		}
 		return result.rotateYaw(yaw).rotatePitch(pitch);
@@ -83,9 +83,9 @@ public class HemiSphere extends Sphere {
 		return this;
 	}
 	
-	public boolean isPointInside(Vec3 point) {
-		Vec3 untransformed = point.rotateYaw(-yaw).rotatePitch(-pitch);
-		untransformed = new Vec3(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
+	public boolean isPointInside(Vec3d point) {
+		Vec3d untransformed = point.rotateYaw(-yaw).rotatePitch(-pitch);
+		untransformed = new Vec3d(point.xCoord / stretch.xCoord, point.yCoord / stretch.yCoord, point.zCoord / stretch.zCoord);
 		if (quadrants.length > 0 && quadrants[0] != null) {
 			if ((quadrants[0] && untransformed.xCoord < 0) || (!quadrants[0] && untransformed.xCoord > 0)) {
 				return false;

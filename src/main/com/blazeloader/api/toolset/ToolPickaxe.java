@@ -3,22 +3,21 @@ package com.blazeloader.api.toolset;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 
 public class ToolPickaxe extends ItemPickaxe implements ITool {
     private final ToolsetAttributes attributes;
-
-    private float damageValue = 4;
-
+    
     public ToolPickaxe(ToolsetAttributes material) {
         super(ToolMaterial.WOOD);
         attributes = material;
         super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
-        damageValue = material.getDamageVsEntity(2);
+        damageVsEntity = material.getDamageVsEntity(1);
     }
     
 	@Override
@@ -42,12 +41,21 @@ public class ToolPickaxe extends ItemPickaxe implements ITool {
     }
 
     @Override
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
-        return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
+    public Multimap getItemAttributeModifiers(EntityEquipmentSlot slot) {
+    	return attributes.getAttributeModifiers(slot, super.getItemAttributeModifiers(slot), ATTACK_DAMAGE_MODIFIER, ATTACK_SPEED_MODIFIER, damageVsEntity, attackSpeed, "Tool modifier");
     }
 
     @Override
-    public boolean canHarvestBlock(Block block) {
-        return block == Blocks.obsidian ? attributes.getHarvestLevel() == 3 : (block != Blocks.diamond_block && block != Blocks.diamond_ore ? (block != Blocks.emerald_ore && block != Blocks.emerald_block ? (block != Blocks.gold_block && block != Blocks.gold_ore ? (block != Blocks.iron_block && block != Blocks.iron_ore ? (block != Blocks.lapis_block && block != Blocks.lapis_ore ? (block != Blocks.redstone_ore && block != Blocks.lit_redstone_ore ? (block.getMaterial() == Material.rock || (block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil)) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 1) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2) : attributes.getHarvestLevel() >= 2);
+    public boolean canHarvestBlock(IBlockState state) {
+    	Block block = state.getBlock();
+        if (block == Blocks.obsidian) return attributes.getHarvestLevel() == 3;
+        if (block == Blocks.iron_block || block == Blocks.iron_ore || block == Blocks.lapis_block || block == Blocks.lapis_ore) {
+        	return attributes.getHarvestLevel() > 0;
+        }
+        if (block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore) {
+        	Material material = state.getMaterial();
+            return material == Material.rock  || material == Material.iron || material == Material.anvil;
+        }
+        return attributes.getHarvestLevel() > 1;
     }
 }

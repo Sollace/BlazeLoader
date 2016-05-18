@@ -4,7 +4,7 @@ import com.blazeloader.bl.mod.BLMod;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 
 /**
  * Interface for mods that want to get events as an entity is tracked.
@@ -19,7 +19,7 @@ public interface EntityTrackingListener extends BLMod {
      * @param isHandled True if another mod has already created a packet for this entity.
      * @return Return a spawn packet for the given entity, or null if none exists.
      */
-    public S0EPacketSpawnObject onCreateSpawnPacket(Entity entity, boolean isHandled);
+    public SPacketSpawnObject onCreateSpawnPacket(Entity entity, boolean isHandled);
 
     /**
      * Adds an entity to an entity tracker.

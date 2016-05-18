@@ -7,9 +7,9 @@ import com.blazeloader.api.privileged.IEntityVillager;
 
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipeList;
 
 public final class Professions {
@@ -41,7 +41,7 @@ public final class Professions {
 	}
 	
 	public static int getProfessionId(EntityVillager villager) {
-		return Math.max(villager.getDataWatcher().getWatchableObjectInt(16),0);
+		return Math.max((Integer)villager.getDataManager().get(EntityVillager.PROFESSION),0);
 	}
 	
 	public Boolean checkMatingConditions(EntityVillager villager, boolean fixedMarkiplier, int markiplier) {
@@ -60,13 +60,13 @@ public final class Professions {
 		return false;
 	}
 	
-	public IChatComponent getDisplayName(EntityVillager villager) {
+	public ITextComponent getDisplayName(EntityVillager villager) {
 		IProfession profession = get(getProfessionId(villager));
 		if (profession == null) return null;
 
 		String nameTag = villager.getCustomNameTag();
 		if (nameTag != null && nameTag.length() > 0) {
-			return new ChatComponentText(nameTag);
+			return new TextComponentString(nameTag);
 		}
 		
 		villager.getRecipes(null);

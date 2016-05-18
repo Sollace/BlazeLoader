@@ -26,6 +26,6 @@ public class BasicTrack<T extends Entity> implements ITrack {
 	
 	public Packet getEntitySpawnPacket(EntityTrackerEntry entry) {
 		//func_151260_c()
-        return BLPacketChannels.instance().getRawPacket(new BLPacketSpawnObject.Message(entry.trackedEntity, 1));
+        return BLPacketChannels.instance().getRawPacket(new BLPacketSpawnObject.Message(entry.getTrackedEntity(), 1));
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
 import com.blazeloader.api.privileged.ICreativeMenuForge;
@@ -71,12 +72,12 @@ public class CreativeTabGui extends GuiContainerCreative {
 		if (mouseButton == 0) {
 			if (isOverNextPage(mouseX, mouseY)) {
 				nextPage();
-				mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1));
+				mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1));
 				return;
 			}
 			if (isOverPrevPage(mouseX, mouseY)) {
 				prevPage();
-				mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1));
+				mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1));
 				return;
 			}
 		}
@@ -103,8 +104,8 @@ public class CreativeTabGui extends GuiContainerCreative {
 		return true;
 	}
 	
-	protected boolean func_147049_a(CreativeTabs tab, int x, int y) {
-		return checkTabBounds(tab) && super.func_147049_a(tab, x, y);
+	protected boolean isMouseOverTab(CreativeTabs tab, int x, int y) {
+		return checkTabBounds(tab) && super.isMouseOverTab(tab, x, y);
 	}
 	
 	protected boolean renderCreativeInventoryHoveringText(CreativeTabs tab, int x, int y) {
@@ -119,9 +120,9 @@ public class CreativeTabGui extends GuiContainerCreative {
 		return checkTabBounds(tab) && super.renderCreativeInventoryHoveringText(tab, x, y);
 	}
 	
-	protected void func_147051_a(CreativeTabs tab) {
+	protected void drawTab(CreativeTabs tab) {
 		if (checkTabBounds(tab)) {
-			super.func_147051_a(tab);
+			super.drawTab(tab);
 		}
 	}
 	

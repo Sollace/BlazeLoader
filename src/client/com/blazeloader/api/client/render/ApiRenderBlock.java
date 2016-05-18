@@ -5,7 +5,7 @@ import com.blazeloader.api.client.ApiClient;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.item.Item;
 
 public class ApiRenderBlock {

@@ -1,6 +1,7 @@
 package com.blazeloader.api.client.tick;
 
-import net.minecraft.client.Minecraft;
+import com.blazeloader.api.client.ApiClient;
+import com.mumfrey.liteloader.client.overlays.IMinecraft;
 
 /**
  * Client side tick functions
@@ -15,7 +16,7 @@ public class ApiTickClient {
      * @return Returns the game's current tick rate.
      */
     public static float getTPS() {
-        return Minecraft.getMinecraft().timer.ticksPerSecond;
+        return ((IMinecraft)ApiClient.getClient()).getTimer().ticksPerSecond;
     }
 
     /**
@@ -24,6 +25,6 @@ public class ApiTickClient {
      * @param tps The new tick rate.
      */
     public static void setTPS(float tps) {
-        Minecraft.getMinecraft().timer.ticksPerSecond = tps;
+    	((IMinecraft)ApiClient.getClient()).getTimer().ticksPerSecond = tps;
     }
 }

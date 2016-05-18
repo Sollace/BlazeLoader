@@ -17,11 +17,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -29,7 +30,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
 import com.blazeloader.api.ApiGeneral;
-import com.blazeloader.api.block.ISided;
 import com.blazeloader.api.block.fluid.Fluid;
 import com.blazeloader.api.entity.properties.EntityPropertyManager;
 import com.blazeloader.api.entity.tracker.EntityTrackerRegistry;
@@ -44,8 +44,8 @@ import com.blazeloader.util.version.Versions;
  * Event handler for events that are not passed to mods, but rather to BL itself
  */
 public class InternalEventHandler {
-    public static void eventCreateNewCommandManager(CallbackInfoReturnable<CommandHandler> info) {
-        info.setReturnValue(BLMain.instance().getCommandHandler());
+    public static void eventCreateNewCommandManager(MinecraftServer sender, CallbackInfoReturnable<CommandHandler> info) {
+        info.setReturnValue(BLMain.instance().getCommandHandler(sender));
     }
     
 	public static void eventGetModName(CallbackInfoReturnable<String> info) {
@@ -60,7 +60,7 @@ public class InternalEventHandler {
 		return brand;
 	}
 
-	public static void eventPopulateChunk(Chunk sender, IChunkProvider providerOne, IChunkProvider providerTwo, int chunkX, int chunkZ) {
+	public static void eventPopulateChunk(Chunk sender, IChunkProvider providerOne, net.minecraft.world.chunk.IChunkGenerator providerTwo) {
 		if (UnpopulatedChunksQ.instance().pop(sender)) {
 			Random random = new Random(sender.getWorld().getSeed());
 			long seedX = random.nextLong() >> 2 + 1l;
@@ -71,7 +71,7 @@ public class InternalEventHandler {
 			for (IChunkGenerator i : generators) {
 				random.setSeed(chunkSeed);
 				try {
-					i.populateChunk(sender, providerOne, providerTwo, chunkX, chunkZ, random);
+					i.populateChunk(sender, providerOne, providerTwo, sender.xPosition, sender.zPosition, random);
 				} catch (Throwable e) {
 					throw new ReportedException(CrashReport.makeCrashReport(e, "Exception during mod chunk populating"));
 				}
@@ -102,17 +102,13 @@ public class InternalEventHandler {
     	}
     }
     
-    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet> info) {
+    public static void eventGetSpawnPacket(EntityTrackerEntry sender, CallbackInfoReturnable<Packet<?>> info) {
     	Packet result = EntityTrackerRegistry.instance().getSpawnPacket(sender);
     	if (result != null) {
     		info.setReturnValue(result);
     	} else {
     		EventHandler.eventGetSpawnPacket(sender, info);
     	}
-    }
-    
-    public static void eventDoesBlockHaveSolidTopSurface(CallbackInfoReturnable<Boolean> info, IBlockAccess access, BlockPos pos) {
-    	info.setReturnValue(((ISided)access.getBlockState(pos).getBlock()).isSideSolid(access, pos, EnumFacing.UP));
     }
     
     public static void eventCanBlockFreeze(World sender, BlockPos pos, boolean noWaterAdj, CallbackInfoReturnable<Boolean> info) {
@@ -141,11 +137,11 @@ public class InternalEventHandler {
     	}
     }
     
-    public static void eventGetFlowDirection(IBlockAccess w, BlockPos pos, CallbackInfoReturnable<Double> info) {
+    public static void eventGetFlowDirection(IBlockAccess w, BlockPos pos, CallbackInfoReturnable<Float> info) {
     	Block block = w.getBlockState(pos).getBlock();
     	if (!(block instanceof Fluid)) return;
-    	Vec3 vec3 = ((Fluid)block).getFlowingBlock().getFlowVector(w, pos);
-        info.setReturnValue(vec3.xCoord == 0 && vec3.zCoord == 0 ? -1000 : MathHelper.atan2(vec3.zCoord, vec3.xCoord) - (Math.PI / 2));
+    	Vec3d vec3 = ((Fluid)block).getFlowingBlock().getFlowVector(w, pos);
+        info.setReturnValue((float)(vec3.xCoord == 0 && vec3.zCoord == 0 ? -1000 : MathHelper.atan2(vec3.zCoord, vec3.xCoord) - (Math.PI / 2)));
     }
     
     public static IBlockState getFluidFrozenState(World sender, BlockPos pos, IBlockState state) {

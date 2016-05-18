@@ -4,8 +4,8 @@ import java.util.Random;
 
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * A custom villager profession
@@ -38,7 +38,7 @@ public interface IProfession {
 	/**
 	 * Gets a display name for the villager.
 	 */
-	public IChatComponent getDisplayName();
+	public ITextComponent getDisplayName();
 	
 	/**
 	 * Gets a villager texture location for this profession.

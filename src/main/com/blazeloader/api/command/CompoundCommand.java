@@ -5,18 +5,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.blazeloader.api.ApiServer;
+
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * A special type of command that encapsulates a private set of commands and its own /help.
  */
 public abstract class CompoundCommand extends BLCommandBase {
 
-	private final CommandHandler handler = new CommandHandler();
+	protected final CommandHandler handler = new CommandHandler() {
+		@Override
+		protected MinecraftServer getServer() {
+			return ApiServer.getServer();
+		}
+	};
+	
 	private final String name;
 	
 	public CompoundCommand(String nm, boolean includeHelp, boolean autoRegister) {
@@ -35,7 +44,7 @@ public abstract class CompoundCommand extends BLCommandBase {
 		return "/" + getCommandName() + " /{command} {argumants}";
 	}
 
-	public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws WrongUsageException {
 		if (args.length > 0) {
 			String raw = "";
 			for (int i = 0; i < args.length; i++) {
@@ -48,7 +57,7 @@ public abstract class CompoundCommand extends BLCommandBase {
 		}
 	}
 	
-	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
     	if (args.length < 2) {
 	    	if (args.length == 0) {
 	    		List<ICommand> commands = handler.getPossibleCommands(sender);
@@ -66,8 +75,8 @@ public abstract class CompoundCommand extends BLCommandBase {
     	}
     	
 		ICommand command = getCommands().get(args[0].substring(1));
-		if (command != null && command.canCommandSenderUseCommand(sender)) {
-			return command.addTabCompletionOptions(sender, dropFirstString(args), pos);
+		if (command != null && command.checkPermission(server, sender)) {
+			return command.getTabCompletionOptions(server, sender, dropFirstString(args), pos);
 		}
     	return null;
     }

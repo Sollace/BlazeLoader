@@ -5,7 +5,7 @@ import java.util.Random;
 import com.blazeloader.api.block.fluid.Fluid;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -37,7 +37,7 @@ public class WorldGenLakeCustomFluid<T extends Block & Fluid> extends WorldGenLa
         return true;
     }
 	
-	public void populateChunk(Chunk chunk, IChunkProvider primary, IChunkProvider secondary, int chunkX, int chunkZ, Random seed) {
+	public void populateChunk(Chunk chunk, IChunkProvider primary, net.minecraft.world.chunk.IChunkGenerator secondary, int chunkX, int chunkZ, Random seed) {
         BlockPos blockpos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
         seed.setSeed(chunk.getWorld().getSeed());
         long k = seed.nextLong() / 2L * 2L + 1L;

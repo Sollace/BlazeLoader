@@ -10,7 +10,7 @@ import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.handlers.InternalEventHandler;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -26,7 +26,7 @@ public abstract class MWorldServer {
 		index = 1,
 		at = @At(
 			value = "INVOKE",
-			target = "setBlockState(Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z"
+			target = "Lnet/minecraft/world/WorldServer;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z"
 		)
 	)
 	private IBlockState internalSetBlockState(BlockPos pos, IBlockState state) {

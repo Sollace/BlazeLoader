@@ -2,6 +2,7 @@ package com.blazeloader.util.playerinfo;
 
 import java.util.UUID;
 
+import com.blazeloader.api.ApiServer;
 import com.blazeloader.util.config.IStringable;
 import com.blazeloader.util.config.JsonUtils;
 import com.blazeloader.util.data.INBTWritable;
@@ -77,7 +78,7 @@ public class PlayerIdent implements INBTWritable, IStringable<PlayerIdent> {
 	}
 	
 	private static UUID lookupUUID(String username) {
-		return UUID.fromString(PreYggdrasilConverter.getStringUUIDFromName(username));
+		return UUID.fromString(PreYggdrasilConverter.func_187473_a(ApiServer.getServer(), username));
 	}
 	
 	/**
@@ -103,7 +104,7 @@ public class PlayerIdent implements INBTWritable, IStringable<PlayerIdent> {
 	 * Returns false on the server.
 	 */
     public boolean hasPlayerInfo() {
-        return getPlayerInfo() != null;
+        return false;
     }
 	
     /**
@@ -132,6 +133,13 @@ public class PlayerIdent implements INBTWritable, IStringable<PlayerIdent> {
 	 */
 	public boolean hasCape() {
 		return getProvider().hasCape();
+	}
+	
+	/**
+	 * Checks if this player has a custom elytra for their profile.
+	 */
+	public boolean hasElytra() {
+		return getProvider().hasElytra();
 	}
     
 	public void writeToNBT(NBTTagCompound tagCompound) {

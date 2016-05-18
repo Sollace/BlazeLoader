@@ -1,8 +1,11 @@
 package com.blazeloader.api.item;
 
+import java.lang.reflect.Field;
+
 import com.google.common.collect.Lists;
-import com.mumfrey.liteloader.util.ModUtilities;
+import com.mumfrey.liteloader.client.ducks.IMutableRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
@@ -56,7 +59,19 @@ public class ApiItem {
      * @return the item for simplicity
      */
     public static <T extends Item> T registerItem(int id, ResourceLocation name, T item) {
-        ModUtilities.addItem(id, name, item, true);
+    	boolean exists = Item.itemRegistry.containsKey(name);
+    	if (exists) {
+    		Item existing = Item.itemRegistry.getObject(name);
+    		((IMutableRegistry<ResourceLocation, Item>)Item.itemRegistry).removeObjectFromRegistry(name);
+    		try {
+	    		for (Field field : Items.class.getDeclaredFields()) {
+	                if (field.get(null).equals(existing)) {
+	                    field.set(null, item);
+	                }
+	            }
+    		} catch (Exception e) {}
+    	}
+    	Item.itemRegistry.register(id, name, item);
         return item;
     }
     

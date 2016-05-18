@@ -31,6 +31,6 @@ public class ParticleEmitter extends EntityParticleEmitter {
                 ApiParticles.spawnParticle(particle.setPos(x, y, z).setVel(vX, vY + 0.2D, vZ), worldObj);
             }
         }
-        if (++age >= maxAge) setDead();
+        if (++age >= maxAge) setExpired();
     }
 }

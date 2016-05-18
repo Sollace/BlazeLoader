@@ -11,6 +11,10 @@ import net.minecraft.util.ResourceLocation;
 class PlayerIdentClient extends PlayerIdent {
 	private NetworkPlayerInfo playerInfo;
 	
+	public boolean hasPlayerInfo() {
+        return true;
+    }
+	
 	public NetworkPlayerInfo getPlayerInfo() {
 		if (playerInfo == null) {
             playerInfo = new NetPlayerInfo(getGameProfile());
@@ -42,6 +46,11 @@ class PlayerIdentClient extends PlayerIdent {
         public ResourceLocation getLocationCape() {
         	super.getLocationCape();
         	return skins.provideCape();
+        }
+        
+        public ResourceLocation getLocationElytra() {
+        	super.getLocationElytra();
+        	return skins.provideElytra();
         }
     }
 }

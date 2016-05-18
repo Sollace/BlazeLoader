@@ -14,10 +14,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S01PacketJoinGame;
-import net.minecraft.network.play.server.S09PacketHeldItemChange;
-import net.minecraft.network.play.server.S0DPacketCollectItem;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketJoinGame;
+import net.minecraft.network.play.server.SPacketCollectItem;
+import net.minecraft.network.play.server.SPacketHeldItemChange;
+import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -74,7 +74,7 @@ public class EventHandlerClient extends EventHandler {
         }
     }
     
-    public static void eventHandleOpenWindow(INetHandlerPlayClient sender, CallbackInfo info, S2DPacketOpenWindow packet) {
+    public static void eventHandleOpenWindow(INetHandlerPlayClient sender, CallbackInfo info, SPacketOpenWindow packet) {
     	Minecraft gameController = Minecraft.getMinecraft();
     	PacketThreadUtil.checkThreadAndEnqueue(packet, sender, gameController);
         ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(gameController.thePlayer, packet);
@@ -106,7 +106,7 @@ public class EventHandlerClient extends EventHandler {
         return entity;
     }
     
-    public static void overrideClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
+    public static void overrideClientJoinGame(INetHandler netHandler, SPacketJoinGame loginPacket) {
         playerEventClients.all().onClientJoinGame(netHandler, loginPacket);
     }
     
@@ -114,7 +114,7 @@ public class EventHandlerClient extends EventHandler {
     	worldEventClients.all().onWorldChanged(world);
     }
     
-    public static void eventHandleHeldItemChange(CallbackInfo info, S09PacketHeldItemChange packet) {
+    public static void eventHandleHeldItemChange(CallbackInfo info, SPacketHeldItemChange packet) {
     	if (inventoryEventHandlers.size() > 0) {
     		int index = packet.getHeldItemHotbarIndex();
 	    	if (index >= 0 && index < InventoryPlayer.getHotbarSize()) {
@@ -128,7 +128,7 @@ public class EventHandlerClient extends EventHandler {
     	}
     }
     
-    public static void eventHandleCollectItem(S0DPacketCollectItem packet) {
+    public static void eventHandleCollectItem(SPacketCollectItem packet) {
     	if (inventoryEventHandlers.size() > 0) {
 	    	Minecraft mc = ApiClient.getClient();
 	    	Entity owner = mc.theWorld.getEntityByID(packet.getEntityID());

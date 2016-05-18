@@ -1,20 +1,20 @@
 package com.blazeloader.api.toolset;
 
 import com.google.common.collect.Multimap;
+
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 
 public class ToolSpade extends ItemSpade implements ITool {
     private final ToolsetAttributes attributes;
-
-    private float damageValue = 4;
-
+    
     public ToolSpade(ToolsetAttributes material) {
         super(ToolMaterial.WOOD);
         attributes = material;
         super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
-        damageValue = material.getDamageVsEntity(1);
+        damageVsEntity = material.getDamageVsEntity(1.5f);
     }
 
 	@Override
@@ -38,7 +38,7 @@ public class ToolSpade extends ItemSpade implements ITool {
     }
 
     @Override
-    public Multimap getItemAttributeModifiers() {
-        return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
+    public Multimap getItemAttributeModifiers(EntityEquipmentSlot slot) {
+    	return attributes.getAttributeModifiers(slot, super.getItemAttributeModifiers(slot), ATTACK_DAMAGE_MODIFIER, ATTACK_SPEED_MODIFIER, damageVsEntity, attackSpeed, "Tool modifier");
     }
 }

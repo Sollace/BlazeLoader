@@ -5,14 +5,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -56,14 +56,14 @@ public class InternalEventHandlerClient {
     }
     
     public static void eventMiddleClickMouse(Minecraft sender, CallbackInfo info) {
-    	if (sender.objectMouseOver != null && sender.objectMouseOver.typeOfHit == MovingObjectType.ENTITY) {
+    	if (sender.objectMouseOver != null && sender.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY) {
     		Entity entity = sender.objectMouseOver.entityHit;
     		if (entity instanceof IMousePickHandler) {
     			ItemStack stack = ((IMousePickHandler)entity).onPlayerMiddleClick(sender.thePlayer);
     			if (stack != null && stack.stackSize > 0) {
     				boolean creative = sender.thePlayer.capabilities.isCreativeMode;
     				InventoryPlayer inventory = sender.thePlayer.inventory;
-    				inventory.setCurrentItem(stack.getItem(), stack.getMetadata(), stack.getItem().getHasSubtypes(), creative);
+    				inventory.func_184434_a(stack);
     				if (creative) {
     	                int change = sender.thePlayer.inventoryContainer.inventorySlots.size() - 9 + inventory.currentItem;
     	                sender.playerController.sendSlotPacket(inventory.getStackInSlot(inventory.currentItem), change);

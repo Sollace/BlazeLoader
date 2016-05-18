@@ -12,8 +12,7 @@ import com.blazeloader.event.handlers.InternalEventHandler;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(World.class)
@@ -31,7 +30,7 @@ public abstract class MWorld implements ForgeWorldAccess {
 		MAX_ENTITY_RADIUS = size;
 	}
 	
-	@Inject(method = "setBlockState(Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z", at = @At("HEAD"), cancellable = true)
 	private void onSetBlockState(BlockPos pos, IBlockState state, int flag, CallbackInfoReturnable<Boolean> info) {
 		EventHandler.eventSetBlockState(info, (World)(Object)this, pos, state);
 	}
@@ -41,17 +40,12 @@ public abstract class MWorld implements ForgeWorldAccess {
 		EventHandler.eventSpawnEntityInWorld(info, (World)(Object)this, entity);
 	}
 	
-	@Inject(method = "doesBlockHaveSolidTopSurface(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;)Z", at = @At("RETURN"), cancellable = true)
-	private static void internalDoesBlockHaveSolidTopSurface(IBlockAccess access, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-		InternalEventHandler.eventDoesBlockHaveSolidTopSurface(info, access, pos);
-	}
-	
 	@Inject(method = "onEntityRemoved(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
 	private void internalOnEntityRemoved(Entity entity, CallbackInfo info) {
 		InternalEventHandler.eventOnEntityRemoved(entity);
 	}
 	
-	@Inject(method = "canBlockFreeze(Lnet/minecraft/util/BlockPos;Z)Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "canBlockFreeze(Lnet/minecraft/util/math/BlockPos;Z)Z", at = @At("HEAD"), cancellable = true)
 	private void internalCanBlockFreeze(BlockPos pos, boolean noWaterAdj, CallbackInfoReturnable<Boolean> info) {
 		InternalEventHandler.eventCanBlockFreeze((World)(Object)this, pos, noWaterAdj, info);
 	}

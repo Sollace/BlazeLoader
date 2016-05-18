@@ -1,9 +1,9 @@
 package com.blazeloader.event.listeners.args;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * Contains args for a ContainerOpenedEvent
@@ -13,13 +13,13 @@ public class ContainerOpenedEventArgs {
 	public final int slotsCount;
 	
 	public final String inventoryId;
-	public final IChatComponent inventoryTitle;
+	public final ITextComponent inventoryTitle;
 
     public final int posX;
     public final int posY;
     public final int posZ;
 
-    public ContainerOpenedEventArgs(EntityPlayer player, S2DPacketOpenWindow packet) {
+    public ContainerOpenedEventArgs(EntityPlayer player, SPacketOpenWindow packet) {
         hasSlots = packet.hasSlots();
         slotsCount = packet.getSlotCount();
         inventoryId = packet.getGuiId();

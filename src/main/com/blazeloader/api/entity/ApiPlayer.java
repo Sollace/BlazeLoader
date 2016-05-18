@@ -1,5 +1,6 @@
 package com.blazeloader.api.entity;
 
+import com.blazeloader.api.ApiServer;
 import com.blazeloader.api.client.ApiClient;
 import com.blazeloader.util.version.Versions;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ public class ApiPlayer {
         if (Versions.isClient()) {
             return ApiClient.getPlayer();
         }
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = ApiServer.getServer();
         if (server != null) {
             String owner = server.getServerOwner();
             for (WorldServer i : server.worldServers) {
@@ -36,9 +37,9 @@ public class ApiPlayer {
      * Returns true if the player has been opped or this is running in a singleplayer world.
      */
     public static boolean playerHasOPAbilities(EntityPlayer player) {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = ApiServer.getServer();
         if (server != null) {
-            return server.getConfigurationManager().canSendCommands(player.getGameProfile());
+            return server.getPlayerList().canSendCommands(player.getGameProfile());
         }
         return true;
     }
@@ -57,10 +58,10 @@ public class ApiPlayer {
      * Gets an array of all players currently present in the game.
      */
     public static EntityPlayer[] getAllPlayers() {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = ApiServer.getServer();
         if (server != null) {
-        	List<EntityPlayerMP> result = server.getConfigurationManager().playerEntityList;
-        	return result.toArray(new EntityPlayer[result.size()]);
+        	List<EntityPlayerMP> result = server.getPlayerList().getPlayerList();
+			return result.toArray(new EntityPlayer[result.size()]);
         }
         return new EntityPlayer[0];
     }
@@ -69,9 +70,9 @@ public class ApiPlayer {
         if (player instanceof EntityPlayerMP) {
             return ((EntityPlayerMP) player).getStatFile();
         }
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = ApiServer.getServer();
         if (server != null) {
-            return server.getConfigurationManager().getPlayerStatsFile(player);
+            return server.getPlayerList().getPlayerStatsFile(player);
         }
         return null;
     }

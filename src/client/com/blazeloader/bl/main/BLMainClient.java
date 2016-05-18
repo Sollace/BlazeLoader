@@ -5,10 +5,13 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
 import com.blazeloader.api.client.ApiClient;
 import com.mumfrey.liteloader.api.InterfaceProvider;
+import com.mumfrey.liteloader.client.overlays.IMinecraft;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 
@@ -36,10 +39,10 @@ public class BLMainClient extends BLMain {
     
     @Override
     public void tick(boolean clock, float partial, boolean isInGame) {
-    	Minecraft client = ApiClient.getClient();
+    	IMinecraft client = (IMinecraft)ApiClient.getClient();
     	if (client != null) {
     		partialTicks = partial;
-    		numTicks = client.timer.elapsedTicks;
+    		numTicks = client.getTimer().elapsedTicks;
     	} else {
     		partialTicks = numTicks = 0;
     	}
@@ -51,7 +54,7 @@ public class BLMainClient extends BLMain {
     }
     
     @Override
-    protected CommandHandler createCommandHandler() {
-    	return new IntegratedServerCommandManager();
+    protected CommandHandler createCommandHandler(MinecraftServer server) {
+    	return new IntegratedServerCommandManager((IntegratedServer)server);
     }
 }
